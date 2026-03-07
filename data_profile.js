@@ -5,12 +5,13 @@ const PROFILE_DATA = {
     email: "ldkimduck2@email.com",
     links: [ 
       { icon: "☎️", label: "010-2805-1079", href: "#" }, 
-      { icon: "📄", label: "이력서 링크", href: "#" } 
+      { icon: "📄", label: "자기소개서", href: "#" },
+      { icon: "📄", label: "이력서", href: "#" } 
     ],
   },
   landing: {
-    headline: "공간으로 쓰는 이야기", 
-    desc: "플레이어의 동선, 텐션 커브, 공간의 서사를 설계합니다.\n좋은 레벨은 지도 없이도 목적지를 향해 걷게 만듭니다.",
+    headline: "Level Design Workspace", 
+    desc: "lorem Inpsum",
     heroImages: [
       "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1542382257-80da9fb9f5abc?q=80&w=2000&auto=format&fit=crop"
