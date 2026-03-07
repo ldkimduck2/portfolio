@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>포트폴리오</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+/* ── 스타일(CSS) 영역 ── */
+:root { --accent: #E03030; --bg: #0C0C0C; --bg-sub: #151515; --fg-main: #F0F0F0; --fg-muted: #888888; --border: rgba(255, 255, 255, 0.1); --font: 'Pretendard', -apple-system, sans-serif; --nav-height: 70px; }
+[data-theme="light"] { --bg: #FAFAFA; --bg-sub: #F0F0F0; --fg-main: #111111; --fg-muted: #666666; --border: rgba(0, 0, 0, 0.1); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--fg-main); font-family: var(--font); line-height: 1.6; transition: background-color 0.6s, color 0.4s; overflow: hidden; }
+a { color: inherit; text-decoration: none; } ul { list-style: none; } button { font-family: inherit; cursor: pointer; background: none; border: none; }
+.resize-animation-stopper * { animation: none !important; transition: none !important; }
+
+/* NAV & HAMBURGER */
+nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-index: 100; border-bottom: 1px solid var(--border); background: var(--bg); transition: background-color 0.6s, border-color 0.4s; }
+.nav-inner { display: flex; justify-content: space-between; align-items: center; height: 100%; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+.nav-logo { font-weight: 800; font-size: 15px; letter-spacing: 0.1em; cursor: pointer; position: relative; z-index: 101; }
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links button.page-link { font-size: 14px; font-weight: 600; color: var(--fg-muted); transition: color 0.2s; text-transform: uppercase; letter-spacing: 0.05em; }
+.nav-links button.page-link:hover { color: var(--fg-main); }
+.nav-links button.page-link.active { color: var(--accent); }
+.theme-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--fg-muted); transition: color 0.2s; text-transform: uppercase; letter-spacing: 0.05em; }
+.theme-toggle:hover { color: var(--fg-main); }
+.toggle-track { position: relative; width: 44px; height: 24px; border-radius: 12px; background: var(--border); transition: background-color 0.4s; }
+.toggle-ball { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--fg-main); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+[data-theme="dark"] .toggle-ball { transform: translateX(20px); }
+[data-theme="dark"] .toggle-track { background: var(--accent); }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; position: relative; z-index: 101; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--fg-main); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* PAGE SYSTEM */
+#page-container { position: relative; width: 100vw; height: 100vh; }
+.page { position: absolute; inset: 0; padding: calc(var(--nav-height) + 40px) 24px 100px; overflow-y: auto; opacity: 0; visibility: hidden; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s; }
+.page.active { opacity: 1; visibility: visible; transform: translateY(0); z-index: 10; }
+.page-inner { max-width: 1000px; margin: 0 auto; }
+.sec-title { font-size: 32px; font-weight: 800; margin-bottom: 48px; letter-spacing: -0.02em; }
+.tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.tag { font-size: 11px; font-weight: 600; padding: 4px 10px; background: var(--bg-sub); border-radius: 4px; color: var(--fg-muted); transition: background-color 0.4s; }
+.tag.hi { color: var(--accent); background: rgba(224,48,48,0.1); }
+
+/* HOME */
+#page-home { padding: 0; overflow: hidden; }
+#hero-slider { position: absolute; inset: 0; z-index: 0; }
+.hero-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
+.hero-slide.show { opacity: 1; }
+.hero-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.55); z-index: 1; }
+.hero-content { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+.hero-title { font-size: clamp(40px, 6vw, 72px); font-weight: 800; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 24px; color: #ffffff; }
+.hero-desc { font-size: 16px; color: rgba(255, 255, 255, 0.85); max-width: 600px; white-space: pre-line; line-height: 1.8; margin-bottom: 48px; }
+.btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #ffffff; padding: 16px 36px; border-radius: 8px; font-size: 15px; font-weight: 700; letter-spacing: 0.05em; transition: transform 0.2s, background-color 0.2s; box-shadow: 0 8px 24px rgba(224, 48, 48, 0.3); }
+.btn-primary:hover { transform: translateY(-3px); background: #c52626; }
+
+/* PORTFOLIO */
+.portfolio-item { padding: 60px 0; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.portfolio-item:first-of-type { border-top: 2px solid var(--fg-main); }
+.port-info { display: flex; flex-direction: column; height: 100%; justify-content: center; }
+.port-title { font-size: 28px; font-weight: 800; margin-bottom: 16px; line-height: 1.3; }
+.port-desc { font-size: 15px; color: var(--fg-muted); line-height: 1.7; margin-bottom: 32px; }
+.btn-detail { align-self: flex-start; padding: 12px 24px; background: var(--bg-sub); border: 1px solid var(--border); color: var(--fg-main); font-weight: 600; font-size: 13px; border-radius: 6px; transition: all 0.3s; }
+.btn-detail:hover { background: var(--fg-main); color: var(--bg); transform: translateY(-2px); }
+.video-wrap { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+/* STUDY & ABOUT */
+.clickable-item { cursor: pointer; position: relative; }
+.clickable-item::after { content: '자세히 보기 ↗'; position: absolute; right: 0; bottom: 40px; font-size: 12px; font-weight: 600; color: var(--accent); opacity: 0; transform: translateX(-10px); transition: all 0.3s ease; }
+.clickable-item:hover::after { opacity: 1; transform: translateX(0); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.card { padding: 32px; background: var(--bg-sub); border-radius: 12px; transition: background-color 0.4s, transform 0.2s; border: 1px solid var(--border); }
+.card:hover { transform: translateY(-5px); border-color: var(--fg-muted); }
+.card:hover::after { bottom: 32px; right: 32px; }
+.card-cat { font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 12px; }
+.card-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+.card-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.6; }
+
+.about-grid { display: grid; grid-template-columns: 1fr 300px; gap: 64px; }
+.about-lead { font-size: 24px; font-weight: 700; line-height: 1.5; margin-bottom: 32px; }
+.about-lead mark { background: none; color: var(--accent); }
+.about-body { font-size: 15px; color: var(--fg-muted); white-space: pre-line; margin-bottom: 48px; line-height: 1.8; }
+.exp-row { display: grid; grid-template-columns: 120px 1fr; gap: 24px; padding: 24px 0; border-top: 1px solid var(--border); transition: border-color 0.4s; }
+.exp-yr { font-size: 13px; color: var(--fg-muted); font-weight: 600; }
+.exp-role { font-weight: 700; margin-bottom: 4px; }
+.exp-co { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+.contact-box { padding: 32px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-sub); transition: border-color 0.4s, background-color 0.4s; }
+.contact-box h3 { margin-bottom: 24px; font-size: 18px; }
+.contact-links { display: flex; flex-direction: column; gap: 16px; }
+.contact-links a { display: flex; gap: 12px; align-items: center; font-size: 14px; font-weight: 500; color: var(--fg-muted); transition: color 0.2s; }
+.contact-links a:hover { color: var(--fg-main); }
+
+/* 🔥 GAMES (필터 및 카드 디자인) 🔥 */
+.game-filter-wrap { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+.filter-btn { padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-sub); color: var(--fg-muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: -0.02em; }
+.filter-btn:hover { color: var(--fg-main); border-color: var(--fg-muted); }
+.filter-btn.active { background: var(--fg-main); color: var(--bg); border-color: var(--fg-main); }
+.game-group-title { font-size: 20px; font-weight: 800; margin: 48px 0 24px; padding-bottom: 12px; border-bottom: 2px solid var(--border); color: var(--fg-main); letter-spacing: -0.03em; }
+
+.game-item { padding: 32px 0; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 260px 1fr; gap: 40px; align-items: center; transition: border-color 0.4s; }
+.game-image-wrap { width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--bg-sub); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; }
+.game-image-wrap::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); animation: loading 1.5s infinite; }
+@keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+.game-image-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; z-index: 1; }
+.game-item:hover .game-image-wrap img { transform: scale(1.05); }
+
+.game-title { font-weight: 800; font-size: 22px; margin-bottom: 6px; letter-spacing: -0.02em; }
+.game-studio { font-size: 14px; color: var(--fg-muted); font-weight: 500; margin-bottom: 16px; }
+.game-studio span.sep { margin: 0 8px; opacity: 0.3; }
+
+.game-stats { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.stat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--fg-main); }
+.stat-badge.hi { border-color: var(--accent); color: var(--accent); background: rgba(224,48,48,0.05); }
+
+/* ── 🔥 MODAL (에디토리얼 매거진 스타일 리디자인) 🔥 ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 200; opacity: 0; visibility: hidden; transition: opacity 0.4s ease; }
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -45%); width: 95%; max-width: 1100px; height: 92vh; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; z-index: 201; opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
+.modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%); }
+.modal-header { padding: 24px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(var(--bg), 0.95); z-index: 10; }
+.modal-header-title { font-size: 14px; font-weight: 700; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.modal-close { font-size: 14px; font-weight: 600; color: var(--fg-muted); transition: color 0.2s; display: flex; align-items: center; gap: 6px; padding: 8px 20px; background: var(--bg-sub); border-radius: 30px; border: 1px solid var(--border); }
+.modal-close:hover { color: var(--fg-main); border-color: var(--fg-main); }
+
+/* 여백을 극대화한 본문 영역 */
+.modal-body { padding: 80px; overflow-y: auto; flex: 1; scroll-behavior: smooth; }
+
+/* 큰 기사 제목 스타일 */
+.m-article-header { margin-bottom: 80px; text-align: left; }
+.m-article-title { font-size: 48px; font-weight: 900; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 24px; color: var(--fg-main); }
+.m-article-desc { font-size: 18px; color: var(--fg-muted); line-height: 1.8; max-width: 800px; }
+
+/* 섹션 타이틀 (잡지 소제목 느낌) */
+.m-section-title { text-align: left; font-size: 28px; font-weight: 900; letter-spacing: -0.02em; margin: 100px 0 40px; color: var(--fg-main); padding-bottom: 20px; border-bottom: 2px solid var(--fg-main); display: inline-block; }
+
+/* 박스 테두리 없는 깔끔한 그리드 */
+.m-ed-wrap { margin-bottom: 80px; }
+.m-ed-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; text-align: left; }
+.m-ed-divider { height: 1px; background: var(--border); margin: 60px 0; opacity: 0.5; }
+
+/* 텍스트 크기 대비를 확실하게 준 라벨과 본문 */
+.m-ed-label { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.m-ed-label::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+.m-ed-value { font-size: 22px; font-weight: 800; color: var(--fg-main); line-height: 1.4; word-break: keep-all; }
+.m-ed-sub { display: block; font-size: 13px; color: var(--fg-muted); font-weight: 500; margin-top: 8px; }
+.m-ed-desc { font-size: 16px; color: var(--fg-muted); line-height: 1.8; word-break: keep-all; }
+
+/* 둥글고 부드러운 미디어 래퍼 */
+.video-wrap { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+.video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+.m-pdf-wrap { width: 100%; height: 800px; border-radius: 20px; overflow: hidden; margin-bottom: 80px; background: #222; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+.m-pdf-wrap iframe { width: 100%; height: 100%; border: none; }
+
+/* 슬라이더 개선 */
+.m-slider-container { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+.m-slides { display: flex; height: 100%; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
+.m-slide { min-width: 100%; height: 100%; object-fit: cover; }
+.m-slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); color: white; border: 1px solid rgba(255,255,255,0.1); width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 18px; z-index: 10; transition: all 0.3s; }
+.m-slider-btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-50%) scale(1.1); }
+.m-slider-prev { left: 24px; }
+.m-slider-next { right: 24px; }
+.m-slider-dots { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 10; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(4px); }
+.m-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s; }
+.m-dot.active { background: white; transform: scale(1.3); }
+
+/* 모바일 반응형 */
+@media(max-width: 768px) {
+  .hamburger { display: flex; } 
+  .nav-links { position: absolute; top: var(--nav-height); left: 0; width: 100%; background: var(--bg); border-bottom: 1px solid var(--border); flex-direction: column; padding: 20px 0 30px; gap: 24px; transform: translateY(-10px); opacity: 0; visibility: hidden; transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s, background-color 0.6s; }
+  .nav-links.open { transform: translateY(0); opacity: 1; visibility: visible; }
+  .nav-links button.page-link { font-size: 16px; width: 100%; padding: 10px; }
+  .theme-toggle { margin: 0 auto; }
+  .hero-title { font-size: 32px; }
+  .portfolio-item { grid-template-columns: 1fr; } 
+  .portfolio-item .video-wrap { order: -1; } 
+  .game-item, .about-grid, .exp-row { grid-template-columns: 1fr; gap: 16px; }
+  .game-image-wrap { aspect-ratio: 21 / 9; }
+  
+  /* 모달 모바일 최적화 */
+  .modal { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; transform: translate(-50%, -45%); }
+  .modal.active { transform: translate(-50%, -50%); }
+  .modal-header { padding: 16px 20px; }
+  .modal-body { padding: 40px 24px; }
+  .m-article-title { font-size: 32px; }
+  .m-section-title { font-size: 24px; margin: 60px 0 30px; }
+  .m-ed-row { grid-template-columns: 1fr; gap: 40px; }
+  .m-pdf-wrap { height: 500px; margin-bottom: 40px; }
+  .m-slider-btn { width: 40px; height: 40px; }
+  .m-slider-prev { left: 16px; }
+  .m-slider-next { right: 16px; }
+}
+</style>
+</head>
+<body>
+
+<script src="data_profile.js"></script>
+<script src="data_portfolio.js"></script>
+<script src="data_study.js"></script>
+<script src="data_games.js"></script>
+
+<script>
+// 데이터 병합
+const DATA = {
+  site: PROFILE_DATA.site,
+  landing: PROFILE_DATA.landing,
+  about: PROFILE_DATA.about,
+  portfolio: PORTFOLIO_DATA,
+  studies: STUDY_DATA,
+  games: GAMES_DATA
+};
+</script>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="switchPage('home')">GD.</div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><button class="page-link active" onclick="switchPage('portfolio')" data-target="portfolio">Portfolio</button></li>
+      <li><button class="page-link" onclick="switchPage('study')" data-target="study">Study</button></li>
+      <li><button class="page-link" onclick="switchPage('games')" data-target="games">Games</button></li>
+      <li><button class="page-link" onclick="switchPage('about')" data-target="about">About</button></li>
+      <li><button class="theme-toggle" onclick="toggleTheme()" title="다크/라이트 모드 변경"><div class="toggle-track"><div class="toggle-ball"></div></div><span id="theme-label" style="min-width: 42px; text-align: left;">Dark</span></button></li>
+    </ul>
+  </div>
+</nav>
+
+<div id="modal-overlay" class="modal-overlay" onclick="closeModal()"></div>
+<div id="detail-modal" class="modal">
+  <div class="modal-header">
+    <div class="modal-header-title" id="modal-top-title">PORTFOLIO</div>
+    <button class="modal-close" onclick="closeModal()">✕ 닫기</button>
+  </div>
+  <div class="modal-body" id="modal-body"></div>
+</div>
+
+<div id="page-container">
+  <section class="page active" id="page-home"><div id="hero-slider"></div><div class="hero-overlay"></div><div class="hero-content"><h1 class="hero-title" id="hero-title"></h1><p class="hero-desc" id="hero-desc"></p><button class="btn-primary" onclick="switchPage('portfolio')">포트폴리오 전시 보기 <span>→</span></button></div></section>
+  <section class="page" id="page-portfolio"><div class="page-inner"><h2 class="sec-title">Portfolio.</h2><div id="portfolio-list"></div></div></section>
+  <section class="page" id="page-study"><div class="page-inner"><h2 class="sec-title">Study & Research.</h2><div class="grid-2" id="study-list"></div></div></section>
+  <section class="page" id="page-games">
+    <div class="page-inner">
+      <h2 class="sec-title" style="margin-bottom: 24px;">Gameplay Notes.</h2>
+      <div class="game-filter-wrap" id="game-filter-wrap">
+        <button class="filter-btn active" onclick="renderGames('default')">전체 보기</button>
+        <button class="filter-btn" onclick="renderGames('playtime')">플레이타임 긴 순</button>
+        <button class="filter-btn" onclick="renderGames('developer')">개발사 묶어보기</button>
+        <button class="filter-btn" onclick="renderGames('genre')">장르 묶어보기</button>
+        <button class="filter-btn" onclick="renderGames('platform')">플랫폼 묶어보기</button>
+      </div>
+      <div class="game-list" id="game-list"></div>
+    </div>
+  </section>
+  <section class="page" id="page-about"><div class="page-inner"><h2 class="sec-title">About Me.</h2><div class="about-grid"><div><p class="about-lead" id="about-lead"></p><p class="about-body" id="about-body"></p><div id="about-exp"></div></div><div><div class="contact-box"><h3>Contact</h3><div class="contact-links" id="contact-links"></div></div></div></div></div></section>
+</div>
+
+<script>
+/* ── 실제 작동 로직 ── */
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const renderTags = tags => (tags||[]).map(t => t.startsWith('!') ? `<span class="tag hi">${esc(t.slice(1))}</span>` : `<span class="tag">${esc(t)}</span>`).join('');
+
+document.querySelector('.nav-logo').textContent = `${DATA.site.name} · ${DATA.site.role}`;
+document.getElementById('hero-title').textContent = DATA.landing.headline;
+document.getElementById('hero-desc').textContent = DATA.landing.desc;
+
+const sliderContainer = document.getElementById('hero-slider');
+const heroImages = DATA.landing.heroImages;
+if (heroImages && heroImages.length > 0) {
+  sliderContainer.innerHTML = heroImages.map((url, i) => `<div class="hero-slide ${i === 0 ? 'show' : ''}" style="background-image: url('${url}')"></div>`).join('');
+  const slides = document.querySelectorAll('.hero-slide');
+  let currentSlide = 0;
+  if (slides.length > 1) { setInterval(() => { slides[currentSlide].classList.remove('show'); currentSlide = (currentSlide + 1) % slides.length; slides[currentSlide].classList.add('show'); }, 4000); }
+}
+
+document.getElementById('portfolio-list').innerHTML = DATA.portfolio.map((p, index) => {
+  const videoHtml = p.youtubeId ? `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${p.youtubeId}?mute=1" loading="lazy" allowfullscreen></iframe></div>` : `<div class="video-wrap" style="background:#222; display:flex; align-items:center; justify-content:center; color:#555;">No Video</div>`;
+  return `
+  <div class="portfolio-item">
+    <div class="port-info">
+      <div>
+        <div class="tags" style="margin-bottom:16px;">${renderTags(p.tags)}</div>
+        <h3 class="port-title">${esc(p.title)}</h3>
+        <p class="port-desc">${esc(p.desc)}</p>
+      </div>
+      <button class="btn-detail" onclick="openModal('portfolio', ${index})">상세 기획 보기 ↗</button>
+    </div>
+    ${videoHtml}
+  </div>
+  `;
+}).join('');
+
+document.getElementById('study-list').innerHTML = DATA.studies.map((s, index) => `<div class="card clickable-item" onclick="openModal('study', ${index})"><div class="card-cat">${esc(s.cat)}</div><h3 class="card-title">${esc(s.title)}</h3><p class="card-desc">${esc(s.desc)}</p></div>`).join('');
+
+function createGameItemHTML(g) {
+  const imgContent = g.image ? `<img src="${esc(g.image)}" alt="${esc(g.title)}" loading="lazy">` : `<div style="font-size:12px; color:var(--fg-muted);">No Image</div>`; 
+  return `
+    <div class="game-item">
+      <div class="game-image-wrap">${imgContent}</div>
+      <div>
+        <h3 class="game-title">${esc(g.title)}</h3>
+        <div class="game-studio">${esc(g.developer)} <span class="sep">/</span> ${esc(g.genre)} <span class="sep">/</span> ${esc(g.platform)}</div>
+        <div class="game-stats">
+          <span class="stat-badge hi">🎯 ${esc(g.status)}</span>
+          <span class="stat-badge">⏱ ${g.playtime}시간</span>
+        </div>
+        <div class="tags" style="margin-top: 12px;">${renderTags(g.tags)}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderGames(filterType) {
+  const buttons = document.querySelectorAll('#game-filter-wrap .filter-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  event && event.target && event.target.classList.add('active');
+
+  const container = document.getElementById('game-list');
+  let html = '';
+  let games = [...DATA.games];
+
+  if (filterType === 'playtime') {
+    games.sort((a, b) => b.playtime - a.playtime);
+    html = games.map(g => createGameItemHTML(g)).join('');
+  } 
+  else if (filterType === 'developer' || filterType === 'genre' || filterType === 'platform') {
+    const groups = {};
+    games.forEach(g => {
+      const key = g[filterType] || '기타';
+      if(!groups[key]) groups[key] = [];
+      groups[key].push(g);
+    });
+    Object.keys(groups).sort().forEach(groupName => {
+      html += `<div class="game-group-title">${esc(groupName)}</div>`;
+      html += groups[groupName].map(g => createGameItemHTML(g)).join('');
+    });
+  } 
+  else {
+    html = games.map(g => createGameItemHTML(g)).join('');
+  }
+  container.innerHTML = html;
+}
+renderGames('default');
+
+const leadHtml = esc(DATA.about.lead).replace(esc(DATA.about.leadMark), `<mark>${esc(DATA.about.leadMark)}</mark>`);
+document.getElementById('about-lead').innerHTML = leadHtml;
+document.getElementById('about-body').textContent = DATA.about.body;
+document.getElementById('about-exp').innerHTML = DATA.about.experience.map(e => `<div class="exp-row"><div class="exp-yr">${esc(e.period)}</div><div><div class="exp-role">${esc(e.role)}</div><div class="exp-co">${esc(e.company)}</div><div style="font-size:14px; color:var(--fg-muted)">${esc(e.desc)}</div></div></div>`).join('');
+document.getElementById('contact-links').innerHTML = `<a href="mailto:${esc(DATA.site.email)}"><span>✉</span> ${esc(DATA.site.email)}</a>` + DATA.site.links.map(l => `<a href="${esc(l.href)}"><span>${l.icon}</span> ${esc(l.label)}</a>`).join('');
+
+let currentModalSlide = 0; 
+let totalModalSlides = 0;
+
+function moveSlide(direction) {
+  if(totalModalSlides === 0) return;
+  currentModalSlide = (currentModalSlide + direction + totalModalSlides) % totalModalSlides;
+  document.getElementById('m-slide-track').style.transform = `translateX(-${currentModalSlide * 100}%)`;
+  document.querySelectorAll('.m-dot').forEach((dot, idx) => {
+    dot.classList.toggle('active', idx === currentModalSlide);
+  });
+}
+
+function openModal(type, index) {
+  const data = type === 'portfolio' ? DATA.portfolio[index] : DATA.studies[index];
+  const modalBody = document.getElementById('modal-body');
+  document.getElementById('modal-top-title').textContent = type === 'portfolio' ? 'PROJECT DETAILS' : 'STUDY DETAILS';
+  
+  let html = '';
+  
+  if (type === 'portfolio') {
+    // 💡 에디토리얼 스타일: 헤더 타이틀 영역
+    html += `
+      <div class="m-article-header">
+        <div class="tags" style="margin-bottom: 24px;">${renderTags(data.tags)}</div>
+        <h1 class="m-article-title">${esc(data.title)}</h1>
+        <p class="m-article-desc">${esc(data.desc)}</p>
+      </div>
+    `;
+
+    // 유튜브
+    if (data.youtubeId) {
+      html += `<div class="m-section-title" style="margin-top: 0;">Play Video</div>`;
+      html += `<div class="video-wrap" style="margin-bottom: 80px;"><iframe src="https://www.youtube.com/embed/${data.youtubeId}" allowfullscreen></iframe></div>`;
+    }
+
+    // 상세 기획 정보 (에디토리얼 그리드)
+    if (data.meta) {
+      html += `
+      <div class="m-ed-wrap">
+        <div class="m-ed-row">
+          <div>
+            <div class="m-ed-label">장르</div>
+            <div class="m-ed-value">${esc(data.meta.genre)}</div>
+          </div>
+          <div>
+            <div class="m-ed-label">레벨 크기</div>
+            <div class="m-ed-value">${esc(data.meta.size)}<span class="m-ed-sub">가로 x 세로 x 높이</span></div>
+          </div>
+          <div>
+            <div class="m-ed-label">스토리</div>
+            <div class="m-ed-desc" style="margin-top:0; color:var(--fg-main); font-weight:500;">${esc(data.meta.story)}</div>
+          </div>
+        </div>
+        
+        <div class="m-ed-divider"></div>
+        
+        <div class="m-section-title" style="margin-top: 0;">Level Design Intent</div>
+        <div class="m-ed-row">
+          <div>
+            <div class="m-ed-label">01. ${esc(data.meta.intent1.title)}</div>
+            <div class="m-ed-desc">${esc(data.meta.intent1.desc)}</div>
+          </div>
+          <div>
+            <div class="m-ed-label">02. ${esc(data.meta.intent2.title)}</div>
+            <div class="m-ed-desc">${esc(data.meta.intent2.desc)}</div>
+          </div>
+          <div>
+            <div class="m-ed-label">03. ${esc(data.meta.intent3.title)}</div>
+            <div class="m-ed-desc">${esc(data.meta.intent3.desc)}</div>
+          </div>
+        </div>
+      </div>
+      `;
+    }
+
+    // PDF 뷰어
+    if (data.pdfUrl) {
+      let viewerUrl = data.pdfUrl;
+      if(viewerUrl.includes('drive.google.com') && viewerUrl.includes('/view')) {
+         viewerUrl = viewerUrl.replace('/view', '/preview').split('?')[0];
+      } else if (!viewerUrl.includes('drive.google.com') && viewerUrl.endsWith('.pdf')) {
+         viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(viewerUrl)}&embedded=true`;
+      }
+      html += `<div class="m-section-title" style="margin-top: 0;">Full Document</div>`;
+      html += `<div class="m-pdf-wrap"><iframe src="${viewerUrl}" title="PDF Viewer"></iframe></div>`;
+    }
+
+    // 이미지 슬라이더
+    if (data.images && data.images.length > 0) {
+      totalModalSlides = data.images.length;
+      currentModalSlide = 0;
+      let slidesHtml = data.images.map(src => `<img src="${src}" class="m-slide">`).join('');
+      let dotsHtml = data.images.map((_, i) => `<div class="m-dot ${i===0?'active':''}" onclick="currentModalSlide=${i-1}; moveSlide(1)"></div>`).join('');
+      html += `
+      <div class="m-section-title" style="margin-top: 0;">Gallery</div>
+      <div class="m-slider-container">
+        <div class="m-slides" id="m-slide-track">${slidesHtml}</div>
+        ${totalModalSlides > 1 ? `
+        <button class="m-slider-btn m-slider-prev" onclick="moveSlide(-1)">❮</button>
+        <button class="m-slider-btn m-slider-next" onclick="moveSlide(1)">❯</button>
+        <div class="m-slider-dots">${dotsHtml}</div>
+        ` : ''}
+      </div>`;
+    }
+  } else {
+    // 스터디 모달
+    html += `<div style="font-size:13px; font-weight:800; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; margin-bottom: 24px;">${esc(data.cat)}</div>`;
+    html += `<h2 style="font-size: 40px; font-weight: 900; margin-bottom: 32px; letter-spacing:-0.03em; line-height:1.3;">${esc(data.title)}</h2>`;
+    html += `<div style="font-size: 18px; color: var(--fg-muted); line-height: 1.8;">${esc(data.desc)}</div>`;
+  }
+  
+  modalBody.innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('active');
+  document.getElementById('detail-modal').classList.add('active');
+  document.getElementById('detail-modal').scrollTop = 0;
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('active');
+  document.getElementById('detail-modal').classList.remove('active');
+  document.getElementById('modal-body').innerHTML = ''; 
+}
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+let resizeTimer;
+window.addEventListener('resize', () => { document.body.classList.add('resize-animation-stopper'); clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { document.body.classList.remove('resize-animation-stopper'); }, 400); });
+const hamburgerBtn = document.getElementById('hamburgerBtn'); const navLinks = document.getElementById('navLinks');
+hamburgerBtn.addEventListener('click', () => { hamburgerBtn.classList.toggle('open'); navLinks.classList.toggle('open'); });
+function switchPage(pageId) { if (window.innerWidth <= 768) { hamburgerBtn.classList.remove('open'); navLinks.classList.remove('open'); } document.querySelectorAll('.page').forEach(page => { page.classList.remove('active'); setTimeout(() => { page.scrollTop = 0; }, 400); }); document.getElementById(`page-${pageId}`).classList.add('active'); document.querySelectorAll('.page-link').forEach(link => { link.classList.toggle('active', link.dataset.target === pageId); }); }
+function toggleTheme() { const root = document.documentElement; const label = document.getElementById('theme-label'); if (root.dataset.theme === 'dark') { root.dataset.theme = 'light'; label.textContent = 'Light'; } else { root.dataset.theme = 'dark'; label.textContent = 'Dark'; } if (window.innerWidth <= 768) { hamburgerBtn.classList.remove('open'); navLinks.classList.remove('open'); } }
+document.querySelectorAll('.page-link').forEach(l => l.classList.remove('active'));
+</script>
+</body>
+</html>
