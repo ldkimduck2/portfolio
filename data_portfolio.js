@@ -1,10 +1,12 @@
 const PORTFOLIO_DATA = [
   {
-    title: "프로젝트 Leador",
-    desc: "오픈월드 액션RPG 소울라이크",
-    tags: ["Unreal Engine 5", "Dark Fantasy", "!소울라이크"], 
-    youtubeId: "vBcbqNlE1d0",
-    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", 
+    title: "Leador",
+    date: "2023. 09 — 2024. 03", // 👈 프로젝트 제작 기간
+    desc: "오픈월드 액션RPG 소울라이크", // 설명 글
+    tags: ["Unreal Engine 5", "Dark Fantasy", "!소울라이크"], //태그
+    youtubeId: "vBcbqNlE1d0", // 비디오 링크
+    thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop", // 이미지 슬라이더
+    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // PDF 주소
     meta: {
       genre: "3인칭 액션 어드벤처",
       size: "255 x 310 x 55",
@@ -20,9 +22,11 @@ const PORTFOLIO_DATA = [
   },
   {
     title: "Left To Decay",
+    date: "2023. 01 — 2023. 06", // 👈 프로젝트 제작 기간
     desc: "액션 어드벤처 게임",
     tags: ["Unreal Engine 5", "Dark Fantasy", "!소울라이크"], 
     youtubeId: "vBcbqNlE1d0",
+    thumb: "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=1200&auto=format&fit=crop",
     pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", 
     meta: {
       genre: "3인칭 액션 어드벤처",
@@ -39,9 +43,11 @@ const PORTFOLIO_DATA = [
   },
   {
     title: "Novacore",
+    date: "2022. 08 — 2022. 12", // 👈 프로젝트 제작 기간
     desc: "잠입액션 게임",
     tags: ["Unreal Engine 5", "Dark Fantasy", "!소울라이크"], 
     youtubeId: "vBcbqNlE1d0",
+    thumb: "https://images.unsplash.com/photo-1542382257-80da9fb9f5abc?q=80&w=1200&auto=format&fit=crop",
     pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", 
     meta: {
       genre: "3인칭 액션 어드벤처",
@@ -55,6 +61,5 @@ const PORTFOLIO_DATA = [
       "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=1200&auto=format&fit=crop"
     ]
-  },
-
+  }
 ];
