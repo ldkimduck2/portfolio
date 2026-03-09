@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>김기덕 레벨디자인 포트폴리오</title>
+<title>포트폴리오</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
 /* ── 스타일(CSS) 영역 ── */
@@ -13,6 +13,13 @@
 body { background: var(--bg); color: var(--fg-main); font-family: var(--font); line-height: 1.6; transition: background-color 0.6s, color 0.4s; overflow: hidden; }
 a { color: inherit; text-decoration: none; } ul { list-style: none; } button { font-family: inherit; cursor: pointer; background: none; border: none; }
 .resize-animation-stopper * { animation: none !important; transition: none !important; }
+
+/* ── 🔥 세련된 전역 스크롤바 커스텀 🔥 ── */
+* { scrollbar-width: thin; scrollbar-color: var(--border) transparent; } /* 파이어폭스 지원 */
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; border: 4px solid transparent; background-clip: content-box; transition: background 0.3s; }
+::-webkit-scrollbar-thumb:hover { background: var(--fg-muted); border: 4px solid transparent; background-clip: content-box; }
 
 /* NAV & HAMBURGER */
 nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-index: 100; border-bottom: 1px solid var(--border); background: var(--bg); transition: background-color 0.6s, border-color 0.4s; }
@@ -122,32 +129,25 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-i
 .stat-badge.hi { border-color: var(--accent); color: var(--accent); background: rgba(224,48,48,0.05); }
 .stat-badge.done { border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.05); }
 
-/* ── 🔥 새로운 전체화면(Full Screen) 모달 디자인 🔥 ── */
-.modal-overlay { display: none; /* 전체화면이라 배경 오버레이는 필요 없음 */ }
-
-/* 모달 자체가 꽉 차게 100vw, 100vh로 설정됨 */
+/* MODAL 전체화면 */
+.modal-overlay { display: none; }
 .modal { position: fixed; inset: 0; width: 100vw; max-width: none; height: 100vh; background: var(--bg); border: none; border-radius: 0; z-index: 201; opacity: 0; visibility: hidden; transform: translateY(40px); transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1); display: flex; flex-direction: column; overflow: hidden; box-shadow: none; }
 .modal.active { opacity: 1; visibility: visible; transform: translateY(0); }
-
-/* 모달 헤더 중앙 정렬 및 닫기 버튼 강조 */
 .modal-header { padding: 0 5%; height: 80px; border-bottom: 1px solid var(--border); display: flex; justify-content: center; align-items: center; background: rgba(var(--bg), 0.98); z-index: 10; }
 .modal-close { font-size: 15px; font-weight: 700; background: var(--fg-main); color: var(--bg); padding: 10px 28px; border-radius: 30px; border: none; transition: all 0.2s; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
 [data-theme="light"] .modal-close { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 .modal-close:hover { transform: translateY(-2px); background: var(--accent); color: white; box-shadow: 0 8px 20px rgba(224,48,48,0.3); }
-
-/* 모달 내부 패딩 (좌우 여백 넉넉하게) */
-.modal-body { padding: 80px 5% 120px; overflow-y: auto; flex: 1; scroll-behavior: smooth; }
+.modal-body { padding: 80px 5%; overflow-y: auto; flex: 1; scroll-behavior: smooth; overflow-x: hidden; }
 
 /* 렉 방지용 로더 */
 .delay-loader { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: var(--bg-sub); color: var(--fg-muted); font-size: 14px; font-weight: 600; animation: pulse 1.5s infinite ease-in-out; border-radius: inherit; }
 @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
-/* 가독성 업그레이드 (글자 크기 및 1200px 캔버스 적용) */
+/* 가독성 업그레이드 */
 .m-article-header { margin-bottom: 80px; text-align: left; }
 .m-article-title { font-size: 56px; font-weight: 900; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 24px; color: var(--fg-main); word-break: keep-all; }
 .m-article-desc { font-size: 20px; color: var(--fg-muted); line-height: 1.8; max-width: 900px; word-break: keep-all; }
 .m-section-title { text-align: left; font-size: 32px; font-weight: 900; letter-spacing: -0.02em; margin: 100px auto 40px auto; width: 100%; color: var(--fg-main); padding-bottom: 20px; border-bottom: 2px solid var(--fg-main); display: block; }
-
 .m-ed-wrap { margin-bottom: 80px; }
 .m-ed-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; text-align: left; }
 .m-ed-divider { height: 1px; background: var(--border); margin: 60px 0; opacity: 0.5; }
@@ -157,27 +157,34 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-i
 .m-ed-sub { display: block; font-size: 14px; color: var(--fg-muted); font-weight: 500; margin-top: 8px; }
 .m-ed-desc { font-size: 16px; color: var(--fg-muted); line-height: 1.8; word-break: keep-all; }
 
-/* PDF 뷰어 높이 확장 */
+/* PDF 뷰어 */
 .m-pdf-wrap { width: 100%; height: 900px; border-radius: 20px; overflow: hidden; margin-bottom: 80px; background: #222; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid var(--border); position: relative; }
 .m-pdf-wrap iframe { width: 100%; height: 100%; border: none; position: absolute; top:0; left:0; }
 
-/* 갤러리 슬라이드 둥근 모서리 및 세련된 디자인 유지 */
-.gallery-section-title { font-size: 15px; font-weight: 800; color: var(--fg-muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 32px; }
-.gallery-wrapper { width: 100%; display: flex; flex-direction: column; gap: 24px; margin-bottom: 80px; }
-.gallery-main-view { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 24px; overflow: hidden; background: #000; box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
-.gallery-main-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s ease; }
-.gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 56px; height: 56px; background: rgba(var(--bg), 0.8); border: 1px solid var(--border); color: var(--fg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: all 0.2s; font-size: 20px; backdrop-filter: blur(4px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-.gallery-arrow:hover { background: var(--fg-main); color: var(--bg); transform: translateY(-50%) scale(1.1); }
-.gallery-arrow.prev { left: 32px; }
-.gallery-arrow.next { right: 32px; }
-.gallery-thumbnails { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px; scroll-behavior: smooth; justify-content: center; }
-.gallery-thumbnails::-webkit-scrollbar { height: 6px; }
-.gallery-thumbnails::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-.gallery-thumb { width: 140px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; cursor: pointer; opacity: 0.4; transition: all 0.3s; border: 2px solid transparent; flex-shrink: 0; }
-.gallery-thumb:hover { opacity: 0.8; }
-.gallery-thumb.active { opacity: 1; border-color: var(--accent); transform: scale(1.05); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+/* ── 🔥 완벽한 100% 단일화면 + 오토플레이 + 썸네일 시스템 🔥 ── */
+.dual-slider-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 80px; }
+.slider-col { display: flex; flex-direction: column; width: 100%; overflow: hidden; }
+.slider-header { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--fg-main); letter-spacing: -0.02em; }
 
-/* 스터디 모달 전용 노션 스타일 CSS 폰트 확장 */
+.slider-wrapper { position: relative; width: 100%; margin-bottom: 16px; overflow: hidden; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.slider-track { display: flex; transition: transform 0.5s ease-in-out; }
+.slide-item { flex: 0 0 100%; box-sizing: border-box; }
+.slide-item img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; pointer-events: none; }
+
+/* 슬라이더 화살표 */
+.s-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; background: rgba(var(--bg), 0.8); border: 1px solid var(--border); color: var(--fg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: all 0.2s; font-size: 18px; backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; }
+.slider-wrapper:hover .s-arrow { opacity: 1; }
+.s-arrow:hover { background: var(--fg-main); color: var(--bg); transform: translateY(-50%) scale(1.1); }
+.s-arrow.prev { left: 16px; }
+.s-arrow.next { right: 16px; }
+
+/* 하단 썸네일 네비게이션 */
+.slider-thumbnails { display: flex; gap: 12px; overflow-x: auto; padding: 16px 4px; scroll-behavior: smooth; justify-content: center; align-items: center; }
+.s-thumb { width: 100px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; cursor: pointer; opacity: 0.3; transition: all 0.3s; border: 2px solid transparent; flex-shrink: 0; }
+.s-thumb:hover { opacity: 0.8; }
+.s-thumb.active { opacity: 1; border-color: var(--accent); transform: scale(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+
+/* 스터디 모달 전용 */
 .m-study-cover { width: 100%; height: 400px; object-fit: cover; border-radius: 24px; margin-bottom: 60px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
 .m-study-header { border-bottom: 1px solid var(--border); padding-bottom: 40px; margin-bottom: 40px; }
 .m-study-meta { display: flex; gap: 12px; font-size: 14px; color: var(--fg-muted); margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; align-items: center; }
@@ -211,19 +218,21 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-i
   .study-info { padding-right: 0; }
   .study-card::after { right: 20px; bottom: 20px; }
   
-  /* 모바일 모달 여백 축소 */
   .modal-header { padding: 0 20px; }
-  .modal-body { padding: 40px 24px; }
+  .modal-body { padding: 40px 24px; overflow-x: hidden; }
   .m-article-title { font-size: 36px; }
   .m-section-title { font-size: 24px; margin: 60px auto 30px auto; }
   .m-ed-row { grid-template-columns: 1fr; gap: 40px; }
   .m-pdf-wrap { height: 500px; margin-bottom: 40px; }
-  .gallery-arrow { width: 40px; height: 40px; font-size: 14px; }
-  .gallery-arrow.prev { left: 12px; }
-  .gallery-arrow.next { right: 12px; }
   .m-study-title { font-size: 32px; }
   .m-study-cover { height: 200px; border-radius: 12px; margin-bottom: 30px; }
-  .gallery-thumbnails { justify-content: flex-start; }
+
+  /* 모바일 슬라이더 세로 배치 */
+  .dual-slider-wrap { grid-template-columns: 1fr; gap: 60px; }
+  .s-arrow { opacity: 1; width: 36px; height: 36px; font-size: 14px; }
+  .s-arrow.prev { left: 8px; }
+  .s-arrow.next { right: 8px; }
+  .s-thumb { width: 70px; }
 }
 </style>
 </head>
@@ -440,35 +449,89 @@ document.getElementById('about-body').textContent = DATA.about.body;
 document.getElementById('about-exp').innerHTML = DATA.about.experience.map(e => `<div class="exp-row"><div class="exp-yr">${esc(e.period)}</div><div><div class="exp-role">${esc(e.role)}</div><div class="exp-co">${esc(e.company)}</div><div style="font-size:14px; color:var(--fg-muted)">${esc(e.desc)}</div></div></div>`).join('');
 document.getElementById('contact-links').innerHTML = `<a href="mailto:${esc(DATA.site.email)}"><span>✉</span> ${esc(DATA.site.email)}</a>` + DATA.site.links.map(l => `<a href="${esc(l.href)}"><span>${l.icon}</span> ${esc(l.label)}</a>`).join('');
 
-let currentGalleryImages = [];
-let currentGalleryIdx = 0;
+/* ── 🔥 버그 수정된 자동 슬라이더 시스템 🔥 ── */
+let modalSliders = {};
 
-function updateGallery(idx) {
-  if(!currentGalleryImages || currentGalleryImages.length === 0) return;
-  currentGalleryIdx = idx;
-  
-  const mainImg = document.getElementById('gallery-main-img');
-  if(mainImg) {
-    mainImg.style.opacity = 0; 
-    setTimeout(() => {
-      mainImg.src = currentGalleryImages[currentGalleryIdx];
-      mainImg.style.opacity = 1; 
-    }, 200);
+function startAutoPlay(key) {
+  stopAutoPlay(key);
+  modalSliders[key].intervalId = setInterval(() => {
+    moveSlide(key, 1, false);
+  }, 3500); 
+}
+
+function stopAutoPlay(key) {
+  if(modalSliders[key] && modalSliders[key].intervalId) {
+    clearInterval(modalSliders[key].intervalId);
+    modalSliders[key].intervalId = null;
   }
+}
 
-  const thumbs = document.querySelectorAll('.gallery-thumb');
-  thumbs.forEach((thumb, i) => {
-    if(i === currentGalleryIdx) {
-      thumb.classList.add('active');
-      thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    } else {
-      thumb.classList.remove('active');
+function updateSlider(key, idx) {
+  const slider = modalSliders[key];
+  if(!slider) return;
+  slider.currentIndex = idx;
+  
+  // 1. 100% 꽉 찬 메인 슬라이드 이동
+  const track = document.getElementById(`track-${key}`);
+  if(track) {
+    track.style.transform = `translateX(-${idx * 100}%)`;
+  }
+  
+  // 2. 하단 썸네일 상태 연동 및 가로 스크롤만 이동 (세로 스크롤 튐 완벽 방지)
+  const thumbs = document.querySelectorAll(`.thumb-${key}`);
+  thumbs.forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+    if(i === idx) {
+      const container = t.parentElement;
+      const scrollPos = t.offsetLeft - (container.clientWidth / 2) + (t.clientWidth / 2);
+      container.scrollTo({ left: scrollPos, behavior: 'smooth' });
     }
   });
 }
 
-function prevGallerySlide() { updateGallery((currentGalleryIdx - 1 + currentGalleryImages.length) % currentGalleryImages.length); }
-function nextGallerySlide() { updateGallery((currentGalleryIdx + 1) % currentGalleryImages.length); }
+function setSlide(key, idx, isManual = false) {
+  updateSlider(key, idx);
+  if(isManual) startAutoPlay(key); 
+}
+
+function moveSlide(key, dir, isManual = false) {
+  const slider = modalSliders[key];
+  if(!slider) return;
+  let newIdx = (slider.currentIndex + dir + slider.images.length) % slider.images.length;
+  updateSlider(key, newIdx);
+  if(isManual) startAutoPlay(key);
+}
+
+function buildSliderHtml(key, title, images) {
+  let html = `<div class="slider-col">`;
+  if(title) html += `<div class="slider-header">${title}</div>`;
+  
+  html += `<div class="slider-wrapper" onmouseenter="stopAutoPlay('${key}')" onmouseleave="startAutoPlay('${key}')">`;
+  html += `<div class="slider-track" id="track-${key}">`;
+  
+  images.forEach((src, i) => {
+    html += `<div class="slide-item">
+               <img src="${src}">
+             </div>`;
+  });
+  html += `</div>`; // end track
+  
+  if(images.length > 1) {
+    html += `<button class="s-arrow prev" onclick="moveSlide('${key}', -1, true)">❮</button>`;
+    html += `<button class="s-arrow next" onclick="moveSlide('${key}', 1, true)">❯</button>`;
+  }
+  html += `</div>`; // end wrapper
+  
+  if(images.length > 1) {
+    html += `<div class="slider-thumbnails" id="thumbs-${key}">`;
+    images.forEach((src, i) => {
+      html += `<img src="${src}" class="s-thumb thumb-${key} ${i===0?'active':''}" onclick="setSlide('${key}', ${i}, true)">`;
+    });
+    html += `</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
 
 function openModal(type, index) {
   const data = type === 'portfolio' ? DATA.portfolio[index] : DATA.studies[index];
@@ -476,8 +539,6 @@ function openModal(type, index) {
   document.getElementById('modal-top-title').textContent = type === 'portfolio' ? 'PROJECT DETAILS' : 'STUDY DETAILS';
   
   let html = '';
-  
-  // 🔥 전체화면 모드에서 중앙 정렬을 보장하는 1200px 래퍼(Wrapper) 추가 🔥
   html += `<div style="width: 100%; max-width: 1200px; margin: 0 auto;">`;
   
   if (type === 'portfolio') {
@@ -531,26 +592,32 @@ function openModal(type, index) {
                </div>`;
     }
 
-    if (data.images && data.images.length > 0) {
-      currentGalleryImages = data.images;
-      currentGalleryIdx = 0;
-      let thumbsHtml = data.images.map((src, i) => 
-        `<img src="${src}" class="gallery-thumb ${i===0?'active':''}" onclick="updateGallery(${i})">`
-      ).join('');
-
-      html += `
-      <div class="m-section-title" style="margin-top: 0;">Gallery</div>
-      <div class="gallery-wrapper">
-        <div class="gallery-main-view">
-          ${currentGalleryImages.length > 1 ? `<button class="gallery-arrow prev" onclick="prevGallerySlide()">❮</button>` : ''}
-          <img src="${data.images[0]}" id="gallery-main-img" class="gallery-main-img">
-          ${currentGalleryImages.length > 1 ? `<button class="gallery-arrow next" onclick="nextGallerySlide()">❯</button>` : ''}
-        </div>
-        ${currentGalleryImages.length > 1 ? `<div class="gallery-thumbnails" id="gallery-thumbnails">${thumbsHtml}</div>` : ''}
-      </div>`;
+    modalSliders = {}; 
+    
+    if ((data.overviewImages && data.overviewImages.length > 0) || (data.processImages && data.processImages.length > 0)) {
+      html += `<div class="m-section-title" style="margin-top: 0;">Process Comparison</div>`;
+      html += `<div class="dual-slider-wrap">`;
+      
+      if(data.overviewImages && data.overviewImages.length > 0) {
+        modalSliders['overview'] = { images: data.overviewImages, currentIndex: 0, intervalId: null };
+        html += buildSliderHtml('overview', 'Overview', data.overviewImages);
+      }
+      if(data.processImages && data.processImages.length > 0) {
+        modalSliders['process'] = { images: data.processImages, currentIndex: 0, intervalId: null };
+        html += buildSliderHtml('process', '제작 과정', data.processImages);
+      }
+      html += `</div>`;
+    } 
+    else if (data.images && data.images.length > 0) {
+      html += `<div class="m-section-title" style="margin-top: 0;">DETAIL SCREENSHOTS</div>`;
+      html += `<div class="dual-slider-wrap" style="grid-template-columns: 1fr;">`;
+      modalSliders['single'] = { images: data.images, currentIndex: 0, intervalId: null };
+      html += buildSliderHtml('single', null, data.images);
+      html += `</div>`;
     }
 
   } else {
+    // 스터디 모달
     if (data.coverImage) {
       html += `<img src="${esc(data.coverImage)}" class="m-study-cover" alt="Cover">`;
     }
@@ -570,24 +637,30 @@ function openModal(type, index) {
     `;
   }
   
-  html += `</div>`; // 래퍼 닫기
+  html += `</div>`;
 
   modalBody.innerHTML = html;
   document.getElementById('modal-overlay').classList.add('active');
   document.getElementById('detail-modal').classList.add('active');
   document.getElementById('detail-modal').scrollTop = 0;
 
-  // 렉 방지 지연 렌더링
   setTimeout(() => {
     const ytContainer = document.getElementById('delayed-yt');
     if (ytContainer) ytContainer.innerHTML = `<iframe src="${ytContainer.dataset.src}" allowfullscreen></iframe>`;
-
     const pdfContainer = document.getElementById('delayed-pdf');
     if (pdfContainer) pdfContainer.innerHTML = `<iframe src="${pdfContainer.dataset.src}" title="PDF Viewer"></iframe>`;
-  }, 450); 
+
+    Object.keys(modalSliders).forEach(key => {
+      updateSlider(key, 0);
+      if(modalSliders[key].images.length > 1) {
+        startAutoPlay(key);
+      }
+    });
+  }, 400); 
 }
 
 function closeModal() {
+  Object.keys(modalSliders).forEach(key => stopAutoPlay(key));
   document.getElementById('modal-overlay').classList.remove('active');
   document.getElementById('detail-modal').classList.remove('active');
   document.getElementById('modal-body').innerHTML = ''; 

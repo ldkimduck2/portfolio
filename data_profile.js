@@ -13,12 +13,12 @@ const PROFILE_DATA = {
     headline: "Level Designer 김기덕", 
     desc: "Level Design Portfolio",
     heroImages: [
-      "img/LTD/01.png",
-      "img/LTD/03.png",
-      "img/NC/07.png",
-      "img/NC/05.png",
-      "img/LD/01.png",
-      "img/LD/02.png"
+      "img/LTD/ov/01.png",
+      "img/LTD/ov/03.png",
+      "img/NC/ov/07.png",
+      "img/NC/ov/05.png",
+      "img/LD/ov/01.png",
+      "img/LD/ov/02.png"
     ]
   },
   about: {
