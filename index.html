@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>포트폴리오</title>
+<title>김기덕 레벨디자인 포트폴리오</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
 /* ── 스타일(CSS) 영역 ── */
@@ -119,64 +119,82 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-i
 
 .game-stats { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .stat-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--fg-main); white-space: nowrap; }
-/* 🔥 완료 상태와 진행 중 상태의 뱃지 색상 분리 🔥 */
 .stat-badge.hi { border-color: var(--accent); color: var(--accent); background: rgba(224,48,48,0.05); }
 .stat-badge.done { border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.05); }
 
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 200; opacity: 0; visibility: hidden; transition: opacity 0.4s ease; }
-.modal-overlay.active { opacity: 1; visibility: visible; }
-.modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -45%); width: 95%; max-width: 1100px; height: 92vh; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; z-index: 201; opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
-.modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%); }
-.modal-header { padding: 24px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(var(--bg), 0.95); z-index: 10; }
-.modal-header-title { font-size: 14px; font-weight: 700; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.1em; }
-.modal-close { font-size: 14px; font-weight: 600; color: var(--fg-muted); transition: color 0.2s; display: flex; align-items: center; gap: 6px; padding: 8px 20px; background: var(--bg-sub); border-radius: 30px; border: 1px solid var(--border); }
-.modal-close:hover { color: var(--fg-main); border-color: var(--fg-main); }
-.modal-body { padding: 80px; overflow-y: auto; flex: 1; scroll-behavior: smooth; }
+/* ── 🔥 새로운 전체화면(Full Screen) 모달 디자인 🔥 ── */
+.modal-overlay { display: none; /* 전체화면이라 배경 오버레이는 필요 없음 */ }
 
+/* 모달 자체가 꽉 차게 100vw, 100vh로 설정됨 */
+.modal { position: fixed; inset: 0; width: 100vw; max-width: none; height: 100vh; background: var(--bg); border: none; border-radius: 0; z-index: 201; opacity: 0; visibility: hidden; transform: translateY(40px); transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1); display: flex; flex-direction: column; overflow: hidden; box-shadow: none; }
+.modal.active { opacity: 1; visibility: visible; transform: translateY(0); }
+
+/* 모달 헤더 중앙 정렬 및 닫기 버튼 강조 */
+.modal-header { padding: 0 5%; height: 80px; border-bottom: 1px solid var(--border); display: flex; justify-content: center; align-items: center; background: rgba(var(--bg), 0.98); z-index: 10; }
+.modal-close { font-size: 15px; font-weight: 700; background: var(--fg-main); color: var(--bg); padding: 10px 28px; border-radius: 30px; border: none; transition: all 0.2s; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
+[data-theme="light"] .modal-close { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.modal-close:hover { transform: translateY(-2px); background: var(--accent); color: white; box-shadow: 0 8px 20px rgba(224,48,48,0.3); }
+
+/* 모달 내부 패딩 (좌우 여백 넉넉하게) */
+.modal-body { padding: 80px 5% 120px; overflow-y: auto; flex: 1; scroll-behavior: smooth; }
+
+/* 렉 방지용 로더 */
+.delay-loader { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: var(--bg-sub); color: var(--fg-muted); font-size: 14px; font-weight: 600; animation: pulse 1.5s infinite ease-in-out; border-radius: inherit; }
+@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+/* 가독성 업그레이드 (글자 크기 및 1200px 캔버스 적용) */
 .m-article-header { margin-bottom: 80px; text-align: left; }
-.m-article-title { font-size: 48px; font-weight: 900; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 24px; color: var(--fg-main); word-break: keep-all; }
-.m-article-desc { font-size: 18px; color: var(--fg-muted); line-height: 1.8; max-width: 800px; word-break: keep-all; }
-.m-section-title { text-align: left; font-size: 28px; font-weight: 900; letter-spacing: -0.02em; margin: 100px 0 40px; color: var(--fg-main); padding-bottom: 20px; border-bottom: 2px solid var(--fg-main); display: inline-block; }
+.m-article-title { font-size: 56px; font-weight: 900; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 24px; color: var(--fg-main); word-break: keep-all; }
+.m-article-desc { font-size: 20px; color: var(--fg-muted); line-height: 1.8; max-width: 900px; word-break: keep-all; }
+.m-section-title { text-align: left; font-size: 32px; font-weight: 900; letter-spacing: -0.02em; margin: 100px auto 40px auto; width: 100%; color: var(--fg-main); padding-bottom: 20px; border-bottom: 2px solid var(--fg-main); display: block; }
+
 .m-ed-wrap { margin-bottom: 80px; }
 .m-ed-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; text-align: left; }
 .m-ed-divider { height: 1px; background: var(--border); margin: 60px 0; opacity: 0.5; }
-.m-ed-label { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.m-ed-label { font-size: 14px; font-weight: 800; color: var(--accent); letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 .m-ed-label::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
-.m-ed-value { font-size: 22px; font-weight: 800; color: var(--fg-main); line-height: 1.4; word-break: keep-all; }
-.m-ed-sub { display: block; font-size: 13px; color: var(--fg-muted); font-weight: 500; margin-top: 8px; }
+.m-ed-value { font-size: 24px; font-weight: 800; color: var(--fg-main); line-height: 1.4; word-break: keep-all; }
+.m-ed-sub { display: block; font-size: 14px; color: var(--fg-muted); font-weight: 500; margin-top: 8px; }
 .m-ed-desc { font-size: 16px; color: var(--fg-muted); line-height: 1.8; word-break: keep-all; }
-.m-pdf-wrap { width: 100%; height: 800px; border-radius: 20px; overflow: hidden; margin-bottom: 80px; background: #222; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid var(--border); }
-.m-pdf-wrap iframe { width: 100%; height: 100%; border: none; }
-.m-slider-container { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-.m-slides { display: flex; height: 100%; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
-.m-slide { min-width: 100%; height: 100%; object-fit: cover; }
-.m-slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); color: white; border: 1px solid rgba(255,255,255,0.1); width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 18px; z-index: 10; transition: all 0.3s; }
-.m-slider-btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-50%) scale(1.1); }
-.m-slider-prev { left: 24px; }
-.m-slider-next { right: 24px; }
-.m-slider-dots { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 10; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(4px); }
-.m-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s; }
-.m-dot.active { background: white; transform: scale(1.3); }
 
-/* 스터디 모달 전용 노션 스타일 CSS */
-.m-study-cover { width: 100%; height: 300px; object-fit: cover; border-radius: 16px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+/* PDF 뷰어 높이 확장 */
+.m-pdf-wrap { width: 100%; height: 900px; border-radius: 20px; overflow: hidden; margin-bottom: 80px; background: #222; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid var(--border); position: relative; }
+.m-pdf-wrap iframe { width: 100%; height: 100%; border: none; position: absolute; top:0; left:0; }
+
+/* 갤러리 슬라이드 둥근 모서리 및 세련된 디자인 유지 */
+.gallery-section-title { font-size: 15px; font-weight: 800; color: var(--fg-muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 32px; }
+.gallery-wrapper { width: 100%; display: flex; flex-direction: column; gap: 24px; margin-bottom: 80px; }
+.gallery-main-view { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 24px; overflow: hidden; background: #000; box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+.gallery-main-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s ease; }
+.gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 56px; height: 56px; background: rgba(var(--bg), 0.8); border: 1px solid var(--border); color: var(--fg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: all 0.2s; font-size: 20px; backdrop-filter: blur(4px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.gallery-arrow:hover { background: var(--fg-main); color: var(--bg); transform: translateY(-50%) scale(1.1); }
+.gallery-arrow.prev { left: 32px; }
+.gallery-arrow.next { right: 32px; }
+.gallery-thumbnails { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px; scroll-behavior: smooth; justify-content: center; }
+.gallery-thumbnails::-webkit-scrollbar { height: 6px; }
+.gallery-thumbnails::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.gallery-thumb { width: 140px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; cursor: pointer; opacity: 0.4; transition: all 0.3s; border: 2px solid transparent; flex-shrink: 0; }
+.gallery-thumb:hover { opacity: 0.8; }
+.gallery-thumb.active { opacity: 1; border-color: var(--accent); transform: scale(1.05); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+
+/* 스터디 모달 전용 노션 스타일 CSS 폰트 확장 */
+.m-study-cover { width: 100%; height: 400px; object-fit: cover; border-radius: 24px; margin-bottom: 60px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
 .m-study-header { border-bottom: 1px solid var(--border); padding-bottom: 40px; margin-bottom: 40px; }
-.m-study-meta { display: flex; gap: 12px; font-size: 13px; color: var(--fg-muted); margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; align-items: center; }
-.m-study-title { font-size: 40px; font-weight: 900; line-height: 1.3; color: var(--fg-main); margin-bottom: 16px; word-break: keep-all; letter-spacing: -0.02em; }
-.m-study-desc { font-size: 18px; color: var(--fg-muted); line-height: 1.6; }
-.m-study-content { font-size: 16px; color: var(--fg-main); line-height: 1.8; }
-.m-study-quote { font-size: 20px; font-style: italic; font-weight: 700; color: var(--fg-muted); border-left: 4px solid var(--accent); padding-left: 24px; margin: 40px 0; word-break: keep-all; }
-.m-study-h3 { font-size: 24px; font-weight: 800; margin: 48px 0 20px; color: var(--fg-main); letter-spacing: -0.02em; }
+.m-study-meta { display: flex; gap: 12px; font-size: 14px; color: var(--fg-muted); margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; align-items: center; }
+.m-study-title { font-size: 48px; font-weight: 900; line-height: 1.3; color: var(--fg-main); margin-bottom: 24px; word-break: keep-all; letter-spacing: -0.02em; }
+.m-study-desc { font-size: 20px; color: var(--fg-muted); line-height: 1.6; }
+.m-study-content { font-size: 18px; color: var(--fg-main); line-height: 1.8; }
+.m-study-quote { font-size: 22px; font-style: italic; font-weight: 700; color: var(--fg-muted); border-left: 4px solid var(--accent); padding-left: 32px; margin: 48px 0; word-break: keep-all; }
+.m-study-h3 { font-size: 28px; font-weight: 800; margin: 60px 0 24px; color: var(--fg-main); letter-spacing: -0.02em; }
 .m-study-p { margin-bottom: 24px; color: var(--fg-muted); word-break: keep-all; }
-.m-study-img { width: 100%; border-radius: 12px; margin: 32px 0 12px; border: 1px solid var(--border); }
-.m-study-caption { display: block; text-align: center; font-size: 13px; color: var(--fg-muted); margin-bottom: 40px; }
-.m-study-list { margin: 0 0 32px 24px; color: var(--fg-muted); }
-.m-study-list li { margin-bottom: 12px; padding-left: 8px; }
+.m-study-img { width: 100%; border-radius: 16px; margin: 40px 0 16px; border: 1px solid var(--border); }
+.m-study-caption { display: block; text-align: center; font-size: 14px; color: var(--fg-muted); margin-bottom: 48px; }
+.m-study-list { margin: 0 0 40px 32px; color: var(--fg-muted); }
+.m-study-list li { margin-bottom: 16px; padding-left: 8px; }
 .m-study-list strong { color: var(--fg-main); }
-.m-study-callout { background: var(--bg-sub); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 40px 0; display: flex; gap: 16px; align-items: flex-start; }
-.m-study-callout-icon { font-size: 24px; line-height: 1; }
-.m-study-callout-text { color: var(--fg-muted); font-size: 15px; line-height: 1.6; }
+.m-study-callout { background: var(--bg-sub); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 48px 0; display: flex; gap: 20px; align-items: flex-start; }
+.m-study-callout-icon { font-size: 28px; line-height: 1; }
+.m-study-callout-text { color: var(--fg-muted); font-size: 16px; line-height: 1.6; }
 
 @media(max-width: 768px) {
   .hamburger { display: flex; } 
@@ -192,19 +210,20 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-i
   .study-thumb-wrap { width: 100%; }
   .study-info { padding-right: 0; }
   .study-card::after { right: 20px; bottom: 20px; }
-  .modal { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; transform: translate(-50%, -45%); }
-  .modal.active { transform: translate(-50%, -50%); }
-  .modal-header { padding: 16px 20px; }
+  
+  /* 모바일 모달 여백 축소 */
+  .modal-header { padding: 0 20px; }
   .modal-body { padding: 40px 24px; }
-  .m-article-title { font-size: 32px; }
-  .m-section-title { font-size: 24px; margin: 60px 0 30px; }
+  .m-article-title { font-size: 36px; }
+  .m-section-title { font-size: 24px; margin: 60px auto 30px auto; }
   .m-ed-row { grid-template-columns: 1fr; gap: 40px; }
   .m-pdf-wrap { height: 500px; margin-bottom: 40px; }
-  .m-slider-btn { width: 40px; height: 40px; }
-  .m-slider-prev { left: 16px; }
-  .m-slider-next { right: 16px; }
-  .m-study-title { font-size: 28px; }
-  .m-study-cover { height: 200px; }
+  .gallery-arrow { width: 40px; height: 40px; font-size: 14px; }
+  .gallery-arrow.prev { left: 12px; }
+  .gallery-arrow.next { right: 12px; }
+  .m-study-title { font-size: 32px; }
+  .m-study-cover { height: 200px; border-radius: 12px; margin-bottom: 30px; }
+  .gallery-thumbnails { justify-content: flex-start; }
 }
 </style>
 </head>
@@ -216,7 +235,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-i
 <script src="data_games.js"></script>
 
 <script>
-// 데이터 병합
 const DATA = {
   site: PROFILE_DATA.site,
   landing: PROFILE_DATA.landing,
@@ -244,8 +262,10 @@ const DATA = {
 <div id="modal-overlay" class="modal-overlay" onclick="closeModal()"></div>
 <div id="detail-modal" class="modal">
   <div class="modal-header">
-    <div class="modal-header-title" id="modal-top-title">PORTFOLIO</div>
-    <button class="modal-close" onclick="closeModal()">✕ 닫기</button>
+    <div style="width: 100%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center;">
+      <div class="modal-header-title" id="modal-top-title" style="font-size: 16px; font-weight: 800; letter-spacing: 0.15em;">PORTFOLIO</div>
+      <button class="modal-close" onclick="closeModal()">✕ 돌아가기</button>
+    </div>
   </div>
   <div class="modal-body" id="modal-body"></div>
 </div>
@@ -348,7 +368,6 @@ document.getElementById('study-list').innerHTML = DATA.studies.map((s, index) =>
   `;
 }).join('');
 
-// 🔥 게임 상태(진행 중, 완료)에 따른 뱃지 자동 설정 로직 🔥
 function createGameItemHTML(g) {
   const imgContent = g.image ? `<img src="${esc(g.image)}" alt="${esc(g.title)}" loading="lazy">` : `<div style="font-size:12px; color:var(--fg-muted);">No Image</div>`; 
   const displayPlaytime = g.playtimeText ? esc(g.playtimeText) : `${g.playtime}시간`;
@@ -356,15 +375,8 @@ function createGameItemHTML(g) {
 
   let statusIcon = "🎯";
   let statusClass = "";
-  
-  // 상태 텍스트에 따라 색상과 아이콘을 자동으로 판별합니다.
-  if (g.status.includes("완료")) {
-    statusIcon = "✅";
-    statusClass = "done"; // 초록색 계열 클래스
-  } else if (g.status.includes("진행") || g.status.includes("플레이")) {
-    statusIcon = "🔥";
-    statusClass = "hi"; // 빨간색 계열 클래스
-  }
+  if (g.status.includes("완료")) { statusIcon = "✅"; statusClass = "done"; } 
+  else if (g.status.includes("진행") || g.status.includes("플레이")) { statusIcon = "🔥"; statusClass = "hi"; }
 
   return `
     <div class="game-item">
@@ -387,9 +399,7 @@ function renderGames(filterType) {
   const buttons = document.querySelectorAll('#game-filter-wrap .filter-btn');
   buttons.forEach(btn => btn.classList.remove('active'));
   const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(filterType));
-  if (targetBtn) {
-    targetBtn.classList.add('active');
-  }
+  if (targetBtn) { targetBtn.classList.add('active'); }
 
   const container = document.getElementById('game-list');
   let html = '';
@@ -422,7 +432,6 @@ function renderGames(filterType) {
   }
   container.innerHTML = html;
 }
-
 renderGames('latest');
 
 const leadHtml = esc(DATA.about.lead).replace(esc(DATA.about.leadMark), `<mark>${esc(DATA.about.leadMark)}</mark>`);
@@ -431,17 +440,35 @@ document.getElementById('about-body').textContent = DATA.about.body;
 document.getElementById('about-exp').innerHTML = DATA.about.experience.map(e => `<div class="exp-row"><div class="exp-yr">${esc(e.period)}</div><div><div class="exp-role">${esc(e.role)}</div><div class="exp-co">${esc(e.company)}</div><div style="font-size:14px; color:var(--fg-muted)">${esc(e.desc)}</div></div></div>`).join('');
 document.getElementById('contact-links').innerHTML = `<a href="mailto:${esc(DATA.site.email)}"><span>✉</span> ${esc(DATA.site.email)}</a>` + DATA.site.links.map(l => `<a href="${esc(l.href)}"><span>${l.icon}</span> ${esc(l.label)}</a>`).join('');
 
-let currentModalSlide = 0; 
-let totalModalSlides = 0;
+let currentGalleryImages = [];
+let currentGalleryIdx = 0;
 
-function moveSlide(direction) {
-  if(totalModalSlides === 0) return;
-  currentModalSlide = (currentModalSlide + direction + totalModalSlides) % totalModalSlides;
-  document.getElementById('m-slide-track').style.transform = `translateX(-${currentModalSlide * 100}%)`;
-  document.querySelectorAll('.m-dot').forEach((dot, idx) => {
-    dot.classList.toggle('active', idx === currentModalSlide);
+function updateGallery(idx) {
+  if(!currentGalleryImages || currentGalleryImages.length === 0) return;
+  currentGalleryIdx = idx;
+  
+  const mainImg = document.getElementById('gallery-main-img');
+  if(mainImg) {
+    mainImg.style.opacity = 0; 
+    setTimeout(() => {
+      mainImg.src = currentGalleryImages[currentGalleryIdx];
+      mainImg.style.opacity = 1; 
+    }, 200);
+  }
+
+  const thumbs = document.querySelectorAll('.gallery-thumb');
+  thumbs.forEach((thumb, i) => {
+    if(i === currentGalleryIdx) {
+      thumb.classList.add('active');
+      thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    } else {
+      thumb.classList.remove('active');
+    }
   });
 }
+
+function prevGallerySlide() { updateGallery((currentGalleryIdx - 1 + currentGalleryImages.length) % currentGalleryImages.length); }
+function nextGallerySlide() { updateGallery((currentGalleryIdx + 1) % currentGalleryImages.length); }
 
 function openModal(type, index) {
   const data = type === 'portfolio' ? DATA.portfolio[index] : DATA.studies[index];
@@ -450,8 +477,11 @@ function openModal(type, index) {
   
   let html = '';
   
+  // 🔥 전체화면 모드에서 중앙 정렬을 보장하는 1200px 래퍼(Wrapper) 추가 🔥
+  html += `<div style="width: 100%; max-width: 1200px; margin: 0 auto;">`;
+  
   if (type === 'portfolio') {
-    const dateHtmlModal = data.date ? `<div style="font-size:15px; color:var(--accent); font-weight:700; margin-bottom:16px; letter-spacing:0.05em;">🗓️ ${esc(data.date)}</div>` : '';
+    const dateHtmlModal = data.date ? `<div style="font-size:16px; color:var(--accent); font-weight:700; margin-bottom:20px; letter-spacing:0.05em;">🗓️ ${esc(data.date)}</div>` : '';
         
     html += `
       <div class="m-article-header">
@@ -464,7 +494,9 @@ function openModal(type, index) {
 
     if (data.youtubeId) {
       html += `<div class="m-section-title" style="margin-top: 0;">Play Video</div>`;
-      html += `<div class="video-wrap" style="margin-bottom: 80px;"><iframe src="https://www.youtube.com/embed/${data.youtubeId}" allowfullscreen></iframe></div>`;
+      html += `<div class="video-wrap delay-iframe" id="delayed-yt" data-src="https://www.youtube.com/embed/${data.youtubeId}" style="margin-bottom: 80px;">
+                 <div class="delay-loader">영상을 불러오는 중입니다...</div>
+               </div>`;
     }
 
     if (data.meta) {
@@ -494,25 +526,30 @@ function openModal(type, index) {
          viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(viewerUrl)}&embedded=true`;
       }
       html += `<div class="m-section-title" style="margin-top: 0;">Full Document</div>`;
-      html += `<div class="m-pdf-wrap"><iframe src="${viewerUrl}" title="PDF Viewer"></iframe></div>`;
+      html += `<div class="m-pdf-wrap delay-iframe" id="delayed-pdf" data-src="${viewerUrl}">
+                 <div class="delay-loader">문서를 불러오는 중입니다...</div>
+               </div>`;
     }
 
     if (data.images && data.images.length > 0) {
-      totalModalSlides = data.images.length;
-      currentModalSlide = 0;
-      let slidesHtml = data.images.map(src => `<img src="${src}" class="m-slide">`).join('');
-      let dotsHtml = data.images.map((_, i) => `<div class="m-dot ${i===0?'active':''}" onclick="currentModalSlide=${i-1}; moveSlide(1)"></div>`).join('');
+      currentGalleryImages = data.images;
+      currentGalleryIdx = 0;
+      let thumbsHtml = data.images.map((src, i) => 
+        `<img src="${src}" class="gallery-thumb ${i===0?'active':''}" onclick="updateGallery(${i})">`
+      ).join('');
+
       html += `
       <div class="m-section-title" style="margin-top: 0;">Gallery</div>
-      <div class="m-slider-container">
-        <div class="m-slides" id="m-slide-track">${slidesHtml}</div>
-        ${totalModalSlides > 1 ? `
-        <button class="m-slider-btn m-slider-prev" onclick="moveSlide(-1)">❮</button>
-        <button class="m-slider-btn m-slider-next" onclick="moveSlide(1)">❯</button>
-        <div class="m-slider-dots">${dotsHtml}</div>
-        ` : ''}
+      <div class="gallery-wrapper">
+        <div class="gallery-main-view">
+          ${currentGalleryImages.length > 1 ? `<button class="gallery-arrow prev" onclick="prevGallerySlide()">❮</button>` : ''}
+          <img src="${data.images[0]}" id="gallery-main-img" class="gallery-main-img">
+          ${currentGalleryImages.length > 1 ? `<button class="gallery-arrow next" onclick="nextGallerySlide()">❯</button>` : ''}
+        </div>
+        ${currentGalleryImages.length > 1 ? `<div class="gallery-thumbnails" id="gallery-thumbnails">${thumbsHtml}</div>` : ''}
       </div>`;
     }
+
   } else {
     if (data.coverImage) {
       html += `<img src="${esc(data.coverImage)}" class="m-study-cover" alt="Cover">`;
@@ -533,10 +570,21 @@ function openModal(type, index) {
     `;
   }
   
+  html += `</div>`; // 래퍼 닫기
+
   modalBody.innerHTML = html;
   document.getElementById('modal-overlay').classList.add('active');
   document.getElementById('detail-modal').classList.add('active');
   document.getElementById('detail-modal').scrollTop = 0;
+
+  // 렉 방지 지연 렌더링
+  setTimeout(() => {
+    const ytContainer = document.getElementById('delayed-yt');
+    if (ytContainer) ytContainer.innerHTML = `<iframe src="${ytContainer.dataset.src}" allowfullscreen></iframe>`;
+
+    const pdfContainer = document.getElementById('delayed-pdf');
+    if (pdfContainer) pdfContainer.innerHTML = `<iframe src="${pdfContainer.dataset.src}" title="PDF Viewer"></iframe>`;
+  }, 450); 
 }
 
 function closeModal() {

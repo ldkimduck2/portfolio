@@ -10,11 +10,14 @@ const PROFILE_DATA = {
     ],
   },
   landing: {
-    headline: "Level Design Workspace", 
-    desc: "lorem Inpsum",
+    headline: "Level Designer 김기덕", 
+    desc: "Level Design Portfolio",
     heroImages: [
-      "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=2000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1542382257-80da9fb9f5abc?q=80&w=2000&auto=format&fit=crop"
+      "img/LTD/01.png",
+      "img/LTD/03.png",
+      "img/novaCORE/07.png",
+      "img/novaCORE/05.png",
+      "img/Leador/01.png"
     ]
   },
   about: {

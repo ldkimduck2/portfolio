@@ -17,7 +17,9 @@ const PORTFOLIO_DATA = [
     },
     images: [
       "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=1200&auto=format&fit=crop"
+      "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg",
+      "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg",
+      "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg"
     ]
   },
   {
@@ -38,7 +40,9 @@ const PORTFOLIO_DATA = [
     },
     images: [
       "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=1200&auto=format&fit=crop"
+      "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg",
+      "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg",
+      "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg"
     ]
   },
   {
@@ -59,7 +63,9 @@ const PORTFOLIO_DATA = [
     },
     images: [
       "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=1200&auto=format&fit=crop"
+      "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg",
+      "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg",
+      "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg"
     ]
   }
 ];
