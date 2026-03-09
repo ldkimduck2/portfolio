@@ -116,9 +116,12 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-i
 .game-title { font-weight: 800; font-size: 20px; margin-bottom: 6px; letter-spacing: -0.02em; word-break: keep-all; line-height: 1.3; }
 .game-studio { font-size: 13px; color: var(--fg-muted); font-weight: 500; margin-bottom: 16px; line-height: 1.4; word-break: keep-all; }
 .game-studio span.sep { margin: 0 6px; opacity: 0.3; }
+
 .game-stats { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .stat-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--fg-main); white-space: nowrap; }
+/* 🔥 완료 상태와 진행 중 상태의 뱃지 색상 분리 🔥 */
 .stat-badge.hi { border-color: var(--accent); color: var(--accent); background: rgba(224,48,48,0.05); }
+.stat-badge.done { border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.05); }
 
 /* MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 200; opacity: 0; visibility: hidden; transition: opacity 0.4s ease; }
@@ -272,8 +275,8 @@ const DATA = {
       <div class="game-filter-wrap" id="game-filter-wrap">
         <button class="filter-btn active" onclick="renderGames('latest')">최신발매순</button>
         <button class="filter-btn" onclick="renderGames('playtime')">플레이타임 긴 순</button>
-        <button class="filter-btn" onclick="renderGames('developer')">개발사 묶어보기</button>
         <button class="filter-btn" onclick="renderGames('genre')">장르 묶어보기</button>
+        <button class="filter-btn" onclick="renderGames('developer')">개발사 묶어보기</button>
         <button class="filter-btn" onclick="renderGames('platform')">플랫폼 묶어보기</button>
       </div>
       <div class="game-list" id="game-list"></div>
@@ -345,10 +348,23 @@ document.getElementById('study-list').innerHTML = DATA.studies.map((s, index) =>
   `;
 }).join('');
 
+// 🔥 게임 상태(진행 중, 완료)에 따른 뱃지 자동 설정 로직 🔥
 function createGameItemHTML(g) {
   const imgContent = g.image ? `<img src="${esc(g.image)}" alt="${esc(g.title)}" loading="lazy">` : `<div style="font-size:12px; color:var(--fg-muted);">No Image</div>`; 
   const displayPlaytime = g.playtimeText ? esc(g.playtimeText) : `${g.playtime}시간`;
-  const displayYear = g.releaseYear ? `<span class="stat-badge">📅 ${g.releaseYear}년</span>` : '';
+  const displayYear = g.releaseDate ? `<span class="stat-badge">📅 ${esc(g.releaseDate)}</span>` : '';
+
+  let statusIcon = "🎯";
+  let statusClass = "";
+  
+  // 상태 텍스트에 따라 색상과 아이콘을 자동으로 판별합니다.
+  if (g.status.includes("완료")) {
+    statusIcon = "✅";
+    statusClass = "done"; // 초록색 계열 클래스
+  } else if (g.status.includes("진행") || g.status.includes("플레이")) {
+    statusIcon = "🔥";
+    statusClass = "hi"; // 빨간색 계열 클래스
+  }
 
   return `
     <div class="game-item">
@@ -357,7 +373,7 @@ function createGameItemHTML(g) {
         <h3 class="game-title">${esc(g.title)}</h3>
         <div class="game-studio">${esc(g.developer)} <span class="sep">/</span> ${esc(g.genre)} <span class="sep">/</span> ${esc(g.platform)}</div>
         <div class="game-stats">
-          <span class="stat-badge hi">🎯 ${esc(g.status)}</span>
+          <span class="stat-badge ${statusClass}">${statusIcon} ${esc(g.status)}</span>
           ${displayYear}
           <span class="stat-badge">⏱ ${displayPlaytime}</span>
         </div>
@@ -367,14 +383,9 @@ function createGameItemHTML(g) {
   `;
 }
 
-// 🔥 버튼 클릭(활성화) 버그 수정된 버전 🔥
 function renderGames(filterType) {
   const buttons = document.querySelectorAll('#game-filter-wrap .filter-btn');
-  
-  // 1. 모든 버튼에서 불을 끕니다.
   buttons.forEach(btn => btn.classList.remove('active'));
-  
-  // 2. 현재 선택된 필터에 맞는 버튼을 찾아 불을 켭니다.
   const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(filterType));
   if (targetBtn) {
     targetBtn.classList.add('active');
@@ -385,7 +396,7 @@ function renderGames(filterType) {
   let games = [...DATA.games];
 
   if (filterType === 'latest') {
-    games.sort((a, b) => (b.releaseYear || 0) - (a.releaseYear || 0));
+    games.sort((a, b) => (b.releaseDate || "").localeCompare(a.releaseDate || ""));
     html = games.map(g => createGameItemHTML(g)).join('');
   }
   else if (filterType === 'playtime') {
@@ -401,16 +412,17 @@ function renderGames(filterType) {
     });
     Object.keys(groups).sort().forEach(groupName => {
       html += `<div class="game-group-title">${esc(groupName)}</div>`;
-      groups[groupName].sort((a, b) => (b.releaseYear || 0) - (a.releaseYear || 0));
+      groups[groupName].sort((a, b) => (b.releaseDate || "").localeCompare(a.releaseDate || ""));
       html += groups[groupName].map(g => createGameItemHTML(g)).join('');
     });
   } 
   else {
-    games.sort((a, b) => (b.releaseYear || 0) - (a.releaseYear || 0));
+    games.sort((a, b) => (b.releaseDate || "").localeCompare(a.releaseDate || ""));
     html = games.map(g => createGameItemHTML(g)).join('');
   }
   container.innerHTML = html;
 }
+
 renderGames('latest');
 
 const leadHtml = esc(DATA.about.lead).replace(esc(DATA.about.leadMark), `<mark>${esc(DATA.about.leadMark)}</mark>`);

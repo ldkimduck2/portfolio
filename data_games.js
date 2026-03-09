@@ -1,12 +1,34 @@
 const GAMES_DATA = [
   {
+    title: "Escape Simulator 2",
+    developer: "Pine Studio",
+    genre: "퍼즐 / 방탈출",
+    platform: "PC",
+    status: "완료",
+    releaseDate: "2025. 10",
+    playtime: 22,
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2879840/f1f548311fadd53263adca4647e380eaa75588c6/header.jpg?t=1771227525",
+    tags: ["!협동 퍼즐", "두뇌"]
+  },
+  {
+    title: "Rematch",
+    developer: "Sloclap",
+    genre: "스포츠 / 레이싱",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2025. 06",
+    playtime: 14,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2138720/header.jpg",
+    tags: ["!축구", "멀티플레이"]
+  },
+  {
     title: "Clair Obscur : Expedition 33",
     developer: "Sandfall Interactive",
     genre: "턴제 RPG",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2025,
-    playtime: 49,
+    releaseDate: "2025. 04",
+    playtime: 49.4,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1903340/header.jpg",
     tags: ["!턴제 전투", "스토리 중심"]
   },
@@ -16,21 +38,10 @@ const GAMES_DATA = [
     genre: "슈팅 (FPS / TPS)",
     platform: "PC",
     status: "완료",
-    releaseYear: 2024,
+    releaseDate: "2024. 08",
     playtime: 16.4,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1422450/header.jpg",
     tags: ["!MOBA", "히어로 슈팅", "멀티플레이"]
-  },
-  {
-    title: "Escape Simulator 2",
-    developer: "Pine Studio",
-    genre: "퍼즐 / 플랫포머",
-    platform: "PC",
-    status: "완료",
-    releaseYear: 2024,
-    playtime: 22,
-    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2879840/f1f548311fadd53263adca4647e380eaa75588c6/header.jpg?t=1771227525",
-    tags: ["!방탈출", "협동 퍼즐", "두뇌"]
   },
   {
     title: "Counter Strike 2",
@@ -38,7 +49,7 @@ const GAMES_DATA = [
     genre: "슈팅 (FPS / TPS)",
     platform: "PC",
     status: "완료",
-    releaseYear: 2023,
+    releaseDate: "2023. 09",
     playtime: 179,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/730/header.jpg",
     tags: ["!전술 FPS", "팀워크"]
@@ -49,7 +60,7 @@ const GAMES_DATA = [
     genre: "턴제 RPG",
     platform: "Console / PC",
     status: "진행 중",
-    releaseYear: 2023,
+    releaseDate: "2023. 08",
     playtime: 8,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1086940/header.jpg",
     tags: ["!명작", "선택과 결과"]
@@ -60,21 +71,21 @@ const GAMES_DATA = [
     genre: "생존 / 크래프팅",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2023,
+    releaseDate: "2023. 02",
     playtime: 12,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1326470/header.jpg",
-    tags: ["!오픈월드", "크래프팅", "식인종"]
+    tags: ["!오픈월드", "식인종"]
   },
   {
-    title: "Rematch",
-    developer: "Sloclap",
-    genre: "스포츠 / 레이싱",
-    platform: "Console / PC",
+    title: "Escape the Backrooms",
+    developer: "Triiodide Studios",
+    genre: "공포 / 스릴러",
+    platform: "PC",
     status: "완료",
-    releaseYear: 2023,
-    playtime: 14,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/2138720/header.jpg",
-    tags: ["!축구", "멀티플레이"]
+    releaseDate: "2022. 10",
+    playtime: 5,
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1943950/c5ecb6ccafea6eb86d1ab6413f452eb07dcee27f/header.jpg?t=1770899498",
+    tags: ["!심리적 공포", "협동"]
   },
   {
     title: "Elden Ring",
@@ -82,8 +93,8 @@ const GAMES_DATA = [
     genre: "액션 RPG",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2022,
-    playtime: 20.9,
+    releaseDate: "2022. 02",
+    playtime: 79.2,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg",
     tags: ["!오픈월드", "다크 판타지", "소울라이크"]
   },
@@ -93,7 +104,7 @@ const GAMES_DATA = [
     genre: "액션 어드벤처",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2022,
+    releaseDate: "2022. 02",
     playtime: 12,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg",
     tags: ["!좀비 아포칼립스", "파쿠르"]
@@ -103,8 +114,8 @@ const GAMES_DATA = [
     developer: "Sloclap",
     genre: "액션 어드벤처",
     platform: "Console / PC",
-    status: "플레이중",
-    releaseYear: 2022,
+    status: "완료",
+    releaseDate: "2022. 02",
     playtime: 9,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2138710/header.jpg",
     tags: ["!무술 액션", "다회차"]
@@ -115,32 +126,21 @@ const GAMES_DATA = [
     genre: "로그라이크 / 아케이드",
     platform: "Console / PC / Mobile",
     status: "완료",
-    releaseYear: 2022,
+    releaseDate: "2021. 12",
     playtime: 17,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1794680/header.jpg",
     tags: ["!탄막", "타임킬러", "도트 그래픽"]
   },
   {
-    title: "Backrooms: Escape Together",
-    developer: "Triiodide Studios",
-    genre: "공포 / 스릴러",
-    platform: "PC",
+    title: "Goose Goose Duck",
+    developer: "Gaggle Studios Inc.",
+    genre: "파티 / 마피아",
+    platform: "PC / Mobile",
     status: "완료",
-    releaseYear: 2022,
-    playtime: 5,
-    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1943950/c5ecb6ccafea6eb86d1ab6413f452eb07dcee27f/header.jpg?t=1770899498",
-    tags: ["!심리적 공포", "협동", "방탈출"]
-  },
-  {
-    title: "Raft",
-    developer: "Redbeet Interactive",
-    genre: "생존 / 크래프팅",
-    platform: "Console / PC",
-    status: "완료",
-    releaseYear: 2022,
-    playtime: 25.5,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/648800/header.jpg",
-    tags: ["!해양 생존", "협동", "건축"]
+    releaseDate: "2021. 04",
+    playtime: 30.2,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1568590/header.jpg",
+    tags: ["!사회적 추론", "파티 게임"]
   },
   {
     title: "It Takes Two",
@@ -148,7 +148,7 @@ const GAMES_DATA = [
     genre: "액션 어드벤처",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2021,
+    releaseDate: "2021. 03",
     playtime: 21.9,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1426210/header.jpg",
     tags: ["!협동", "2인 필수", "명작"]
@@ -159,33 +159,10 @@ const GAMES_DATA = [
     genre: "생존 / 크래프팅",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2021,
+    releaseDate: "2021. 02",
     playtime: 79.6,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/892970/header.jpg",
     tags: ["!북유럽 신화", "건축"]
-  },
-  {
-    title: "Goose Goose Duck",
-    developer: "Gaggle Studios Inc.",
-    genre: "파티 / 마피아",
-    platform: "PC / Mobile",
-    status: "완료",
-    releaseYear: 2021,
-    playtime: 30.2,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/1568590/header.jpg",
-    tags: ["!사회적 추론", "파티 게임"]
-  },
-  {
-    title: "Valorant",
-    developer: "Riot Games",
-    genre: "슈팅 (FPS / TPS)",
-    platform: "PC",
-    status: "완료",
-    releaseYear: 2020,
-    playtime: 2000,
-    playtimeText: "약 2000시간+",
-    image: "https://www.riotgames.com/darkroom/1440/8d5c497da1c2eeec8cffa99b01abc64b:5329ca773963a5b739e98e715957ab39/ps-f2p-val-console-launch-16x9.jpg",
-    tags: ["!히어로 슈팅", "경쟁"]
   },
   {
     title: "Phasmophobia",
@@ -193,7 +170,7 @@ const GAMES_DATA = [
     genre: "공포 / 스릴러",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2020,
+    releaseDate: "2020. 09",
     playtime: 12,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/739630/header.jpg",
     tags: ["!유령 사냥", "음성 인식", "협동"]
@@ -204,21 +181,33 @@ const GAMES_DATA = [
     genre: "파티 / 마피아",
     platform: "PC",
     status: "완료",
-    releaseYear: 2020,
+    releaseDate: "2020. 07",
     playtime: 12.2,
     image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1305420/header.jpg?t=1642178505",
-    tags: ["!사회적 추론", "심리전", "파티 게임"]
+    tags: ["!심리전", "파티 게임"]
   },
   {
-    title: "Apex Legends",
-    developer: "Respawn",
+    title: "Valorant",
+    developer: "Riot Games",
     genre: "슈팅 (FPS / TPS)",
+    platform: "PC",
+    status: "완료",
+    releaseDate: "2020. 06",
+    playtime: 2000,
+    playtimeText: "약 2000시간+",
+    image: "https://www.riotgames.com/darkroom/1440/8d5c497da1c2eeec8cffa99b01abc64b:5329ca773963a5b739e98e715957ab39/ps-f2p-val-console-launch-16x9.jpg",
+    tags: ["!히어로 슈팅", "경쟁"]
+  },
+  {
+    title: "Planet Zoo",
+    developer: "Frontier Developments",
+    genre: "시뮬레이션 / 샌드박스",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2019,
-    playtime: 51.7,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/1172470/header.jpg",
-    tags: ["!배틀로얄", "스피디"]
+    releaseDate: "2019. 11",
+    playtime: 9,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/703080/header.jpg",
+    tags: ["!경영", "동물원", "건축"]
   },
   {
     title: "Borderland 3",
@@ -226,7 +215,7 @@ const GAMES_DATA = [
     genre: "슈팅 (FPS / TPS)",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2019,
+    releaseDate: "2019. 09",
     playtime: 27.8,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/397540/header.jpg",
     tags: ["!루트 슈터", "파밍"]
@@ -237,21 +226,21 @@ const GAMES_DATA = [
     genre: "슈팅 (FPS / TPS)",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2019,
+    releaseDate: "2019. 04",
     playtime: 6.3,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/699130/header.jpg",
     tags: ["!좀비 학살", "물량전", "코옵"]
   },
   {
-    title: "Planet Zoo",
-    developer: "Frontier Developments",
-    genre: "시뮬레이션 / 샌드박스",
+    title: "Apex Legends",
+    developer: "Respawn",
+    genre: "슈팅 (FPS / TPS)",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2019,
-    playtime: 9,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/703080/header.jpg",
-    tags: ["!경영", "동물원", "건축"]
+    releaseDate: "2019. 02",
+    playtime: 51.7,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1172470/header.jpg",
+    tags: ["!배틀로얄", "스피디"]
   },
   {
     title: "Red Dead Redemption 2",
@@ -259,43 +248,10 @@ const GAMES_DATA = [
     genre: "액션 어드벤처",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2018,
+    releaseDate: "2018. 10",
     playtime: 54.7,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1174180/header.jpg",
     tags: ["!오픈월드", "명작", "스토리 중심"]
-  },
-  {
-    title: "Sea of thieves",
-    developer: "Rare",
-    genre: "액션 어드벤처",
-    platform: "Console / PC",
-    status: "완료",
-    releaseYear: 2018,
-    playtime: 40,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/1172620/header.jpg",
-    tags: ["!해적", "항해", "PVPVE"]
-  },
-  {
-    title: "Among us",
-    developer: "Innersloth",
-    genre: "파티 / 마피아",
-    platform: "Console / PC / Mobile",
-    status: "완료",
-    releaseYear: 2018,
-    playtime: 9.6,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/945360/header.jpg",
-    tags: ["!사회적 추론", "심리전", "멀티플레이"]
-  },
-  {
-    title: "A Way Out",
-    developer: "Hazelight Studios",
-    genre: "액션 어드벤처",
-    platform: "Console / PC",
-    status: "완료",
-    releaseYear: 2018,
-    playtime: 9,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/1222700/header.jpg",
-    tags: ["!협동", "스토리", "2인 필수"]
   },
   {
     title: "Green Hell",
@@ -303,10 +259,54 @@ const GAMES_DATA = [
     genre: "생존 / 크래프팅",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2018,
+    releaseDate: "2018. 08",
     playtime: 16.1,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/815370/header.jpg",
     tags: ["!정글 생존", "하드코어", "크래프팅"]
+  },
+  {
+    title: "Among us",
+    developer: "Innersloth",
+    genre: "파티 / 마피아",
+    platform: "Console / PC / Mobile",
+    status: "완료",
+    releaseDate: "2018. 06",
+    playtime: 9.6,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/945360/header.jpg",
+    tags: ["!사회적 추론", "심리전", "멀티플레이"]
+  },
+  {
+    title: "Raft",
+    developer: "Redbeet Interactive",
+    genre: "생존 / 크래프팅",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2018. 05",
+    playtime: 25.5,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/648800/header.jpg",
+    tags: ["!해양 생존", "협동", "건축"]
+  },
+  {
+    title: "Sea of thieves",
+    developer: "Rare",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2018. 03",
+    playtime: 40,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1172620/header.jpg",
+    tags: ["!해적", "항해", "PVPVE"]
+  },
+  {
+    title: "A Way Out",
+    developer: "Hazelight Studios",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2018. 03",
+    playtime: 9,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1222700/header.jpg",
+    tags: ["!협동", "스토리", "2인 필수"]
   },
   {
     title: "PUBG: BATTLEGROUNDS",
@@ -314,22 +314,11 @@ const GAMES_DATA = [
     genre: "슈팅 (FPS / TPS)",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2017,
+    releaseDate: "2017. 12",
     playtime: 1057,
     playtimeText: "약 1000시간+",
     image: "https://cdn.akamai.steamstatic.com/steam/apps/578080/header.jpg",
     tags: ["!배틀로얄", "생존"]
-  },
-  {
-    title: "Tom Clancy's Ghost Recon® Wildlands",
-    developer: "Ubisoft Paris",
-    genre: "슈팅 (FPS / TPS)",
-    platform: "Console / PC",
-    status: "완료",
-    releaseYear: 2017,
-    playtime: 29.8,
-    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/460930/header.jpg?t=1764776201",
-    tags: ["!오픈월드", "밀리터리"]
   },
   {
     title: "Escape From Tarakov",
@@ -337,44 +326,21 @@ const GAMES_DATA = [
     genre: "슈팅 (FPS / TPS)",
     platform: "PC",
     status: "완료",
-    releaseYear: 2017,
+    releaseDate: "2017. 07",
     playtime: 6,
     image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3932890/e1367f10d469137a2ced522b642a9b1ee10450da/header.jpg?t=1770712130",
     tags: ["!익스트랙션", "파밍", "긴장감"]
   },
   {
-    title: "Overwatch",
-    developer: "Blizzard Entertainment",
+    title: "Tom Clancy's Ghost Recon® Wildlands",
+    developer: "Ubisoft Paris",
     genre: "슈팅 (FPS / TPS)",
-    platform: "PC",
-    status: "완료",
-    releaseYear: 2016,
-    playtime: 1000,
-    playtimeText: "약 1000시간+",
-    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2357570/2044d29c64bf646c162052110e66c922fef47e7a/header_alt_assets_19.jpg?t=1771358111",
-    tags: ["!히어로 슈팅", "팀워크", "경쟁"]
-  },
-  {
-    title: "Planet Coaster",
-    developer: "Frontier Developments",
-    genre: "시뮬레이션 / 샌드박스",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2016,
-    playtime: 24,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/493340/header.jpg",
-    tags: ["!경영", "놀이공원", "건축"]
-  },
-  {
-    title: "Human : Fall Flat",
-    developer: "No Brakes Games",
-    genre: "퍼즐 / 플랫포머",
-    platform: "Console / PC / Mobile",
-    status: "완료",
-    releaseYear: 2016,
-    playtime: 26.1,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/477160/header.jpg",
-    tags: ["!물리엔진", "협동", "코미디"]
+    releaseDate: "2017. 03",
+    playtime: 29.8,
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/460930/header.jpg?t=1764776201",
+    tags: ["!오픈월드", "밀리터리"]
   },
   {
     title: "Steep™",
@@ -382,21 +348,44 @@ const GAMES_DATA = [
     genre: "스포츠 / 레이싱",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2016,
+    releaseDate: "2016. 12",
     playtime: 5.2,
     image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/460920/0e27cc9c517c046f3ce08e34253eca5d402b3177/header.jpg?t=1765568988",
     tags: ["!익스트림", "설산", "오픈월드"]
   },
   {
-    title: "Dying Light",
-    developer: "Techland",
-    genre: "액션 어드벤처",
+    title: "Planet Coaster",
+    developer: "Frontier Developments",
+    genre: "시뮬레이션 / 샌드박스",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2015,
-    playtime: 11,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/239140/header.jpg",
-    tags: ["!좀비 생존", "파쿠르"]
+    releaseDate: "2016. 11",
+    playtime: 24,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/493340/header.jpg",
+    tags: ["!경영", "놀이공원", "건축"]
+  },
+  {
+    title: "Human : Fall Flat",
+    developer: "No Brakes Games",
+    genre: "퍼즐 / 방탈출",
+    platform: "Console / PC / Mobile",
+    status: "완료",
+    releaseDate: "2016. 07",
+    playtime: 26.1,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/477160/header.jpg",
+    tags: ["!물리엔진", "협동", "코미디"]
+  },
+  {
+    title: "Overwatch",
+    developer: "Blizzard Entertainment",
+    genre: "슈팅 (FPS / TPS)",
+    platform: "PC",
+    status: "완료",
+    releaseDate: "2016. 05",
+    playtime: 1000,
+    playtimeText: "약 1000시간+",
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2357570/2044d29c64bf646c162052110e66c922fef47e7a/header_alt_assets_19.jpg?t=1771358111",
+    tags: ["!히어로 슈팅", "팀워크", "경쟁"]
   },
   {
     title: "ARK: Survival Evolved",
@@ -404,10 +393,21 @@ const GAMES_DATA = [
     genre: "생존 / 크래프팅",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2015,
+    releaseDate: "2015. 06",
     playtime: 68.7,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/346110/header.jpg",
     tags: ["!공룡", "건축", "오픈월드"]
+  },
+  {
+    title: "Dying Light",
+    developer: "Techland",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2015. 01",
+    playtime: 11,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/239140/header.jpg",
+    tags: ["!좀비 생존", "파쿠르"]
   },
   {
     title: "Outlast : Whistleblower",
@@ -415,7 +415,7 @@ const GAMES_DATA = [
     genre: "공포 / 스릴러",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2014,
+    releaseDate: "2014. 05",
     playtime: 1,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/273300/header.jpg",
     tags: ["!심리적 공포", "도주"]
@@ -426,33 +426,10 @@ const GAMES_DATA = [
     genre: "생존 / 크래프팅",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2014,
+    releaseDate: "2014. 05",
     playtime: 1,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/242760/header.jpg",
     tags: ["!오픈월드", "스토리", "건축"]
-  },
-  {
-    title: "Grand Theft Auto V",
-    developer: "Rockstar Games",
-    genre: "액션 어드벤처",
-    platform: "Console / PC",
-    status: "완료",
-    releaseYear: 2013,
-    playtime: 1000,
-    playtimeText: "약 1000시간+",
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/271590/header.jpg",
-    tags: ["!오픈월드", "범죄", "자유도"]
-  },
-  {
-    title: "Tom Clancy’s Splinter Cell Blacklist",
-    developer: "Ubisoft Toronto",
-    genre: "액션 어드벤처",
-    platform: "Console / PC",
-    status: "완료",
-    releaseYear: 2013,
-    playtime: 14,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/235600/header.jpg",
-    tags: ["!잠입 액션", "스텔스", "전술"]
   },
   {
     title: "Rust",
@@ -460,10 +437,22 @@ const GAMES_DATA = [
     genre: "생존 / 크래프팅",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2013,
+    releaseDate: "2013. 12",
     playtime: 25.3,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/252490/header.jpg",
     tags: ["!멀티플레이", "하드코어", "PVP"]
+  },
+  {
+    title: "Grand Theft Auto V",
+    developer: "Rockstar Games",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2013. 09",
+    playtime: 1000,
+    playtimeText: "약 1000시간+",
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/271590/header.jpg",
+    tags: ["!오픈월드", "범죄", "자유도"]
   },
   {
     title: "Outlast",
@@ -471,18 +460,29 @@ const GAMES_DATA = [
     genre: "공포 / 스릴러",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2013,
+    releaseDate: "2013. 09",
     playtime: 2,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/238320/header.jpg",
     tags: ["!심리적 공포", "고어"]
   },
   {
-    title: "Portal 2",
-    developer: "Valve",
-    genre: "퍼즐 / 플랫포머",
+    title: "Tom Clancy’s Splinter Cell Blacklist",
+    developer: "Ubisoft Toronto",
+    genre: "액션 어드벤처",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2011,
+    releaseDate: "2013. 08",
+    playtime: 14,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/235600/header.jpg",
+    tags: ["!잠입 액션", "스텔스", "전술"]
+  },
+  {
+    title: "Portal 2",
+    developer: "Valve",
+    genre: "퍼즐 / 방탈출",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2011. 04",
     playtime: 1,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/620/header.jpg",
     tags: ["!명작", "협동"]
@@ -493,7 +493,7 @@ const GAMES_DATA = [
     genre: "액션 어드벤처",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2010,
+    releaseDate: "2010. 03",
     playtime: 15.3,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/8190/header.jpg",
     tags: ["!오픈월드", "자유도", "폭발"]
@@ -504,10 +504,21 @@ const GAMES_DATA = [
     genre: "슈팅 (FPS / TPS)",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2009,
+    releaseDate: "2009. 11",
     playtime: 18.1,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/550/header.jpg",
     tags: ["!좀비 생존", "4인 코옵"]
+  },
+  {
+    title: "Mirror's Edge™",
+    developer: "DICE",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2008. 11",
+    playtime: 3,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/17410/header.jpg",
+    tags: ["!1인칭 파쿠르", "스피드런", "디스토피아"]
   },
   {
     title: "Left 4 Dead",
@@ -515,8 +526,8 @@ const GAMES_DATA = [
     genre: "슈팅 (FPS / TPS)",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2008,
-    playtime: 1,
+    releaseDate: "2008. 11",
+    playtime: 15,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/500/header.jpg",
     tags: ["!좀비 생존", "협동 생존"]
   },
@@ -526,7 +537,7 @@ const GAMES_DATA = [
     genre: "액션 어드벤처",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2008,
+    releaseDate: "2008. 04",
     playtime: 1000,
     playtimeText: "약 1000시간+",
     image: "https://cdn.akamai.steamstatic.com/steam/apps/12210/header.jpg",
@@ -538,29 +549,18 @@ const GAMES_DATA = [
     genre: "스포츠 / 레이싱",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2008,
+    releaseDate: "2008. 04",
     playtime: 72,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/11020/header.jpg",
     tags: ["!타임어택", "아케이드"]
   },
   {
-    title: "Mirror's Edge™",
-    developer: "DICE",
-    genre: "액션 어드벤처",
-    platform: "Console / PC",
-    status: "완료",
-    releaseYear: 2008,
-    playtime: 3,
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/17410/header.jpg",
-    tags: ["!1인칭 파쿠르", "스피드런", "디스토피아"]
-  },
-  {
     title: "Portal",
     developer: "Valve",
-    genre: "퍼즐 / 플랫포머",
+    genre: "퍼즐 / 방탈출",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2007,
+    releaseDate: "2007. 10",
     playtime: 1,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/400/header.jpg",
     tags: ["!스토리", "공간지각"]
@@ -571,7 +571,7 @@ const GAMES_DATA = [
     genre: "시뮬레이션 / 샌드박스",
     platform: "PC",
     status: "완료",
-    releaseYear: 2006,
+    releaseDate: "2006. 11",
     playtime: 147.5,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/4000/header.jpg",
     tags: ["!물리엔진", "자유도", "모딩"]
@@ -582,23 +582,11 @@ const GAMES_DATA = [
     genre: "슈팅 (FPS / TPS)",
     platform: "PC",
     status: "완료",
-    releaseYear: 2004,
+    releaseDate: "2004. 11",
     playtime: 2679,
     playtimeText: "약 2600시간+",
     image: "https://cdn.akamai.steamstatic.com/steam/apps/240/header.jpg",
     tags: ["!전술 FPS", "클래식"]
-  },
-  {
-    title: "Grand Theft Auto : San Andreas",
-    developer: "Rockstar Games",
-    genre: "액션 어드벤처",
-    platform: "Console / PC",
-    status: "완료",
-    releaseYear: 2004,
-    playtime: 1000,
-    playtimeText: "약 1000시간+",
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/12120/header.jpg",
-    tags: ["!클래식", "범죄", "오픈월드"]
   },
   {
     title: "RollerCoaster Tycoon® 3",
@@ -606,10 +594,88 @@ const GAMES_DATA = [
     genre: "시뮬레이션 / 샌드박스",
     platform: "Console / PC",
     status: "완료",
-    releaseYear: 2004,
+    releaseDate: "2004. 11",
     playtime: 1000,
     playtimeText: "약 1000시간+",
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1368820/header.jpg",
     tags: ["!경영", "클래식", "샌드박스"]
+  },
+  {
+    title: "Grand Theft Auto : San Andreas",
+    developer: "Rockstar Games",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2004. 10",
+    playtime: 1000,
+    playtimeText: "약 1000시간+",
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/12120/header.jpg",
+    tags: ["!클래식", "범죄", "오픈월드"]
+  },
+  {
+    title: "검은신화 : 오공",
+    developer: "Game Science",
+    genre: "액션 RPG",
+    platform: "Console / PC",
+    status: "진행 중",
+    releaseDate: "2024. 08",
+    playtime: 5,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2358720/header.jpg",
+    tags: ["!보스런", "서유기", "소울라이크"]
+  },
+  {
+    title: "스텔라 블레이드™",
+    developer: "Shift Up",
+    genre: "액션 RPG",
+    platform: "Console / PC",
+    status: "진행 중",
+    releaseDate: "2024. 04",
+    playtime: 16,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/3489700/header.jpg",
+    tags: ["!SF", "포스트 아포칼립스", "소울라이크"]
+  },
+  {
+    title: "Chained Together",
+    developer: "Anegar Games",
+    genre: "퍼즐 / 플랫포머",
+    platform: "PC",
+    status: "완료",
+    releaseDate: "2024. 06",
+    playtime: 8.8,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2567870/header.jpg",
+    tags: ["!협동", "플랫포머"]
+  },
+  {
+    title: "DARK SOULS™ III",
+    developer: "FromSoftware",
+    genre: "액션 RPG",
+    platform: "Console / PC",
+    status: "진행 중",
+    releaseDate: "2016. 04",
+    playtime: 2,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/374320/header.jpg",
+    tags: ["!소울라이크", "다크판타지"]
+  },
+  {
+    title: "ELDEN RING 밤의 통치자",
+    developer: "FromSoftware",
+    genre: "액션 RPG",
+    platform: "Console / PC",
+    status: "진행 중",
+    releaseDate: "2025. 05",
+    playtime: 6.7,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2622380/header.jpg",
+    tags: ["!로그라이트", "협동", "다크 판타지"]
+  },
+  {
+    title: "Tom Clancy's The Division® 2",
+    developer: "Ubisoft",
+    genre: "슈팅 (FPS / TPS)",
+    platform: "Console / PC",
+    status: "진행 중",
+    releaseDate: "2019. 03",
+    playtime: 33,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2221490/header.jpg",
+    tags: ["!루트 슈터", "포스트 아포칼립스"]
   }
 ];

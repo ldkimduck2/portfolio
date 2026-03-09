@@ -1,12 +1,12 @@
 const STUDY_DATA = [
   { 
     cat: "Level Design Theory", 
-    title: "레벨 디자인에서의 내비게이션 가독성 연구", 
-    date: "2026. 03. 08", // 작성일 추가
+    title: "GDC - God Of War Level Design", 
+    date: "2026. 02. 13", // 작성일 추가
     desc: "랜드마크, 조명, 색채를 활용한 유도 기법 분석. 지도 없이도 직관적으로 이동하게 하는 환경 설계.",
-    coverImage: "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=1200&auto=format&fit=crop", // 노션 상단 커버 이미지
+    coverImage: "https://duck3d.notion.site/image/attachment%3A0d19b8dd-a1a9-4829-a49d-9e88369eccce%3A%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2026-02-13_050951.png?table=block&id=305fcdf9-9754-80af-af84-d14438ffcbc8&spaceId=92715d94-9439-418c-9b51-0971d96b93aa&width=2000&userId=&cache=v2", // 노션 상단 커버 이미지
     
-    // 👇 여기서부터 노션 본문 내용입니다.
+    // 👇 여기서부터 본문 내용입니다.
     content: `
       <div class="m-study-quote">
         "좋은 레벨 디자인은 플레이어가 스스로 길을 찾았다고 믿게 만드는 것이다."
