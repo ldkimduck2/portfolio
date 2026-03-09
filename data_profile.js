@@ -15,9 +15,10 @@ const PROFILE_DATA = {
     heroImages: [
       "img/LTD/01.png",
       "img/LTD/03.png",
-      "img/novaCORE/07.png",
-      "img/novaCORE/05.png",
-      "img/Leador/01.png"
+      "img/NC/07.png",
+      "img/NC/05.png",
+      "img/LD/01.png",
+      "img/LD/02.png"
     ]
   },
   about: {
