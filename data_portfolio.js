@@ -33,7 +33,7 @@ const PORTFOLIO_DATA = [
     tags: ["!LAST OF US", "Unreal Engine 5", "포스트 아포칼립스", "창작"], //태그
     youtubeId: "sKNml5GIzbo", // 비디오 링크
     thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop", // 이미지 슬라이더
-    pdfUrl: "https://drive.google.com/file/d/1pnFl16Id8zgvuFnsEHiG8ruW9fFIjeLo/view", // PDF 주소
+    pdfUrl: "pdf/김기덕_액션어드벤처 레벨기획서.pdf", // PDF 주소
     overviewImages: [
       "img/LTD/ov/01.png",
       "img/LTD/ov/02.png",
@@ -68,7 +68,7 @@ const PORTFOLIO_DATA = [
     tags: ["!Tom Clancy’s : Splinter Cell", "Unreal Engine 5","설산", "창작"], //태그
     youtubeId: "otSQADvZ9pM", // 비디오 링크
     thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop", // 이미지 슬라이더
-    pdfUrl: "https://drive.google.com/file/d/1_R1DP_cEloThama6ySMhvLKxQMKgyWxs/view", // PDF 주소
+    pdfUrl: "pdf/김기덕_잠입액션 레벨기획서.pdf", // PDF 주소
     overviewImages: [
       "img/NC/ov/01.png",
       "img/NC/ov/02.png",

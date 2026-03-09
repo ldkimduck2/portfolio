@@ -123,7 +123,7 @@ const GAMES_DATA = [
   {
     title: "Vampire Survivors",
     developer: "Poncle",
-    genre: "로그라이크 / 아케이드",
+    genre: "로그라이트",
     platform: "Console / PC / Mobile",
     status: "완료",
     releaseDate: "2021. 12",
@@ -677,5 +677,27 @@ const GAMES_DATA = [
     playtime: 33,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2221490/header.jpg",
     tags: ["!루트 슈터", "포스트 아포칼립스"]
+  },
+  {
+    title: "Shape of Dreams",
+    developer: "Lizard Smoothie",
+    genre: "로그라이트",
+    platform: "PC",
+    status: "완료",
+    releaseDate: "2025. 09",
+    playtime: 5.2, 
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2444750/header.jpg",
+    tags: ["!로그라이트", "MOBA 전투", "협동"]
+  },
+  {
+    title: "Overcooked! 2",
+    developer: "Ghost Town Games",
+    genre: "파티 / 캐주얼",
+    platform: "Console / PC",
+    status: "진행 중", 
+    releaseDate: "2018. 08",
+    playtime: 3.7, 
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/728880/header.jpg",
+    tags: ["!우정파괴", "협동", "요리", "파티 게임"]
   }
 ];
