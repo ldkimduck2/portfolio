@@ -268,8 +268,8 @@ const DATA = {
     <ul class="nav-links" id="navLinks">
       <li><button class="page-link active" onclick="switchPage('portfolio')" data-target="portfolio">Portfolio</button></li>
       <li><button class="page-link" onclick="switchPage('study')" data-target="study">Study</button></li>
-      <li><button class="page-link" onclick="switchPage('games')" data-target="games">Games</button></li>
-      <li><button class="page-link" onclick="switchPage('about')" data-target="about">About</button></li>
+      <li><button class="page-link" onclick="switchPage('games')" data-target="games">Playlist</button></li>
+      <li><button class="page-link" onclick="switchPage('about')" data-target="about">About me</button></li>
       <li><button class="theme-toggle" onclick="toggleTheme()" title="다크/라이트 모드 변경"><div class="toggle-track"><div class="toggle-ball"></div></div><span id="theme-label" style="min-width: 42px; text-align: left;">Dark</span></button></li>
     </ul>
   </div>
@@ -307,7 +307,7 @@ const DATA = {
 
   <section class="page" id="page-games">
     <div class="page-inner">
-      <h2 class="sec-title" style="margin-bottom: 24px;">Gameplay List</h2>
+      <h2 class="sec-title" style="margin-bottom: 24px;">Game PlayList</h2>
       <div class="game-filter-wrap" id="game-filter-wrap">
         <button class="filter-btn active" onclick="renderGames('latest')">최신발매순</button>
         <button class="filter-btn" onclick="renderGames('playtime')">플레이타임 긴 순</button>
@@ -322,7 +322,7 @@ const DATA = {
 
   <section class="page" id="page-about">
     <div class="page-inner">
-      <h2 class="sec-title">About Me.</h2>
+      <h2 class="sec-title">About Me</h2>
       <div class="about-grid">
         <div><p class="about-lead" id="about-lead"></p><p class="about-body" id="about-body"></p><div id="about-exp"></div></div>
         <div><div class="contact-box"><h3>Contact</h3><div class="contact-links" id="contact-links"></div></div></div>
