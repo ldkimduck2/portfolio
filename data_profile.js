@@ -7,7 +7,7 @@ const PROFILE_DATA = {
       { icon: "📞", label: "010-2805-1079", href: "#" }, 
       { icon: "📄", label: "자기소개서", href: "#" },
       { icon: "📄", label: "이력서", href: "#" },
-      { icon: "🎬", label: "유튜브 바로가기", href: "#" }  
+      { icon: "🎬", label: "유튜브 바로가기", href: "https://www.youtube.com/@LD_Duck2" }  
     ],
   },
   landing: {

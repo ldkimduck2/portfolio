@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>포트폴리오</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 /* ── 스타일(CSS) 영역 ── */
 :root { --accent: #E03030; --bg: #0C0C0C; --bg-sub: #151515; --fg-main: #F0F0F0; --fg-muted: #888888; --border: rgba(255, 255, 255, 0.1); --font: 'Pretendard', -apple-system, sans-serif; --nav-height: 70px; }
@@ -160,83 +161,59 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-i
 .m-pdf-wrap { width: 100%; height: 900px; border-radius: 20px; overflow: hidden; margin-bottom: 80px; background: #222; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid var(--border); position: relative; }
 .m-pdf-wrap iframe { width: 100%; height: 100%; border: none; position: absolute; top:0; left:0; }
 
-/* ── 🔥 버그 완벽 수정된 100% 단일화면 갤러리 슬라이더 🔥 ── */
+/* 단일화면 슬라이더 */
 .dual-slider-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 80px; }
 .slider-col { display: flex; flex-direction: column; width: 100%; overflow: hidden; }
 .slider-header { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--fg-main); letter-spacing: -0.02em; }
-
 .slider-wrapper { position: relative; width: 100%; margin-bottom: 16px; overflow: hidden; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
-/* 🔥 메인 이미지 겹침(반반 나오는 버그) 해결: width 100% 및 flex-shrink 0 강제 부여 🔥 */
 .slider-track { display: flex; transition: transform 0.5s ease-in-out; width: 100%; }
 .slide-item { width: 100%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .slide-item img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; pointer-events: none; }
 
-/* 진행률 바 (Progress Bar) */
+/* 진행률 바 */
 @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
 .slider-progress { position: absolute; bottom: 0; left: 0; right: 0; height: 5px; background: rgba(0,0,0,0.5); z-index: 15; }
 .slider-progress-bar { height: 100%; width: 0%; background: var(--accent); }
-
-/* 슬라이더 화살표 */
 .s-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; background: rgba(var(--bg), 0.8); border: 1px solid var(--border); color: var(--fg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: all 0.2s; font-size: 18px; backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; }
 .slider-wrapper:hover .s-arrow { opacity: 1; }
 .s-arrow:hover { background: var(--fg-main); color: var(--bg); transform: translateY(-50%) scale(1.1); }
 .s-arrow.prev { left: 16px; }
 .s-arrow.next { right: 16px; }
-
-/* 🔥 하단 썸네일 네비게이션: JS 계산을 돕기 위해 position relative 추가, 상하 여백 넉넉하게 확보 🔥 */
-.slider-thumbnails { 
-  position: relative;
-  display: flex; 
-  gap: 12px; 
-  overflow-x: auto; 
-  padding: 24px calc(50% - 50px); /* 100px 너비의 절반인 50px를 빼서, 맨 앞뒤 사진도 정중앙에 오도록 만듦 */
-  scroll-behavior: smooth; 
-  align-items: center; 
-  -ms-overflow-style: none; /* 지저분한 가로 스크롤바 숨김 (IE/Edge) */
-  scrollbar-width: none; /* 파이어폭스 */
-}
-.slider-thumbnails::-webkit-scrollbar { display: none; /* 크롬/사파리 스크롤바 숨김 */ }
-
-/* 🔥 빨간색 테두리(Border) 잘림 및 틀어짐 현상 완벽 수정 🔥 */
-.s-thumb { 
-  box-sizing: border-box; /* 테두리가 안쪽으로 생기게 하여 레이아웃 파괴 방지 */
-  width: 100px; 
-  aspect-ratio: 16 / 9; 
-  object-fit: cover; 
-  border-radius: 8px; 
-  cursor: pointer; 
-  opacity: 0.3; 
-  transition: all 0.3s; 
-  border: 2px solid transparent; 
-  flex-shrink: 0; 
-}
+.slider-thumbnails { position: relative; display: flex; gap: 12px; overflow-x: auto; padding: 24px calc(50% - 50px); scroll-behavior: smooth; align-items: center; -ms-overflow-style: none; scrollbar-width: none; }
+.slider-thumbnails::-webkit-scrollbar { display: none; }
+.s-thumb { box-sizing: border-box; width: 100px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; cursor: pointer; opacity: 0.3; transition: all 0.3s; border: 2px solid transparent; flex-shrink: 0; }
 .s-thumb:hover { opacity: 0.8; }
-.s-thumb.active { 
-  opacity: 1; 
-  border: 3px solid var(--accent); /* 더 두껍고 확실한 보더라인 */
-  transform: scale(1.15); 
-  box-shadow: 0 4px 16px rgba(224, 48, 48, 0.4); /* 보더라인과 어울리는 붉은 네온 그림자 추가 */
-}
+.s-thumb.active { opacity: 1; border: 3px solid var(--accent); transform: scale(1.15); box-shadow: 0 4px 16px rgba(224, 48, 48, 0.4); }
 
-/* 스터디 모달 전용 */
+
+/* 🔥 마크다운 스터디 본문 전용 디자인 (버그 수정 완료) 🔥 */
 .m-study-cover { width: 100%; height: 400px; object-fit: cover; border-radius: 24px; margin-bottom: 60px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
 .m-study-header { border-bottom: 1px solid var(--border); padding-bottom: 40px; margin-bottom: 40px; }
 .m-study-meta { display: flex; gap: 12px; font-size: 14px; color: var(--fg-muted); margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; align-items: center; }
 .m-study-title { font-size: 48px; font-weight: 900; line-height: 1.3; color: var(--fg-main); margin-bottom: 24px; word-break: keep-all; letter-spacing: -0.02em; }
-.m-study-desc { font-size: 20px; color: var(--fg-muted); line-height: 1.6; }
-.m-study-content { font-size: 18px; color: var(--fg-main); line-height: 1.8; }
-.m-study-quote { font-size: 22px; font-style: italic; font-weight: 700; color: var(--fg-muted); border-left: 4px solid var(--accent); padding-left: 32px; margin: 48px 0; word-break: keep-all; }
-.m-study-h3 { font-size: 28px; font-weight: 800; margin: 60px 0 24px; color: var(--fg-main); letter-spacing: -0.02em; }
-.m-study-p { margin-bottom: 24px; color: var(--fg-muted); word-break: keep-all; }
-.m-study-img { width: 100%; border-radius: 16px; margin: 40px 0 16px; border: 1px solid var(--border); }
-.m-study-caption { display: block; text-align: center; font-size: 14px; color: var(--fg-muted); margin-bottom: 48px; }
-.m-study-list { margin: 0 0 40px 32px; color: var(--fg-muted); }
-.m-study-list li { margin-bottom: 16px; padding-left: 8px; }
-.m-study-list strong { color: var(--fg-main); }
+.m-study-desc { font-size: 20px; color: var(--fg-muted); line-height: 1.6; word-break: keep-all; }
+
+.m-study-content { font-size: 18px; color: var(--fg-main); line-height: 1.8; padding-bottom: 80px; }
+.m-study-content h3 { font-size: 28px; font-weight: 800; margin: 60px 0 24px; color: var(--fg-main); letter-spacing: -0.02em; }
+.m-study-content p { margin-bottom: 24px; color: var(--fg-muted); word-break: keep-all; overflow-wrap: break-word; } 
+.m-study-content img { width: 100%; max-width: 800px; display: block; margin: 40px auto 16px auto; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+/* 🔥 여기서 중앙 정렬을 빼고 폰트 스타일만 남겨서 줄바꿈 튕김 버그를 해결했습니다 🔥 */
+.m-study-content em { font-style: italic; color: var(--accent); } 
+/* 사진 캡션용 디자인을 따로 분리했습니다 */
+.m-study-caption { display: block; text-align: center; font-size: 14px; color: var(--fg-muted); margin-bottom: 48px; } 
+
+.m-study-content blockquote { font-size: 22px; font-style: italic; font-weight: 700; color: var(--fg-muted); border-left: 4px solid var(--accent); padding-left: 32px; margin: 48px 0; word-break: keep-all; background: none; }
+.m-study-content pre { background: var(--bg-sub); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+.m-study-content code { font-family: monospace; color: var(--accent); }
+.m-study-content ul { margin: 0 0 40px 32px; color: var(--fg-muted); list-style-type: disc; }
+.m-study-content li { margin-bottom: 12px; padding-left: 8px; line-height: 1.6; word-break: keep-all; }
+.m-study-content strong { color: var(--fg-main); font-weight: 800; }
+.m-study-content hr { height: 1px; background: var(--border); margin: 60px 0; border: none; opacity: 0.5; }
+
 .m-study-callout { background: var(--bg-sub); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 48px 0; display: flex; gap: 20px; align-items: flex-start; }
 .m-study-callout-icon { font-size: 28px; line-height: 1; }
-.m-study-callout-text { color: var(--fg-muted); font-size: 16px; line-height: 1.6; }
+.m-study-callout-text { color: var(--fg-muted); font-size: 16px; line-height: 1.6; word-break: keep-all; }
 
 @media(max-width: 768px) {
   .hamburger { display: flex; } 
@@ -261,14 +238,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-i
   .m-pdf-wrap { height: 500px; margin-bottom: 40px; }
   .m-study-title { font-size: 32px; }
   .m-study-cover { height: 200px; border-radius: 12px; margin-bottom: 30px; }
-
-  /* 모바일 슬라이더 세로 배치 */
   .dual-slider-wrap { grid-template-columns: 1fr; gap: 60px; }
   .s-arrow { opacity: 1; width: 36px; height: 36px; font-size: 14px; }
   .s-arrow.prev { left: 8px; }
   .s-arrow.next { right: 8px; }
   .s-thumb { width: 70px; }
-  /* 모바일 화면 썸네일 여백 재계산 (70px 너비의 절반인 35px) */
   .slider-thumbnails { padding: 24px calc(50% - 35px); } 
 }
 </style>
@@ -318,23 +292,8 @@ const DATA = {
 
 <div id="page-container">
   <section class="page active" id="page-home"><div id="hero-slider"></div><div class="hero-overlay"></div><div class="hero-content"><h1 class="hero-title" id="hero-title"></h1><p class="hero-desc" id="hero-desc"></p><button class="btn-primary" onclick="switchPage('portfolio')">포트폴리오 전시 보기 <span>→</span></button></div></section>
-  
-  <section class="page" id="page-portfolio">
-    <div class="page-inner">
-      <h2 class="sec-title">Level Design Portfolio</h2>
-      <div id="portfolio-list"></div>
-      <div class="global-footer">© 2026 Kim Ki Deok. Level Designer. All rights reserved.</div>
-    </div>
-  </section>
-
-  <section class="page" id="page-study">
-    <div class="page-inner">
-      <h2 class="sec-title">Study & Research</h2>
-      <div class="study-list" id="study-list"></div>
-      <div class="global-footer">© 2026 Kim Ki Deok. Level Designer. All rights reserved.</div>
-    </div>
-  </section>
-
+  <section class="page" id="page-portfolio"><div class="page-inner"><h2 class="sec-title">Level Design Portfolio</h2><div id="portfolio-list"></div><div class="global-footer">© 2026 Kim Ki Deok. Level Designer. All rights reserved.</div></div></section>
+  <section class="page" id="page-study"><div class="page-inner"><h2 class="sec-title">Study & Research</h2><div class="study-list" id="study-list"></div><div class="global-footer">© 2026 Kim Ki Deok. Level Designer. All rights reserved.</div></div></section>
   <section class="page" id="page-games">
     <div class="page-inner">
       <h2 class="sec-title" style="margin-bottom: 24px;">Game PlayList</h2>
@@ -349,7 +308,6 @@ const DATA = {
       <div class="global-footer">© 2026 Kim Ki Deok. Level Designer. All rights reserved.</div>
     </div>
   </section>
-
   <section class="page" id="page-about">
     <div class="page-inner">
       <h2 class="sec-title">About Me</h2>
@@ -363,7 +321,6 @@ const DATA = {
 </div>
 
 <script>
-/* ── 실제 작동 로직 ── */
 const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const renderTags = tags => (tags||[]).map(t => t.startsWith('!') ? `<span class="tag hi">${esc(t.slice(1))}</span>` : `<span class="tag">${esc(t)}</span>`).join('');
 
@@ -383,62 +340,21 @@ if (heroImages && heroImages.length > 0) {
 document.getElementById('portfolio-list').innerHTML = DATA.portfolio.map((p, index) => {
   const videoHtml = p.youtubeId ? `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${p.youtubeId}?mute=1" loading="lazy" allowfullscreen></iframe></div>` : `<div class="video-wrap" style="background:#222; display:flex; align-items:center; justify-content:center; color:#555;">No Video</div>`;
   const dateHtml = p.date ? `<div style="font-size:13px; color:var(--fg-muted); font-weight:600; margin-bottom:12px; letter-spacing:0.05em;">🗓️ ${esc(p.date)}</div>` : '';
-  
-  return `
-  <div class="portfolio-item">
-    <div class="port-info">
-      <div>
-        <div class="tags" style="margin-bottom:16px;">${renderTags(p.tags)}</div>
-        ${dateHtml}
-        <h3 class="port-title">${esc(p.title)}</h3>
-        <p class="port-desc">${esc(p.desc)}</p>
-      </div>
-      <button class="btn-detail" onclick="openModal('portfolio', ${index})">상세 기획 보기 ↗</button>
-    </div>
-    ${videoHtml}
-  </div>
-  `;
+  return `<div class="portfolio-item"><div class="port-info"><div><div class="tags" style="margin-bottom:16px;">${renderTags(p.tags)}</div>${dateHtml}<h3 class="port-title">${esc(p.title)}</h3><p class="port-desc">${esc(p.desc)}</p></div><button class="btn-detail" onclick="openModal('portfolio', ${index})">상세 기획 보기 ↗</button></div>${videoHtml}</div>`;
 }).join('');
 
 document.getElementById('study-list').innerHTML = DATA.studies.map((s, index) => {
   const thumbHtml = s.coverImage ? `<img src="${esc(s.coverImage)}" loading="lazy">` : `<div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--fg-muted); font-size:14px;">No Image</div>`;
-  return `
-  <div class="study-card" onclick="openModal('study', ${index})">
-    <div class="study-thumb-wrap">${thumbHtml}</div>
-    <div class="study-info">
-      <div class="card-cat">${esc(s.cat)}</div>
-      <h3 class="card-title">${esc(s.title)}</h3>
-      <p class="card-desc">${esc(s.desc)}</p>
-    </div>
-  </div>
-  `;
+  return `<div class="study-card" onclick="openModal('study', ${index})"><div class="study-thumb-wrap">${thumbHtml}</div><div class="study-info"><div class="card-cat">${esc(s.cat)}</div><h3 class="card-title">${esc(s.title)}</h3><p class="card-desc">${esc(s.desc)}</p></div></div>`;
 }).join('');
 
 function createGameItemHTML(g) {
   const imgContent = g.image ? `<img src="${esc(g.image)}" alt="${esc(g.title)}" loading="lazy">` : `<div style="font-size:12px; color:var(--fg-muted);">No Image</div>`; 
   const displayPlaytime = g.playtimeText ? esc(g.playtimeText) : `${g.playtime}시간`;
   const displayYear = g.releaseDate ? `<span class="stat-badge">📅 ${esc(g.releaseDate)}</span>` : '';
-
-  let statusIcon = "🎯";
-  let statusClass = "";
-  if (g.status.includes("완료")) { statusIcon = "✅"; statusClass = "done"; } 
-  else if (g.status.includes("진행") || g.status.includes("플레이")) { statusIcon = "🔥"; statusClass = "hi"; }
-
-  return `
-    <div class="game-item">
-      <div class="game-image-wrap">${imgContent}</div>
-      <div>
-        <h3 class="game-title">${esc(g.title)}</h3>
-        <div class="game-studio">${esc(g.developer)} <span class="sep">/</span> ${esc(g.genre)} <span class="sep">/</span> ${esc(g.platform)}</div>
-        <div class="game-stats">
-          <span class="stat-badge ${statusClass}">${statusIcon} ${esc(g.status)}</span>
-          ${displayYear}
-          <span class="stat-badge">⏱ ${displayPlaytime}</span>
-        </div>
-        <div class="tags" style="margin-top: 12px;">${renderTags(g.tags)}</div>
-      </div>
-    </div>
-  `;
+  let statusIcon = "🎯"; let statusClass = "";
+  if (g.status.includes("완료")) { statusIcon = "✅"; statusClass = "done"; } else if (g.status.includes("진행") || g.status.includes("플레이")) { statusIcon = "🔥"; statusClass = "hi"; }
+  return `<div class="game-item"><div class="game-image-wrap">${imgContent}</div><div><h3 class="game-title">${esc(g.title)}</h3><div class="game-studio">${esc(g.developer)} <span class="sep">/</span> ${esc(g.genre)} <span class="sep">/</span> ${esc(g.platform)}</div><div class="game-stats"><span class="stat-badge ${statusClass}">${statusIcon} ${esc(g.status)}</span>${displayYear}<span class="stat-badge">⏱ ${displayPlaytime}</span></div><div class="tags" style="margin-top: 12px;">${renderTags(g.tags)}</div></div></div>`;
 }
 
 function renderGames(filterType) {
@@ -446,36 +362,14 @@ function renderGames(filterType) {
   buttons.forEach(btn => btn.classList.remove('active'));
   const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(filterType));
   if (targetBtn) { targetBtn.classList.add('active'); }
-
   const container = document.getElementById('game-list');
-  let html = '';
-  let games = [...DATA.games];
-
-  if (filterType === 'latest') {
-    games.sort((a, b) => (b.releaseDate || "").localeCompare(a.releaseDate || ""));
-    html = games.map(g => createGameItemHTML(g)).join('');
-  }
-  else if (filterType === 'playtime') {
-    games.sort((a, b) => b.playtime - a.playtime);
-    html = games.map(g => createGameItemHTML(g)).join('');
-  } 
+  let html = ''; let games = [...DATA.games];
+  if (filterType === 'latest') { games.sort((a, b) => (b.releaseDate || "").localeCompare(a.releaseDate || "")); html = games.map(g => createGameItemHTML(g)).join(''); }
+  else if (filterType === 'playtime') { games.sort((a, b) => b.playtime - a.playtime); html = games.map(g => createGameItemHTML(g)).join(''); } 
   else if (filterType === 'developer' || filterType === 'genre' || filterType === 'platform') {
-    const groups = {};
-    games.forEach(g => {
-      const key = g[filterType] || '기타';
-      if(!groups[key]) groups[key] = [];
-      groups[key].push(g);
-    });
-    Object.keys(groups).sort().forEach(groupName => {
-      html += `<div class="game-group-title">${esc(groupName)}</div>`;
-      groups[groupName].sort((a, b) => (b.releaseDate || "").localeCompare(a.releaseDate || ""));
-      html += groups[groupName].map(g => createGameItemHTML(g)).join('');
-    });
-  } 
-  else {
-    games.sort((a, b) => (b.releaseDate || "").localeCompare(a.releaseDate || ""));
-    html = games.map(g => createGameItemHTML(g)).join('');
-  }
+    const groups = {}; games.forEach(g => { const key = g[filterType] || '기타'; if(!groups[key]) groups[key] = []; groups[key].push(g); });
+    Object.keys(groups).sort().forEach(groupName => { html += `<div class="game-group-title">${esc(groupName)}</div>`; groups[groupName].sort((a, b) => (b.releaseDate || "").localeCompare(a.releaseDate || "")); html += groups[groupName].map(g => createGameItemHTML(g)).join(''); });
+  } else { games.sort((a, b) => (b.releaseDate || "").localeCompare(a.releaseDate || "")); html = games.map(g => createGameItemHTML(g)).join(''); }
   container.innerHTML = html;
 }
 renderGames('latest');
@@ -486,252 +380,61 @@ document.getElementById('about-body').textContent = DATA.about.body;
 document.getElementById('about-exp').innerHTML = DATA.about.experience.map(e => `<div class="exp-row"><div class="exp-yr">${esc(e.period)}</div><div><div class="exp-role">${esc(e.role)}</div><div class="exp-co">${esc(e.company)}</div><div style="font-size:14px; color:var(--fg-muted)">${esc(e.desc)}</div></div></div>`).join('');
 document.getElementById('contact-links').innerHTML = `<a href="mailto:${esc(DATA.site.email)}"><span>✉</span> ${esc(DATA.site.email)}</a>` + DATA.site.links.map(l => `<a href="${esc(l.href)}"><span>${l.icon}</span> ${esc(l.label)}</a>`).join('');
 
-/* ── 🔥 버그 수정 & 4초 진행률 게이지 🔥 ── */
 let modalSliders = {};
-
-function startAutoPlay(key) {
-  stopAutoPlay(key);
-  
-  const triggerAnimation = () => {
-    const bar = document.getElementById(`progress-${key}`);
-    if (bar) {
-      bar.style.animation = 'none';
-      void bar.offsetWidth; 
-      bar.style.animation = 'progressFill 4s linear forwards'; 
-    }
-  };
-
-  triggerAnimation(); 
-
-  modalSliders[key].intervalId = setInterval(() => {
-    moveSlide(key, 1, false);
-    triggerAnimation();
-  }, 4000); 
-}
-
-function stopAutoPlay(key) {
-  if(modalSliders[key] && modalSliders[key].intervalId) {
-    clearInterval(modalSliders[key].intervalId);
-    modalSliders[key].intervalId = null;
-  }
-  const bar = document.getElementById(`progress-${key}`);
-  if (bar) {
-    bar.style.animation = 'none';
-  }
-}
-
-function updateSlider(key, idx) {
-  const slider = modalSliders[key];
-  if(!slider) return;
-  slider.currentIndex = idx;
-  
-  const track = document.getElementById(`track-${key}`);
-  if(track) {
-    track.style.transform = `translateX(-${idx * 100}%)`;
-  }
-  
-  const thumbs = document.querySelectorAll(`.thumb-${key}`);
-  thumbs.forEach((t, i) => {
-    t.classList.toggle('active', i === idx);
-    
-    // 🔥 자바스크립트 스크롤 중앙 정렬 완벽 계산 공식 적용 🔥
-    if(i === idx) {
-      const container = t.parentElement;
-      const targetX = t.offsetLeft - (container.clientWidth / 2) + (t.clientWidth / 2);
-      container.scrollTo({ left: targetX, behavior: 'smooth' });
-    }
-  });
-}
-
-function setSlide(key, idx, isManual = false) {
-  updateSlider(key, idx);
-  if(isManual) startAutoPlay(key); 
-}
-
-function moveSlide(key, dir, isManual = false) {
-  const slider = modalSliders[key];
-  if(!slider) return;
-  let newIdx = (slider.currentIndex + dir + slider.images.length) % slider.images.length;
-  updateSlider(key, newIdx);
-  if(isManual) startAutoPlay(key);
-}
+function startAutoPlay(key) { stopAutoPlay(key); const triggerAnimation = () => { const bar = document.getElementById(`progress-${key}`); if (bar) { bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = 'progressFill 4s linear forwards'; } }; triggerAnimation(); modalSliders[key].intervalId = setInterval(() => { moveSlide(key, 1, false); triggerAnimation(); }, 4000); }
+function stopAutoPlay(key) { if(modalSliders[key] && modalSliders[key].intervalId) { clearInterval(modalSliders[key].intervalId); modalSliders[key].intervalId = null; } const bar = document.getElementById(`progress-${key}`); if (bar) { bar.style.animation = 'none'; } }
+function updateSlider(key, idx) { const slider = modalSliders[key]; if(!slider) return; slider.currentIndex = idx; const track = document.getElementById(`track-${key}`); if(track) { track.style.transform = `translateX(-${idx * 100}%)`; } const thumbs = document.querySelectorAll(`.thumb-${key}`); thumbs.forEach((t, i) => { t.classList.toggle('active', i === idx); if(i === idx) { const container = t.parentElement; const targetX = t.offsetLeft - (container.clientWidth / 2) + (t.clientWidth / 2); container.scrollTo({ left: targetX, behavior: 'smooth' }); } }); }
+function setSlide(key, idx, isManual = false) { updateSlider(key, idx); if(isManual) startAutoPlay(key); }
+function moveSlide(key, dir, isManual = false) { const slider = modalSliders[key]; if(!slider) return; let newIdx = (slider.currentIndex + dir + slider.images.length) % slider.images.length; updateSlider(key, newIdx); if(isManual) startAutoPlay(key); }
 
 function buildSliderHtml(key, title, images) {
-  let html = `<div class="slider-col">`;
-  if(title) html += `<div class="slider-header">${title}</div>`;
-  
-  html += `<div class="slider-wrapper" onmouseenter="stopAutoPlay('${key}')" onmouseleave="startAutoPlay('${key}')">`;
-  html += `<div class="slider-track" id="track-${key}">`;
-  
-  images.forEach((src, i) => {
-    html += `<div class="slide-item">
-               <img src="${src}">
-             </div>`;
-  });
-  html += `</div>`; // end track
-  
-  if(images.length > 1) {
-    html += `<button class="s-arrow prev" onclick="moveSlide('${key}', -1, true)">❮</button>`;
-    html += `<button class="s-arrow next" onclick="moveSlide('${key}', 1, true)">❯</button>`;
-    
-    html += `<div class="slider-progress"><div class="slider-progress-bar" id="progress-${key}"></div></div>`;
-  }
-  html += `</div>`; // end wrapper
-  
-  if(images.length > 1) {
-    html += `<div class="slider-thumbnails" id="thumbs-${key}">`;
-    images.forEach((src, i) => {
-      html += `<img src="${src}" class="s-thumb thumb-${key} ${i===0?'active':''}" onclick="setSlide('${key}', ${i}, true)">`;
-    });
-    html += `</div>`;
-  }
-  html += `</div>`;
-  return html;
+  let html = `<div class="slider-col">`; if(title) html += `<div class="slider-header">${title}</div>`;
+  html += `<div class="slider-wrapper" onmouseenter="stopAutoPlay('${key}')" onmouseleave="startAutoPlay('${key}')"><div class="slider-track" id="track-${key}">`;
+  images.forEach((src, i) => { html += `<div class="slide-item"><img src="${src}"></div>`; }); html += `</div>`; 
+  if(images.length > 1) { html += `<button class="s-arrow prev" onclick="moveSlide('${key}', -1, true)">❮</button><button class="s-arrow next" onclick="moveSlide('${key}', 1, true)">❯</button><div class="slider-progress"><div class="slider-progress-bar" id="progress-${key}"></div></div>`; } html += `</div>`; 
+  if(images.length > 1) { html += `<div class="slider-thumbnails" id="thumbs-${key}">`; images.forEach((src, i) => { html += `<img src="${src}" class="s-thumb thumb-${key} ${i===0?'active':''}" onclick="setSlide('${key}', ${i}, true)">`; }); html += `</div>`; } html += `</div>`; return html;
 }
 
 function openModal(type, index) {
   const data = type === 'portfolio' ? DATA.portfolio[index] : DATA.studies[index];
   const modalBody = document.getElementById('modal-body');
   document.getElementById('modal-top-title').textContent = type === 'portfolio' ? 'PROJECT DETAILS' : 'STUDY DETAILS';
-  
-  let html = '';
-  html += `<div style="width: 100%; max-width: 1200px; margin: 0 auto;">`;
+  let html = `<div style="width: 100%; max-width: 1200px; margin: 0 auto;">`;
   
   if (type === 'portfolio') {
     const dateHtmlModal = data.date ? `<div style="font-size:16px; color:var(--accent); font-weight:700; margin-bottom:20px; letter-spacing:0.05em;">🗓️ ${esc(data.date)}</div>` : '';
-        
-    html += `
-      <div class="m-article-header">
-        <div class="tags" style="margin-bottom: 24px;">${renderTags(data.tags)}</div>
-        ${dateHtmlModal}
-        <h1 class="m-article-title">${esc(data.title)}</h1>
-        <p class="m-article-desc">${esc(data.desc)}</p>
-      </div>
-    `;
-
-    if (data.youtubeId) {
-      html += `<div class="m-section-title" style="margin-top: 0;">Play Video</div>`;
-      html += `<div class="video-wrap delay-iframe" id="delayed-yt" data-src="https://www.youtube.com/embed/${data.youtubeId}" style="margin-bottom: 80px;">
-                 <div class="delay-loader">영상을 불러오는 중입니다...</div>
-               </div>`;
-    }
-
-    if (data.meta) {
-      html += `
-      <div class="m-ed-wrap">
-        <div class="m-ed-row">
-          <div><div class="m-ed-label">장르</div><div class="m-ed-value">${esc(data.meta.genre)}</div></div>
-          <div><div class="m-ed-label">레벨 크기</div><div class="m-ed-value">${esc(data.meta.size)}<span class="m-ed-sub">가로 x 세로 x 높이</span></div></div>
-          <div><div class="m-ed-label">스토리</div><div class="m-ed-desc" style="margin-top:0; color:var(--fg-main); font-weight:500;">${esc(data.meta.story)}</div></div>
-        </div>
-        <div class="m-ed-divider"></div>
-        <div class="m-section-title" style="margin-top: 0;">Level Design Intent</div>
-        <div class="m-ed-row">
-          <div><div class="m-ed-label">01. ${esc(data.meta.intent1.title)}</div><div class="m-ed-desc">${esc(data.meta.intent1.desc)}</div></div>
-          <div><div class="m-ed-label">02. ${esc(data.meta.intent2.title)}</div><div class="m-ed-desc">${esc(data.meta.intent2.desc)}</div></div>
-          <div><div class="m-ed-label">03. ${esc(data.meta.intent3.title)}</div><div class="m-ed-desc">${esc(data.meta.intent3.desc)}</div></div>
-        </div>
-      </div>
-      `;
-    }
-
-    if (data.pdfUrl) {
-      let viewerUrl = data.pdfUrl;
-      
-      if (viewerUrl.includes('drive.google.com') && viewerUrl.includes('/view')) {
-         viewerUrl = viewerUrl.replace('/view', '/preview').split('?')[0];
-      } 
-      else if (viewerUrl.toLowerCase().includes('.pdf')) {
-         viewerUrl = viewerUrl.split('#')[0] + '#pagemode=thumbs&navpanes=1&toolbar=1&view=FitH';
-      }
-
-      html += `<div class="m-section-title" style="margin-top: 0;">Full Document</div>`;
-      html += `<div class="m-pdf-wrap delay-iframe" id="delayed-pdf" data-src="${viewerUrl}">
-                 <div class="delay-loader">문서를 불러오는 중입니다...</div>
-               </div>`;
-    }
-
+    html += `<div class="m-article-header"><div class="tags" style="margin-bottom: 24px;">${renderTags(data.tags)}</div>${dateHtmlModal}<h1 class="m-article-title">${esc(data.title)}</h1><p class="m-article-desc">${esc(data.desc)}</p></div>`;
+    if (data.youtubeId) { html += `<div class="m-section-title" style="margin-top: 0;">Play Video</div><div class="video-wrap delay-iframe" id="delayed-yt" data-src="https://www.youtube.com/embed/${data.youtubeId}" style="margin-bottom: 80px;"><div class="delay-loader">영상을 불러오는 중입니다...</div></div>`; }
+    if (data.meta) { html += `<div class="m-ed-wrap"><div class="m-ed-row"><div><div class="m-ed-label">장르</div><div class="m-ed-value">${esc(data.meta.genre)}</div></div><div><div class="m-ed-label">레벨 크기</div><div class="m-ed-value">${esc(data.meta.size)}<span class="m-ed-sub">가로 x 세로 x 높이</span></div></div><div><div class="m-ed-label">스토리</div><div class="m-ed-desc" style="margin-top:0; color:var(--fg-main); font-weight:500;">${esc(data.meta.story)}</div></div></div><div class="m-ed-divider"></div><div class="m-section-title" style="margin-top: 0;">Level Design Intent</div><div class="m-ed-row"><div><div class="m-ed-label">01. ${esc(data.meta.intent1.title)}</div><div class="m-ed-desc">${esc(data.meta.intent1.desc)}</div></div><div><div class="m-ed-label">02. ${esc(data.meta.intent2.title)}</div><div class="m-ed-desc">${esc(data.meta.intent2.desc)}</div></div><div><div class="m-ed-label">03. ${esc(data.meta.intent3.title)}</div><div class="m-ed-desc">${esc(data.meta.intent3.desc)}</div></div></div></div>`; }
+    if (data.pdfUrl) { let viewerUrl = data.pdfUrl; if (viewerUrl.includes('drive.google.com') && viewerUrl.includes('/view')) { viewerUrl = viewerUrl.replace('/view', '/preview').split('?')[0]; } else if (viewerUrl.toLowerCase().includes('.pdf')) { viewerUrl = viewerUrl.split('#')[0] + '#pagemode=thumbs&navpanes=1&toolbar=1&view=FitH'; } html += `<div class="m-section-title" style="margin-top: 0;">Full Document</div><div class="m-pdf-wrap delay-iframe" id="delayed-pdf" data-src="${viewerUrl}"><div class="delay-loader">문서를 불러오는 중입니다...</div></div>`; }
     modalSliders = {}; 
-    
-    if ((data.overviewImages && data.overviewImages.length > 0) || (data.processImages && data.processImages.length > 0)) {
-      html += `<div class="m-section-title" style="margin-top: 0;">GALLERY</div>`;
-      html += `<div class="dual-slider-wrap">`;
-      
-      if(data.overviewImages && data.overviewImages.length > 0) {
-        modalSliders['overview'] = { images: data.overviewImages, currentIndex: 0, intervalId: null };
-        html += buildSliderHtml('overview', 'Overview', data.overviewImages);
-      }
-      if(data.processImages && data.processImages.length > 0) {
-        modalSliders['process'] = { images: data.processImages, currentIndex: 0, intervalId: null };
-        html += buildSliderHtml('process', '제작 과정', data.processImages);
-      }
-      html += `</div>`;
-    } 
-    else if (data.images && data.images.length > 0) {
-      html += `<div class="m-section-title" style="margin-top: 0;">GALLERY</div>`;
-      html += `<div class="dual-slider-wrap" style="grid-template-columns: 1fr;">`;
-      modalSliders['single'] = { images: data.images, currentIndex: 0, intervalId: null };
-      html += buildSliderHtml('single', null, data.images);
-      html += `</div>`;
-    }
+    if ((data.overviewImages && data.overviewImages.length > 0) || (data.processImages && data.processImages.length > 0)) { html += `<div class="m-section-title" style="margin-top: 0;">GALLERY</div><div class="dual-slider-wrap">`; if(data.overviewImages && data.overviewImages.length > 0) { modalSliders['overview'] = { images: data.overviewImages, currentIndex: 0, intervalId: null }; html += buildSliderHtml('overview', 'Overview', data.overviewImages); } if(data.processImages && data.processImages.length > 0) { modalSliders['process'] = { images: data.processImages, currentIndex: 0, intervalId: null }; html += buildSliderHtml('process', '제작 과정', data.processImages); } html += `</div>`; } 
+    else if (data.images && data.images.length > 0) { html += `<div class="m-section-title" style="margin-top: 0;">GALLERY</div><div class="dual-slider-wrap" style="grid-template-columns: 1fr;">`; modalSliders['single'] = { images: data.images, currentIndex: 0, intervalId: null }; html += buildSliderHtml('single', null, data.images); html += `</div>`; }
 
   } else {
-    if (data.coverImage) {
-      html += `<img src="${esc(data.coverImage)}" class="m-study-cover" alt="Cover">`;
+    if (data.coverImage) { html += `<img src="${esc(data.coverImage)}" class="m-study-cover" alt="Cover">`; }
+    html += `<div class="m-study-header"><div class="m-study-meta"><span style="color:var(--accent)">${esc(data.cat)}</span><span>|</span><span>${esc(data.date || 'No Date')}</span></div><h2 class="m-study-title">${esc(data.title)}</h2><div class="m-study-desc">${esc(data.desc)}</div></div>`;
+    
+    if (data.youtubeId) { 
+      html += `<div class="m-section-title" style="margin-top: 0; padding-top: 0; border-top: none;">Reference Video</div><div class="video-wrap delay-iframe" id="delayed-yt" data-src="https://www.youtube.com/embed/${data.youtubeId}" style="margin-bottom: 60px;"><div class="delay-loader">영상을 불러오는 중입니다...</div></div>`; 
     }
-    html += `
-      <div class="m-study-header">
-        <div class="m-study-meta">
-          <span style="color:var(--accent)">${esc(data.cat)}</span>
-          <span>|</span>
-          <span>${esc(data.date || 'No Date')}</span>
-        </div>
-        <h2 class="m-study-title">${esc(data.title)}</h2>
-        <div class="m-study-desc">${esc(data.desc)}</div>
-      </div>
-      <div class="m-study-content">
-        ${data.content || '<p class="m-study-p">아직 작성된 내용이 없습니다.</p>'}
-      </div>
-    `;
+    
+    const parsedContent = data.content ? marked.parse(data.content) : '<p>아직 작성된 내용이 없습니다.</p>';
+    html += `<div class="m-study-content">${parsedContent}</div>`;
   }
   
   html += `</div>`;
-
-  modalBody.innerHTML = html;
-  document.getElementById('modal-overlay').classList.add('active');
-  document.getElementById('detail-modal').classList.add('active');
-  document.getElementById('detail-modal').scrollTop = 0;
+  modalBody.innerHTML = html; document.getElementById('modal-overlay').classList.add('active'); document.getElementById('detail-modal').classList.add('active'); document.getElementById('detail-modal').scrollTop = 0;
 
   setTimeout(() => {
-    const ytContainer = document.getElementById('delayed-yt');
-    if (ytContainer) ytContainer.innerHTML = `<iframe src="${ytContainer.dataset.src}" allowfullscreen></iframe>`;
-    const pdfContainer = document.getElementById('delayed-pdf');
-    if (pdfContainer) pdfContainer.innerHTML = `<iframe src="${pdfContainer.dataset.src}" title="PDF Viewer"></iframe>`;
-
-    Object.keys(modalSliders).forEach(key => {
-      updateSlider(key, 0);
-      if(modalSliders[key].images.length > 1) {
-        startAutoPlay(key);
-      }
-    });
+    const ytContainer = document.getElementById('delayed-yt'); if (ytContainer) ytContainer.innerHTML = `<iframe src="${ytContainer.dataset.src}" allowfullscreen></iframe>`;
+    const pdfContainer = document.getElementById('delayed-pdf'); if (pdfContainer) pdfContainer.innerHTML = `<iframe src="${pdfContainer.dataset.src}" title="PDF Viewer"></iframe>`;
+    Object.keys(modalSliders).forEach(key => { updateSlider(key, 0); if(modalSliders[key].images.length > 1) { startAutoPlay(key); } });
   }, 400); 
 }
 
-function closeModal() {
-  Object.keys(modalSliders).forEach(key => stopAutoPlay(key));
-  document.getElementById('modal-overlay').classList.remove('active');
-  document.getElementById('detail-modal').classList.remove('active');
-  document.getElementById('modal-body').innerHTML = ''; 
-}
-
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-let resizeTimer;
-window.addEventListener('resize', () => { document.body.classList.add('resize-animation-stopper'); clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { document.body.classList.remove('resize-animation-stopper'); }, 400); });
-const hamburgerBtn = document.getElementById('hamburgerBtn'); const navLinks = document.getElementById('navLinks');
-hamburgerBtn.addEventListener('click', () => { hamburgerBtn.classList.toggle('open'); navLinks.classList.toggle('open'); });
-function switchPage(pageId) { if (window.innerWidth <= 768) { hamburgerBtn.classList.remove('open'); navLinks.classList.remove('open'); } document.querySelectorAll('.page').forEach(page => { page.classList.remove('active'); setTimeout(() => { page.scrollTop = 0; }, 400); }); document.getElementById(`page-${pageId}`).classList.add('active'); document.querySelectorAll('.page-link').forEach(link => { link.classList.toggle('active', link.dataset.target === pageId); }); }
-function toggleTheme() { const root = document.documentElement; const label = document.getElementById('theme-label'); if (root.dataset.theme === 'dark') { root.dataset.theme = 'light'; label.textContent = 'Light'; } else { root.dataset.theme = 'dark'; label.textContent = 'Dark'; } if (window.innerWidth <= 768) { hamburgerBtn.classList.remove('open'); navLinks.classList.remove('open'); } }
-document.querySelectorAll('.page-link').forEach(l => l.classList.remove('active'));
+function closeModal() { Object.keys(modalSliders).forEach(key => stopAutoPlay(key)); document.getElementById('modal-overlay').classList.remove('active'); document.getElementById('detail-modal').classList.remove('active'); document.getElementById('modal-body').innerHTML = ''; }
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); }); let resizeTimer; window.addEventListener('resize', () => { document.body.classList.add('resize-animation-stopper'); clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { document.body.classList.remove('resize-animation-stopper'); }, 400); }); const hamburgerBtn = document.getElementById('hamburgerBtn'); const navLinks = document.getElementById('navLinks'); hamburgerBtn.addEventListener('click', () => { hamburgerBtn.classList.toggle('open'); navLinks.classList.toggle('open'); }); function switchPage(pageId) { if (window.innerWidth <= 768) { hamburgerBtn.classList.remove('open'); navLinks.classList.remove('open'); } document.querySelectorAll('.page').forEach(page => { page.classList.remove('active'); setTimeout(() => { page.scrollTop = 0; }, 400); }); document.getElementById(`page-${pageId}`).classList.add('active'); document.querySelectorAll('.page-link').forEach(link => { link.classList.toggle('active', link.dataset.target === pageId); }); } function toggleTheme() { const root = document.documentElement; const label = document.getElementById('theme-label'); if (root.dataset.theme === 'dark') { root.dataset.theme = 'light'; label.textContent = 'Light'; } else { root.dataset.theme = 'dark'; label.textContent = 'Dark'; } if (window.innerWidth <= 768) { hamburgerBtn.classList.remove('open'); navLinks.classList.remove('open'); } } document.querySelectorAll('.page-link').forEach(l => l.classList.remove('active'));
 </script>
 </body>
 </html>
