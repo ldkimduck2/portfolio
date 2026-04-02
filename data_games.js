@@ -304,7 +304,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2018. 03",
-    playtime: 9,
+    playtime: 10.9,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1222700/header.jpg",
     tags: ["!협동", "스토리", "2인 필수"]
   },
@@ -628,9 +628,9 @@ const GAMES_DATA = [
     developer: "Shift Up",
     genre: "액션 RPG",
     platform: "Console / PC",
-    status: "진행 중",
+    status: "완료",
     releaseDate: "2024. 04",
-    playtime: 16,
+    playtime: 35.2,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/3489700/header.jpg",
     tags: ["!SF", "포스트 아포칼립스", "소울라이크"]
   },
@@ -672,9 +672,9 @@ const GAMES_DATA = [
     developer: "Ubisoft",
     genre: "슈팅 (FPS / TPS)",
     platform: "Console / PC",
-    status: "진행 중",
+    status: "완료",
     releaseDate: "2019. 03",
-    playtime: 33,
+    playtime: 42.6,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2221490/header.jpg",
     tags: ["!루트 슈터", "포스트 아포칼립스"]
   },
@@ -699,5 +699,71 @@ const GAMES_DATA = [
     playtime: 3.7, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/728880/header.jpg",
     tags: ["!우정파괴", "협동", "요리", "파티 게임"]
+  },
+  {
+    title: "Shredders",
+    developer: "FoamPunch",
+    genre: "스포츠 / 레이싱",
+    platform: "Console / PC",
+    status: "진행 중",
+    releaseDate: "2022. 03",
+    playtime: 2.1,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1874170/header.jpg",
+    tags: ["!스노우보드", "익스트림", "오픈월드"]
+  },
+  {
+    title: "EA SPORTS FC™ 25",
+    developer: "EA Sports",
+    genre: "스포츠 / 레이싱",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2024. 09",
+    playtime: 14, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2669320/header.jpg",
+    tags: ["!축구", "스포츠", "멀티플레이"]
+  },
+  {
+    title: "FC 온라인",
+    developer: "EA Korea Studio",
+    genre: "스포츠 / 레이싱",
+    platform: "PC",
+    status: "완료",
+    releaseDate: "2018. 05", // (구 FIFA 온라인 4 출시 기준)
+    playtime: 265, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요! (예: 500, "약 500시간+")
+    image: "https://i.namu.wiki/i/fWsl5HTrlMF7fOrO2Q7UxBLap6ja838uMRKL5FlHQhmP-z1ERW7fRulQuzdsWgRDFSwIfaLtfIwJOhbEPTyN-w.webp", // 넥슨 공식 메타 이미지
+    tags: ["!축구", "경쟁", "팀 구성"]
+  },
+  {
+    title: "원신 (Genshin Impact)",
+    developer: "HoYoverse",
+    genre: "액션 RPG",
+    platform: "PC / Mobile / Console",
+    status: "진행 중",
+    releaseDate: "2020. 09",
+    playtime: 0, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요! (예: 300)
+    image: "https://i.namu.wiki/i/xWCL1ZGua49rMaUlw5temmfjv0OC74ZzC1hkBH0NTgLCvz-qwGcBkSbvLMJAlOnX7eHB7Pmu8H4Rrob3wCf2eg.webp",
+    tags: ["!오픈월드", "서브컬쳐", "수집형", "Stylized"]
+  },
+  {
+    title: "Split Fiction",
+    developer: "Hazelight Studios",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "진행 중",
+    releaseDate: "2025. 03",
+    playtime: 10.1,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2001120/header.jpg",
+    tags: ["!협동", "퍼즐", "스토리"]
+  },
+  {
+    title: "젤다의 전설 브레스 오브 더 와일드",
+    developer: "Nintendo",
+    genre: "액션 어드벤처",
+    platform: "Console",
+    status: "진행 중", // 👈 아직 플레이 중이시라면 "진행 중"으로 수정해 주세요!
+    releaseDate: "2017. 03",
+    playtime: 0, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
+    image: "https://assets.nintendo.com/image/upload/c_fill,w_1200/ncom/en_US/games/switch/t/the-legend-of-zelda-breath-of-the-wild-switch/hero",
+    tags: ["!오픈월드", "명작", "탐험"]
   }
 ];

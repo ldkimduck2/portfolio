@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leador - Pro Interactive Map</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<style>
+/* --- 전역 설정 --- */
+:root { --accent: #E03030; --bg: #0C0C0C; --bg-sub: #151515; --fg-main: #F0F0F0; --fg-muted: #888888; --border: rgba(255, 255, 255, 0.1); --font: 'Pretendard', sans-serif; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* 🔥 겹침 해결: 화면을 좌우(Flex)로 완벽히 분할 🔥 */
+body { background: var(--bg); color: var(--fg-main); font-family: var(--font); display: flex; flex-direction: row; height: 100vh; overflow: hidden; margin: 0; }
+
+/* 🔥 좌측 고정 사이드바 (공간 340px 차지) 🔥 */
+#left-sidebar {
+    width: 340px; flex-shrink: 0; height: 100%; position: relative;
+    background: rgba(15, 15, 15, 0.85); border-right: 1px solid rgba(255,255,255,0.08);
+    z-index: 1000; display: flex; flex-direction: column;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+    padding: 32px 24px; overflow-y: auto; box-sizing: border-box;
+}
+
+/* 🔥 우측 지도 영역 (나머지 공간 꽉 채움) 🔥 */
+#map { flex-grow: 1; height: 100%; background: #cdbfa6; position: relative; z-index: 1; }
+
+/* Leaflet UI 위치 및 스타일 조정 */
+.leaflet-control-zoom { border: none !important; margin: 24px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important; }
+.leaflet-control-zoom-in, .leaflet-control-zoom-out { background-color: var(--bg-sub) !important; color: var(--fg-main) !important; border: 1px solid var(--border) !important; font-size: 16px !important; width: 36px !important; height: 36px !important; line-height: 36px !important; }
+.leaflet-right .leaflet-control { margin-right: 24px; }
+
+/* 툴팁 커스텀 */
+.fromsoft-tooltip { background: rgba(15, 15, 15, 0.9); border: 1px solid var(--border); color: var(--fg-main); font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); white-space: nowrap; opacity: 1 !important; visibility: visible !important; }
+.leaflet-tooltip-top::before { border-top-color: var(--border); }
+
+/* 사이드바 내부 스타일 */
+.sidebar-header { margin-bottom: 40px; }
+.sidebar-title { font-size: 24px; font-weight: 900; color: var(--fg-main); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 12px; }
+.sidebar-desc { font-size: 13px; color: var(--fg-muted); line-height: 1.6; word-break: keep-all; }
+.legend-group { margin-bottom: 32px; }
+.legend-group-title { font-size: 11px; font-weight: 800; color: #d4af37; margin-bottom: 16px; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+.legend-item { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 14px; font-weight: 600; color: var(--fg-main); cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s; }
+.legend-item:hover { background: rgba(255,255,255,0.05); }
+.legend-icon { border-radius: 50%; border: 1.5px solid #fff; flex-shrink: 0; display: inline-block; }
+.l-large { width: 18px; height: 18px; background: #d4af37; box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
+.l-mid { width: 14px; height: 14px; background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.6); }
+.l-small { width: 10px; height: 10px; background: #8b5cf6; box-shadow: 0 0 10px rgba(139, 92, 246, 0.6); }
+
+/* 게임 스타일 팝업 */
+.game-popup .leaflet-popup-content-wrapper { background: rgba(18, 18, 18, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.8); backdrop-filter: blur(8px); padding: 0; }
+.game-popup .leaflet-popup-tip { background: rgba(18, 18, 18, 0.95); border-bottom: 1px solid rgba(255, 255, 255, 0.15); border-right: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 4px 4px 8px rgba(0,0,0,0.5); }
+.game-popup .leaflet-popup-content { margin: 0; width: 320px !important; }
+.game-popup a.leaflet-popup-close-button { color: var(--fg-muted); font-size: 18px; padding: 8px; transition: color 0.2s; z-index: 10; }
+.game-popup a.leaflet-popup-close-button:hover { color: var(--accent); }
+.popup-header { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.popup-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.popup-tag { font-size: 10px; font-weight: 700; padding: 3px 6px; background: rgba(255,255,255,0.05); border-radius: 4px; color: var(--fg-muted); }
+.popup-title { font-size: 18px; font-weight: 800; color: var(--fg-main); margin: 0 0 8px 0; line-height: 1.3; }
+.popup-desc { font-size: 12px; color: var(--fg-muted); line-height: 1.5; margin: 0; }
+.popup-body { padding: 16px 20px 20px; background: rgba(0,0,0,0.2); border-radius: 0 0 8px 8px; }
+.popup-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.pm-item { display: flex; flex-direction: column; gap: 4px; }
+.pm-lbl { font-size: 10px; color: #d4af37; font-weight: 700; }
+.pm-val { font-size: 13px; color: #fff; font-weight: 600; }
+.pm-full { grid-column: 1 / -1; }
+.popup-details { margin-top: 16px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 16px; }
+.pd-row { margin-bottom: 12px; }
+.pd-row:last-child { margin-bottom: 0; }
+.pd-lbl { font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.pd-lbl::before { content: ""; display: inline-block; width: 4px; height: 4px; background: var(--accent); border-radius: 50%; }
+.pd-txt { font-size: 12px; color: var(--fg-main); line-height: 1.5; }
+
+/* 마커 CSS */
+.grace-wrapper { background: none; border: none; }
+.grace-point { width: 100%; height: 100%; border-radius: 50%; border: 1.5px solid #fff; cursor: pointer; transition: transform 0.2s; position: relative; }
+.grace-point::after { content: ''; position: absolute; top: -6px; left: -6px; right: -6px; bottom: -6px; border-radius: 50%; animation: pulseAnim 2s infinite; pointer-events: none; }
+.poi-large-marker .grace-point { background-color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.6); }
+.poi-large-marker .grace-point::after { border: 1.5px solid rgba(212, 175, 55, 0.5); }
+.poi-mid-marker .grace-point { background-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.6); }
+.poi-mid-marker .grace-point::after { border: 1.5px solid rgba(16, 185, 129, 0.5); }
+.poi-small-marker .grace-point { background-color: #8b5cf6; box-shadow: 0 0 15px rgba(139, 92, 246, 0.6); }
+.poi-small-marker .grace-point::after { border: 1.5px solid rgba(139, 92, 246, 0.5); }
+@keyframes pulseAnim { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.6); opacity: 0; } }
+.grace-wrapper:hover .grace-point { transform: scale(1.3); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+    <div id="left-sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Leador Interactive Map</div>
+            <p class="sidebar-desc">지도를 마우스로 드래그하고 휠로 확대/축소하세요. 맵 위의 마커를 클릭하면 해당 구역의 상세 기획 데이터가 표시됩니다.</p>
+        </div>
+
+        <div class="legend-group">
+            <div class="legend-group-title">Map Legend</div>
+            <div class="legend-item"><div class="legend-icon l-large"></div>대형 POI (레거시 던전)</div>
+            <div class="legend-item"><div class="legend-icon l-mid"></div>중형 POI (필드 거점)</div>
+            <div class="legend-item"><div class="legend-icon l-small"></div>소형 POI (탐험 보상)</div>
+        </div>
+        
+        <div class="legend-group" style="margin-top: auto; opacity: 0.6;">
+            <div class="legend-group-title">Developer Tool</div>
+            <p style="font-size: 12px; color: var(--fg-main); line-height: 1.5;">지도의 빈 곳을 우클릭(Right-Click)하면 마커를 추가할 수 있는 좌표가 복사됩니다.</p>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="data_map.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        const imageUrl = 'Map.png'; 
+        const img = new Image();
+        img.src = imageUrl;
+        
+        img.onload = function() {
+            const w = img.naturalWidth;
+            const h = img.naturalHeight;
+
+            const map = L.map('map', {
+                crs: L.CRS.Simple,
+                zoomSnap: 0, 
+                zoomDelta: 0.5, 
+                attributionControl: false,
+                maxBoundsViscosity: 1.0,
+                zoomControl: false 
+            });
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+            const bounds = [[0, 0], [h, w]];
+            L.imageOverlay(imageUrl, bounds).addTo(map);
+
+            function checkDragging() {
+                if (map.getZoom() <= map.getMinZoom()) { map.dragging.disable(); } 
+                else { map.dragging.enable(); }
+            }
+
+            function setMapConstraints() {
+                const containZoom = map.getBoundsZoom(bounds, false); 
+                map.setMinZoom(containZoom);    
+                map.setMaxBounds(bounds);     
+                checkDragging(); 
+            }
+            
+            setMapConstraints();
+            map.setView([h / 2, w / 2], map.getMinZoom()); 
+            window.addEventListener('resize', setMapConstraints);
+            map.on('zoomend', checkDragging);
+
+            map.on('contextmenu', function(e) {
+                const y = e.latlng.lat; 
+                const x = e.latlng.lng;
+                const ratioY = (y / h).toFixed(3);
+                const ratioX = (x / w).toFixed(3);
+                const copyText = `coords: { y: ${ratioY}, x: ${ratioX} }`;
+                
+                L.popup({ className: 'game-popup' })
+                    .setLatLng(e.latlng)
+                    .setContent(`
+                        <div style="padding: 16px; text-align: center;">
+                            <div style="color: #E03030; font-weight: 800; font-size: 14px; margin-bottom: 8px;">📍 좌표 추출 완료</div>
+                            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 4px; font-family: monospace; font-size: 13px;">${copyText}</div>
+                        </div>
+                    `)
+                    .openOn(map);
+            });
+
+            const createGraceIcon = (size, typeClass) => L.divIcon({ 
+                className: `grace-wrapper ${typeClass}`,
+                html: `<div class="grace-point"></div>`,
+                iconSize: [size, size], iconAnchor: [size/2, size/2] 
+            });
+
+            const iconLarge = createGraceIcon(24, 'poi-large-marker'); 
+            const iconMid = createGraceIcon(18, 'poi-mid-marker');     
+            const iconSmall = createGraceIcon(14, 'poi-small-marker');   
+
+            const gracePointsGroup = L.layerGroup().addTo(map);
+
+            let renderData = [];
+            if (typeof MAP_DATA !== 'undefined' && MAP_DATA.length > 0) { renderData = MAP_DATA; } 
+            else {
+                renderData = [
+                    { title: "대형 POI (테스트)", size: "large", tags: ["테스트"], desc: "임시 마커입니다.", metrics: { time: "-", size: "-", actors: "-" }, traversal: { distance: "-", run: "-", mount: "-" }, coords: { y: 0.75, x: 0.42 }, details: [] },
+                    { title: "중형 POI (테스트)", size: "mid", tags: ["테스트"], desc: "임시 마커입니다.", metrics: { time: "-", size: "-", actors: "-" }, traversal: { distance: "-", run: "-", mount: "-" }, coords: { y: 0.35, x: 0.75 }, details: [] },
+                    { title: "소형 POI (테스트)", size: "small", tags: ["테스트"], desc: "임시 마커입니다.", metrics: { time: "-", size: "-", actors: "-" }, traversal: { distance: "-", run: "-", mount: "-" }, coords: { y: 0.40, x: 0.28 }, details: [] }
+                ];
+            }
+
+            renderData.forEach(data => {
+                let selectedIcon;
+                if (data.size === "large") selectedIcon = iconLarge;
+                else if (data.size === "mid") selectedIcon = iconMid;
+                else selectedIcon = iconSmall;
+
+                const actualCoords = [h * data.coords.y, w * data.coords.x];
+                const marker = L.marker(actualCoords, { icon: selectedIcon }).addTo(gracePointsGroup);
+                
+                marker.bindTooltip(data.title, { className: 'fromsoft-tooltip', direction: 'top', offset: [0, -12], permanent: false });
+
+                let tagsHtml = data.tags ? data.tags.map(t => `<span class="popup-tag">${t}</span>`).join('') : '';
+                let detailsHtml = '';
+                if (data.details && data.details.length > 0) {
+                    detailsHtml = '<div class="popup-details">';
+                    data.details.forEach(d => {
+                        detailsHtml += `<div class="pd-row"><div class="pd-lbl">${d.label}</div><div class="pd-txt">${d.text}</div></div>`;
+                    });
+                    detailsHtml += '</div>';
+                }
+
+                let popupContent = `
+                    <div class="popup-header">
+                        <div class="popup-tags">${tagsHtml}</div>
+                        <h3 class="popup-title">${data.title}</h3>
+                        <p class="popup-desc">${data.desc}</p>
+                    </div>
+                    <div class="popup-body">
+                        <div class="popup-metrics">
+                            <div class="pm-item"><span class="pm-lbl">공간 규모</span><span class="pm-val">${data.metrics.size}</span></div>
+                            <div class="pm-item"><span class="pm-lbl">배치 객체</span><span class="pm-val">${data.metrics.actors}</span></div>
+                            <div class="pm-item pm-full"><span class="pm-lbl">예상 플레이 타임</span><span class="pm-val">${data.metrics.time}</span></div>
+                        </div>
+                        <div class="popup-metrics" style="margin-bottom:0;">
+                            <div class="pm-item pm-full"><span class="pm-lbl">이동 소요 시간 (이전 기준)</span><span class="pm-val" style="color:var(--fg-muted); font-size:12px; font-weight:500;">📍거리: <span style="color:#fff">${data.traversal.distance}</span></span></div>
+                            <div class="pm-item"><span class="pm-lbl">도보</span><span class="pm-val">${data.traversal.run}</span></div>
+                            <div class="pm-item"><span class="pm-lbl">영마</span><span class="pm-val">${data.traversal.mount}</span></div>
+                        </div>
+                        ${detailsHtml}
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent, {
+                    className: 'game-popup',
+                    offset: [0, -10],
+                    closeButton: true
+                });
+
+                marker.on('click', (e) => {
+                    map.flyTo(actualCoords, map.getMinZoom() + 0.8, { animate: true, duration: 0.5 });
+                });
+            });
+        };
+
+        img.onerror = function() {
+            alert("Map.png 이미지를 불러올 수 없습니다. 파일명과 위치를 확인해주세요!");
+        };
+    </script>
+</body>
+</html>

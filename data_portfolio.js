@@ -7,6 +7,7 @@ const PORTFOLIO_DATA = [
     youtubeId: "vBcbqNlE1d0", // 비디오 링크
     thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop", // 이미지 슬라이더
     pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // PDF 주소
+    mapUrl: "Maps/leadormap/map.html",
     overviewImages: [
       "img/LTD/ov/01.png",
       "img/LTD/ov/02.png",
