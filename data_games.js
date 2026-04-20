@@ -765,5 +765,27 @@ const GAMES_DATA = [
     playtime: 0, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
     image: "https://assets.nintendo.com/image/upload/c_fill,w_1200/ncom/en_US/games/switch/t/the-legend-of-zelda-breath-of-the-wild-switch/hero",
     tags: ["!오픈월드", "명작", "탐험"]
+  },
+  {
+    title: "RV There Yet?",
+    developer: "Nuggets Entertainment",
+    genre: "액션 어드벤처",
+    platform: "PC",
+    status: "진행 중", // 👈 완료하셨다면 "완료"로 수정해 주세요!
+    releaseDate: "2025. 10",
+    playtime: 0, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3949040/cae24b4ed7f4531be51f0d63f785b7d253f92dc3/header.jpg?t=1766020280",
+    tags: ["!협동", "물리엔진", "운전", "코미디"]
+  },
+  {
+    title: "P의 거짓 (Lies of P)",
+    developer: "NEOWIZ",
+    genre: "액션 RPG",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2023. 09",
+    playtime: 24.7,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1627720/header.jpg",
+    tags: ["!소울라이크", "다크 판타지", "피노키오"]
   }
 ];
