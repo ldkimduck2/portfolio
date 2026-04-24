@@ -94,7 +94,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2022. 02",
-    playtime: 79.2,
+    playtime: 93.6,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg",
     tags: ["!오픈월드", "다크 판타지", "소울라이크"]
   },
@@ -784,7 +784,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2023. 09",
-    playtime: 24.7,
+    playtime: 32.3,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1627720/header.jpg",
     tags: ["!소울라이크", "다크 판타지", "피노키오"]
   }

@@ -11,8 +11,8 @@ const PROFILE_DATA = {
     ],
   },
   landing: {
-    headline: "Level Designer 김기덕", 
-    desc: "Level Design Portfolio",
+    headline: "플레이어의 경험을 설계합니다", 
+    desc: "레벨디자이너 김기덕 포트폴리오",
     heroImages: [
       "img/LTD/ov/01.png",
       "img/LTD/ov/03.png",
