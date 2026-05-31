@@ -193,10 +193,9 @@ const GAMES_DATA = [
     platform: "PC",
     status: "완료",
     releaseDate: "2020. 06",
-    playtime: 2000,
-    playtimeText: "약 2000시간+",
+    playtime: 1287,
     image: "https://www.riotgames.com/darkroom/1440/8d5c497da1c2eeec8cffa99b01abc64b:5329ca773963a5b739e98e715957ab39/ps-f2p-val-console-launch-16x9.jpg",
-    tags: ["!히어로 슈팅", "경쟁"]
+    tags: ["!히어로 슈팅", "전술FPS", "경쟁"]
   },
   {
     title: "Planet Zoo",
@@ -734,17 +733,6 @@ const GAMES_DATA = [
     tags: ["!축구", "경쟁", "팀 구성"]
   },
   {
-    title: "원신 (Genshin Impact)",
-    developer: "HoYoverse",
-    genre: "액션 RPG",
-    platform: "PC / Mobile / Console",
-    status: "진행 중",
-    releaseDate: "2020. 09",
-    playtime: 0, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요! (예: 300)
-    image: "https://i.namu.wiki/i/xWCL1ZGua49rMaUlw5temmfjv0OC74ZzC1hkBH0NTgLCvz-qwGcBkSbvLMJAlOnX7eHB7Pmu8H4Rrob3wCf2eg.webp",
-    tags: ["!오픈월드", "서브컬쳐", "수집형", "Stylized"]
-  },
-  {
     title: "Split Fiction",
     developer: "Hazelight Studios",
     genre: "액션 어드벤처",
@@ -771,9 +759,9 @@ const GAMES_DATA = [
     developer: "Nuggets Entertainment",
     genre: "액션 어드벤처",
     platform: "PC",
-    status: "진행 중", // 👈 완료하셨다면 "완료"로 수정해 주세요!
+    status: "완료", // 
     releaseDate: "2025. 10",
-    playtime: 0, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
+    playtime: 18.4, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
     image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3949040/cae24b4ed7f4531be51f0d63f785b7d253f92dc3/header.jpg?t=1766020280",
     tags: ["!협동", "물리엔진", "운전", "코미디"]
   },
@@ -787,5 +775,16 @@ const GAMES_DATA = [
     playtime: 32.3,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1627720/header.jpg",
     tags: ["!소울라이크", "다크 판타지", "피노키오"]
-  }
+  },
+  {
+    title: "붉은사막 (Crimson Desert)",
+    developer: "Pearl Abyss",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "진행 중", // 상태 뱃지 (출시 전)
+    releaseDate: "2026. 03",
+    playtime: 5.7, 
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/3321460/header.jpg", // 붉은사막 공식 썸네일
+    tags: ["!오픈월드", "액션", "기대작"]
+  },
 ];

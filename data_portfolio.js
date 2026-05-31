@@ -1,40 +1,58 @@
 const PORTFOLIO_DATA = [
   {
     title: "Leador",
-    date: "2025.08.25 — 2026.03.--", // 👈 프로젝트 제작 기간
-    desc: "오픈월드 액션RPG 소울라이크", // 설명 글
-    tags: ["!ELDEN RING", "Unreal Engine 5", "Dark Fantasy", "창작"], //태그
-    youtubeId: "vBcbqNlE1d0", // 비디오 링크
-    thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop", // 이미지 슬라이더
-    pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // PDF 주소
-    mapUrl: "Maps/leadormap/map.html",
+    date: "2025.07.01 — 2026.05.21",
+    desc: "잊혀진 자의 신화적 순례를 다루는 다크 판타지 오픈월드 액션RPG",
+    tags: ["!ELDEN RING", "Unreal Engine 5", "Dark Fantasy", "창작"],
+    youtubeMain: "JuzBbLGLK4A", // 👈 메인 영상 ID
+    youtubeSub: "2a_eilEKhUQ", // 👈 서브 영상 ID (업로드 후 수정해주세요!)
+    thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
+    pdfUrl: "pdf/김기덕_오픈월드ARPG 레벨기획서.pdf",
+    //mapUrl: "Maps/leadormap/map.html",
     overviewImages: [
-      "img/LTD/ov/01.png",
-      "img/LTD/ov/02.png",
-      "img/LTD/ov/03.png"
+      "img/LD/ov/01.png",
+      "img/LD/ov/02.png",
+      "img/LD/ov/03.png",
+      "img/LD/ov/04.png",
+      "img/LD/ov/05.png",
+      "img/LD/ov/06.png",
+      "img/LD/ov/07.png",
+      "img/LD/ov/08.png",
+      "img/LD/ov/09.png"
     ],
     processImages: [
-      "img/LTD/ov/01.png",
-      "img/LTD/ov/02.png",
-      "img/LTD/ov/03.png"
+      "img/LD/pc/C_01.png",
+      "img/LD/pc/C_02.png",
+      "img/LD/pc/C_03.png",
+      "img/LD/pc/C_04.png",
+      "img/LD/pc/C_05.png",
+      "img/LD/pc/N_01.png",
+      "img/LD/pc/N_02.png",
+      "img/LD/pc/N_03.png",
+      "img/LD/pc/Q_01.png",
+      "img/LD/pc/Q_02.png",
+      "img/LD/pc/Q_03.png",
+      "img/LD/pc/Q_04.png",
+      "img/LD/pc/Q_05.png",
+      "img/LD/pc/Q_08.png"
     ],
     meta: {
       genre: "오픈월드 액션RPG",
-      size: "255 x 310 x 55",
-      story: "폐쇄된 구역을 탐색하며 숨겨진 진실을 찾아가는 여정",
-      intent1: { title: "내러티브", desc: "시퀀스에 따라 플레이어 동선과 이벤트를 자연스럽게 연결" },
-      intent2: { title: "전투/탐험", desc: "전투의 긴장감, 탐험의 몰입감을 유기적으로 엮는 구성" },
-      intent3: { title: "시선 유도", desc: "랜드마크, 조명 등 별도의 설명 없이 플레이 동선을 유도하는 설계" }
+      size: "800 x 1000 x 800",
+      story: "멈춰버린 세계 속, 잔향자는 산산조각 난 에텔의 심장을 되찾기 위한 순례를 떠난다.",
+      intent1: { title: "자발적 탐험", desc: "플레이어의 호기심이 자발적인 탐험으로 이어지도록 공간 설계" },
+      intent2: { title: "환경 내러티브", desc: "텍스트에 의존하지 않고, 공간으로 이야기 맥락 전달" },
+      intent3: { title: "선택이 서사를 만든다", desc: "목표로 향하는 경로를 다각화하여, 플레이어마다 고유한 경험을 구축" }
     },
   },
   {
     title: "Left To Decay",
-    date: "2025.03.21 — 2025.04.07", // 👈 프로젝트 제작 기간
-    desc: "3인칭 액션 어드벤처", // 설명 글
-    tags: ["!LAST OF US", "Unreal Engine 5", "포스트 아포칼립스", "창작"], //태그
-    youtubeId: "sKNml5GIzbo", // 비디오 링크
-    thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop", // 이미지 슬라이더
-    pdfUrl: "pdf/김기덕_액션어드벤처 레벨기획서.pdf", // PDF 주소
+    date: "2025.03.21 — 2025.04.07",
+    desc: "3인칭 액션 어드벤처",
+    tags: ["!LAST OF US", "Unreal Engine 5", "포스트 아포칼립스", "창작"],
+    youtubeId: "sKNml5GIzbo",
+    thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
+    pdfUrl: "pdf/김기덕_액션어드벤처 레벨기획서.pdf",
     overviewImages: [
       "img/LTD/ov/01.png",
       "img/LTD/ov/02.png",
@@ -64,12 +82,12 @@ const PORTFOLIO_DATA = [
   },
   {
     title: "Nova Core",
-    date: "2025.01.04 — 2025.02.02", // 👈 프로젝트 제작 기간
-    desc: "3인칭 잠입 액션", // 설명 글
-    tags: ["!Tom Clancy’s : Splinter Cell", "Unreal Engine 5","설산", "창작"], //태그
-    youtubeId: "otSQADvZ9pM", // 비디오 링크
-    thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop", // 이미지 슬라이더
-    pdfUrl: "pdf/김기덕_잠입액션 레벨기획서.pdf", // PDF 주소
+    date: "2025.01.04 — 2025.02.02",
+    desc: "3인칭 잠입 액션",
+    tags: ["!Tom Clancy’s : Splinter Cell", "Unreal Engine 5","설산", "창작"],
+    youtubeId: "otSQADvZ9pM",
+    thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
+    pdfUrl: "pdf/김기덕_잠입액션 레벨기획서.pdf",
     overviewImages: [
       "img/NC/ov/01.png",
       "img/NC/ov/02.png",
