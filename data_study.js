@@ -95,7 +95,109 @@ const STUDY_DATA = [
 
 또한, 엄격한 수치와 규격은 겉보기에는 창의성을 해치는 것처럼 보일 수 있지만, 실제로는 플레이어가 길을 잃지 않게 만드는 <strong>‘무의식적 가이드라인’</strong>이 되었습니다. 이 덕분에 UI나 미니맵 없이도 쾌적한 게임이 가능했습니다. 동료(아트레우스) 역시 단순한 짐덩어리가 아닌 핵심 기둥의 일부로 통합시키며 서사와 시스템을 완벽하게 일치시킨 점이 놀랍습니다.
 `
-  },
-  
+},
 
+ /// 다음 ///
+
+{
+  cat: "System Design & AI Workflow",
+  title: "AI 파트너십을 통한 시스템 역기획: 레벨 디자인의 근거를 찾는 실험",
+  date: "2026. 06",
+  desc: "단순한 공간 구성을 넘어, 소울라이크 전투 시스템을 AI와 함께 역기획하며 시스템적 이해가 실제 레벨 디자인에 어떻게 강력한 무기가 될 수 있는지 검증해 나가는 실험 기록입니다.",
+  coverImage: "img/DSP/DarkSoulsProject_Big_720.png",
+  youtubeId: "3asBDI4FN9I",
+
+  content: `
+> **"본 프로젝트는 AI를 활용해 소울라이크 전투 시스템을 역기획하고, 이러한 시스템적 이해도가 실제 레벨 디자인에 어떠한 강점으로 작용하는지 검증하는 실험입니다."**
+
+이 문서는 **DarkSoulUE5** 프로젝트의 시스템 설계 과정과, 생성형 AI를 실무 파이프라인에 적용하여 C++ 기반의 엔진 스펙(Component, AnimNotify, State Tree)을 직접 역기획해 낸 연구 기록입니다.
+
+아래 뷰어에서 기획서 원본을 직접 확인하실 수 있습니다.
+
+<div class="m-pdf-wrap" style="margin-top: 32px; margin-bottom: 64px;">
+  <iframe src="pdf/김기덕_다크소울시스템기획서.pdf" title="DarkSoulUE5 기획서" allowfullscreen></iframe>
+</div>
+
+### 🧠 1. 시스템 역기획과 레벨 디자인의 연결
+
+레벨 디자인은 단순히 공간을 꾸미는 것이 아니라, **엔진의 논리적 규칙과 수치(Metrics) 위에서 플레이어의 경험을 통제하는 작업**입니다. AI를 파트너 삼아 복잡한 소울라이크 시스템을 직접 코어 단위로 역기획하는 이 과정은, **'시스템에 대한 깊은 이해'가 향후 탄탄한 레벨 디자인을 전개하는 데 있어 얼마나 강력한 강점이 될 수 있는지 스스로 검증해 나가는 실험**입니다.
+
+- **스태미나 경제와 공간의 거리(Metrics):** \`AC_Status\`의 \`MaxStamina\`(기본 100), 스프린트 소모율(\`SprintCost\` 10/sec), 구르기 소모(\`DodgeStaminaCost\` 15), 회복 딜레이(\`StaminaRegenDelay\` 1.5초) 수치를 직접 분석함으로써, 화톳불 간의 간격과 인카운터 구역의 크기를 짐작이 아닌 '정확한 수치'를 바탕으로 설계할 수 있는 근거를 마련합니다.
+- **전투 매니저와 다대일 전투 템포:** 여러 적의 동시 공격을 조율하는 \`CombatManagerSubsystem\`과, 공격 후 쿨다운(\`AttackCooldown\` 기본 3초) 및 게걸음 간보기 확률(\`CirclingChance\` 60%)의 원리를 이해하여, 몬스터 배치 밀도와 병목(Choke point) 구간을 정교하게 다듬는 기획적 시야를 확보합니다.
+
+---
+
+### ⚙️ 2. C++ 기반 컴포넌트 아키텍처 (Component Architecture)
+
+유지보수와 확장을 고려하여 플레이어와 적 모두 철저한 **C++ 컴포넌트 기반 아키텍처**로 분리하여 설계했습니다. 특히 \`EnemyBase\`가 \`AC_Enemy\` 컴포넌트 하나의 \`bIsBoss\` 플래그 분기만으로 일반 적과 보스를 동일한 구조에서 처리한다는 점이 이 아키텍처의 핵심입니다 — 보스 전용 클래스를 따로 만들지 않고도 보스 이름(\`BossName\`), 전용 체력바(\`BossHealthBarClass\`), 입장 트리거(\`ActivateBossFight()\`)가 조건부로 활성화됩니다.
+
+| C++ 클래스명 | 적용 대상 | 핵심 책임 (Responsibility) |
+| :--- | :--- | :--- |
+| **\`AC_Status.cpp\`** | 플레이어·적 | HP·스태미나·강인도(Poise)·소울·에스트 병·장비·행동 상태(15종 bool) 통합 관리 |
+| **\`AC_State.cpp\`** | 플레이어·적 | \`EActionState\` Enum — Idle / Attacking / Dodging / Blocking / Parrying / Staggered / Executing / BeingExecuted |
+| **\`AC_HitReaction.cpp\`** | 플레이어·적 | \`FHitPayload\`를 수신해 피격 방향 × 공격 유형 × 높이 조합으로 모션을 동적 디스패치 |
+| **\`AC_Hitbox.cpp\`** | 플레이어·적 | 무기 히트박스 활성화·비활성화 제어 |
+| **\`AC_Enemy.cpp\`** | 적 전용 | 배회 방식(\`EPeacefulBehavior\`)·전투 대치·감지 반경·특수공격(\`FSpecialAttackData\`) 파라미터 세팅 변수 집합. \`bIsBoss\` 플래그로 일반 적과 보스를 단일 구조에서 분기 |
+| **\`AC_LockOn.cpp\`** | 플레이어 전용 | 락온 타겟 탐색·좌우 전환 및 \`AC_DynamicCamera\` 거리/회전 연동 |
+
+---
+
+### 🎬 3. 프레임 단위 전투 제어: AnimNotify 시스템
+
+치밀한 공방의 핵심인 액션의 '판정'을 언리얼 엔진의 애니메이션 몽타주 **AnimNotify / AnimNotifyState**를 활용해 C++ 클래스 단에서 프레임 단위로 제어하도록 설계했습니다.
+
+\`ANS_HitResult\`가 공격 활성 구간 동안 구체 스윕(Sphere Sweep, 반경 15cm)으로 적중을 감지하면, **\`FHitPayload\`** 구조체 — \`DamageAmount\`, \`PoiseDamage\`, \`AttackType\`, \`HitHeight\`, \`HitDirection\`, \`WeaponType\` 을 한 번에 묶어 피격 측 \`AC_HitReaction\`에 전달합니다. \`AC_HitReaction\`은 이 페이로드를 받아 공격 유형 → 방향 → 높이 순으로 테이블을 내려가며 최종 모션 하나를 결정합니다. 즉 \`FHitPayload\`는 공격 측과 피격 측을 연결하는 **전투 데이터 버스**입니다.
+
+- **\`ANS_Invincibility\` & \`ANS_ParryWindow\`:** 구르기 무적 프레임 구간 및 패링 유효 윈도우(\`ParryStaminaCost\` 10 소모) 프레임 단위 설정.
+- **\`ANS_ExecutableWindow\`:** 패링 성공 → \`bIsExecutable = true\` 활성화 구간. 이 상태의 적에게 공격 입력 시 앞잡(리포스트) 판정으로 전환됩니다.
+- **\`ANS_ChargeWindow\`:** 차징 공격 입력 수용 구간 제어 (최대 차징 시간 \`MaxChargeTime\` 1.5초).
+- **\`AN_EnableCombo\` & \`AN_ResetCombo\`:** 공격 선입력 버퍼(\`InputQueueWindow\` 0.5초) 수용 및 콤보 인덱스(\`CurrentComboIndex\`) 순환·초기화 제어.
+- **\`ANS_SendAlert\`:** 공격 발동 시 주변 적에게 \`AlertLevel\`을 전파하여 군집 전투 참여 유도.
+- **\`ANS_AI_Rotate\` & \`ANS_ModifyPlayRate\`:** AI 공격 중 플레이어 방향 추적 회전 및 공격 속도 동적 조절.
+
+---
+
+### ⚔️ 3-1. 처형 시스템: 패링 → 리포스트 / 백스탭
+
+처형은 이 프로젝트에서 가장 정교하게 구현된 메커니즘입니다. \`AC_Status::ExecuteAttack()\` 내부에서 두 가지 처형 조건을 동시에 판별합니다.
+
+<div class="m-study-callout"><div class="m-study-callout-icon">🗡️</div><div class="m-study-callout-text">
+<strong>처형 판별 플로우 (AC_Status::ExecuteAttack 내부)</strong><br><br>
+1. <strong>앞잡(리포스트) 조건 :</strong> 적의 \`bIsExecutable == true\` — 패링 성공 후 \`ANS_ExecutableWindow\`가 활성화한 그로기 상태.<br>
+2. <strong>뒤잡(백스탭) 조건 :</strong> \`FVector::DotProduct(PlayerToEnemy, EnemyForward) > 0.5f\` — 플레이어가 적의 후방 약 60° 이내에 위치. \`bIsInvincible\` 상태가 아닌 경우에만 유효.<br>
+3. <strong>애니메이션 동기화 :</strong> 두 조건이 충족되면 플레이어 측(\`FatalStrikeMontage\` 또는 \`BackstabStrikeMontage\`)과 적 측(\`ExecutedMontage\` 또는 \`BackstabbedMontage\`)이 동시에 재생되며, 적 AI의 \`BrainComponent\`는 \`StopLogic("BeingExecuted")\`로 즉시 정지됩니다.<br>
+4. <strong>데미지 :</strong> 리포스트 \`RiposteDamage\`(기본 150) / 백스탭 \`BackstabDamage\`(기본 120) — 모두 \`WeaponDataAsset\`에서 무기별로 독립 설정.
+</div></div>
+
+---
+
+### 🤖 4. State Tree 기반 다층 적 AI 행동 설계
+
+전통적인 Behavior Tree를 넘어, UE5의 최신 **State Tree** 시스템을 채택하여 \`STEvaluator_EnemyCombat\`을 통해 전투 상황을 평가하고 유기적인 행동을 설계했습니다.
+
+<div class="m-study-callout"><div class="m-study-callout-icon">⚔️</div><div class="m-study-callout-text">
+<strong>C++ 커스텀 태스크(Task) 행동 루프</strong><br><br>
+1. <strong>평화 배회 (\`STTask_Idle\`) :</strong> Stand Still 또는 무작위 위치·웨이포인트 순찰(\`EPeacefulBehavior\` / \`EWanderingStyle\`) 중 선택.<br>
+2. <strong>수색 (\`STTask_MoveToLocation\`) :</strong> 시각·청각(\`UAISenseConfig_Sight\` / \`Hearing\`) 자극 감지 시 \`LastKnownLocation\`으로 이동하여 \`LookAroundCount\`(기본 3회) 두리번거림. 수색 실패 시 \`SpawnLocation\`으로 복귀.<br>
+3. <strong>전투 대치 (\`STTask_StandOff\`) :</strong> 플레이어 주변을 \`CirclingChance\`(60%) 확률로 \`CirclingDuration\`(4초) 동안 게걸음 치며 간을 보는 텐션 제어.<br>
+4. <strong>접근 (\`STTask_Approach\` / \`STTask_GuardApproach\`) :</strong> \`MeleeAttackRange\`(200cm) 이내 진입 시 공격 전환.<br>
+5. <strong>공격 (\`STTask_Attack\`) :</strong> Random 또는 Sequential 순서로 몽타주 재생. \`FSpecialAttackData\`로 체력·거리 조건부 특수기 발동.<br>
+6. <strong>그로기 (\`STTask_Groggy\`) :</strong> 강인도(Poise) 파괴 시 경직 유지 — 처형 취약 상태 진입.<br>
+7. <strong>쿨다운 (\`STTask_Wait\`) :</strong> 공격 후 \`AttackCooldown\`(기본 3초) 적용 후 대치 재개.
+</div></div>
+
+---
+
+### 🛡️ 5. 자원 경제와 환경 상호작용
+
+- **DataAsset 기반 무기 모듈화 (\`WeaponData.cpp\`):** \`UWeaponDataAsset\`으로 무기 타입(\`EWeaponType\`: Protector·GreatSword·Axe·Nodachi), 약공격·강공격·앞잡·뒤잡 데미지, 스태미나 소비, 콤보 몽타주 배열, 애니메이션 레이어(\`LinkedAnimLayerClass\`), 강인도 데미지, 근력 스케일링(\`StrengthScalingPercentage\`)을 C++ 수정 없이 디자이너가 직관적으로 세팅.
+- **소울 드랍 & 회수 (\`DroppedRune.cpp\`):** 사망 시 \`CurrentSouls\`를 \`DroppedRune\` 오브젝트로 스폰. \`SoulsGameInstance\`가 \`DroppedSoulsAmount\` + \`DroppedRuneLocation\` + \`bHasDroppedRune\` 세 값을 씬 전환 후에도 런타임에서 유지합니다 — 별도 세이브 파일 없이 GameInstance가 임시 세이브 계층을 담당하는 구조입니다. 레벨 디자인 관점에서는 이 구조 덕분에 씬(레벨) 경계를 자유롭게 나눌 수 있고, 룬 위치만 기억하면 되므로 전환 비용이 낮습니다.
+- **화톳불 (\`Bonfire.cpp\`):** 점화(\`bIsLit\`) 시 거점 등록. 휴식 시 HP 전량·\`CurrentEstus\` → \`MaxEstus\`(기본 3개) 충전, \`EnemySpawner\`를 통해 주변 적 리스폰. \`LastBonfireTransform\`을 동일한 \`SoulsGameInstance\`에 보존 — 룬 드랍 위치와 마지막 화톳불 위치가 한 객체 안에서 관리되는 설계입니다.
+- **사다리 (\`Ladder.cpp\`):** 상·하단 상호작용 존 독립 설계로 양방향 탑승·하차. \`SlideDownSpeed\`(기본 800cm/s) 고속 하강 및 \`SlideMontage\` 재생 지원. \`InstancedStaticMeshComponent\`로 에디터에서 높이·디딤 간격(\`StepHeight\`) 동적 설정.
+
+---
+
+> **"이러한 시스템적 구조화와 C++ 코어 레벨의 반복 검증 과정을 AI와 함께 수행하면서, 저는 단순한 맵 배치를 넘어 게임의 논리적 규칙과 템포를 완벽하게 융합하는 레벨 디자이너로 성장하고 있습니다."**
+`
+}
 ];
