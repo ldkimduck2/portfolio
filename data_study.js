@@ -5,7 +5,7 @@ const STUDY_DATA = [
   date: "2026. 06",
   desc: "단순한 공간 구성을 넘어, 소울라이크 전투 시스템을 AI와 함께 역기획하며 시스템적 이해가 실제 레벨 디자인에 어떻게 강력한 무기가 될 수 있는지 검증해 나가는 실험 기록입니다.",
   coverImage: "img/DSP/DarkSoulsProject_Big_720.png",
-  youtubeId: "3asBDI4FN9I",
+  youtubeId: "3H-1v8gK5qM",
 
   content: `
 > **"본 프로젝트는 AI를 활용해 소울라이크 전투 시스템을 역기획하고, 이러한 시스템적 이해도가 실제 레벨 디자인에 어떠한 강점으로 작용하는지 검증하는 실험입니다."**
