@@ -162,7 +162,7 @@ const GAMES_DATA = [
     releaseDate: "2021. 02",
     playtime: 79.6,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/892970/header.jpg",
-    tags: ["!북유럽 신화", "건축"]
+    tags: ["!오픈월드", "북유럽 신화", "건축"]
   },
   {
     title: "Phasmophobia",
@@ -750,7 +750,7 @@ const GAMES_DATA = [
     platform: "Console",
     status: "진행 중", // 👈 아직 플레이 중이시라면 "진행 중"으로 수정해 주세요!
     releaseDate: "2017. 03",
-    playtime: 0, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
+    playtime: 7, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
     image: "https://assets.nintendo.com/image/upload/c_fill,w_1200/ncom/en_US/games/switch/t/the-legend-of-zelda-breath-of-the-wild-switch/hero",
     tags: ["!오픈월드", "명작", "탐험"]
   },
@@ -783,7 +783,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "진행 중", // 상태 뱃지 (출시 전)
     releaseDate: "2026. 03",
-    playtime: 5.7, 
+    playtime: 7.6, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/3321460/header.jpg", // 붉은사막 공식 썸네일
     tags: ["!오픈월드", "액션", "기대작"]
   },
