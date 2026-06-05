@@ -210,7 +210,7 @@ nav.scrolled { background: rgba(15, 15, 18, 0.85); box-shadow: 0 15px 40px rgba(
 .modal-close:hover { background: #fff; color: #000; box-shadow: 0 4px 12px rgba(255,255,255,0.2); }
 
 /* 가로 스크롤(오버플로우) 원천 차단 */
-.modal-body { padding: 80px 40px; overflow-y: auto; overflow-x: hidden; flex: 1; scroll-behavior: smooth; }
+.modal-body { padding: 80px 40px; overflow-y: auto; overflow-x: hidden; flex: 1; scroll-behavior: smooth; max-width: 100vw; }
 
 .modal-reading-progress { position: absolute; bottom: -1px; left: 0; height: 2px; background: var(--accent); width: 0%; z-index: 11; transition: width 0.1s; }
 
@@ -274,7 +274,7 @@ nav.scrolled { background: rgba(15, 15, 18, 0.85); box-shadow: 0 15px 40px rgba(
 .study-hero-desc { font-size: 20px; color: var(--fg-muted); line-height: 1.7; max-width: 800px; margin: 0 auto; word-break: keep-all; }
 .study-hero-date { margin-top: 32px; font-size: 15px; color: rgba(255,255,255,0.4); font-family: monospace; }
 
-.study-reading-layout { display: flex; gap: 80px; max-width: 1600px; margin: 60px auto 0; position: relative; align-items: flex-start; justify-content: center; width: 100%; }
+.study-reading-layout { display: flex; gap: 80px; max-width: 1600px; margin: 60px auto 0; position: relative; align-items: flex-start; justify-content: center; width: 100%; min-width: 0; overflow: hidden; }
 
 /* ── 우측 HUD 트래커 (목차) ── */
 .study-quest-tracker { width: 280px; flex-shrink: 0; position: sticky; top: 120px; }
@@ -292,7 +292,7 @@ nav.scrolled { background: rgba(15, 15, 18, 0.85); box-shadow: 0 15px 40px rgba(
 .tracker-item.active .tracker-link { color: #fff; font-weight: 800; transform: translateX(4px); text-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
 /* ── 본문 Fade-Up ── */
-.study-markdown-content { flex: 1; min-width: 0; max-width: 1440px; padding-bottom: 120px; }
+.study-markdown-content { flex: 1; min-width: 0; max-width: 100%; padding-bottom: 120px; overflow: hidden; word-break: break-word; }
 .reveal-item { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: opacity, transform; }
 .reveal-item.visible { opacity: 1; transform: translateY(0); }
 
@@ -401,6 +401,10 @@ nav.scrolled { background: rgba(15, 15, 18, 0.85); box-shadow: 0 15px 40px rgba(
   /* Study Detail (모달 내부 가독성 및 오버플로우 방지) */
   .study-hero-section { padding: 40px 0 32px; } /* 상위 요소의 이중 패딩 겹침 방지 */
   
+  /* study-reading-layout: 모바일에서 flex column + 가로 넘침 완전 차단 */
+  .study-reading-layout { flex-direction: column; gap: 0; padding: 0; margin: 0; width: 100%; max-width: 100%; overflow: hidden; }
+  .study-markdown-content { width: 100%; max-width: 100%; min-width: 0; overflow: hidden; word-break: break-word; }
+  
   /* 카테고리 태그 및 제목이 좁은 화면을 뚫고 나가지 않도록 속성 변경 */
   .study-hero-cat { font-size: 11px; max-width: 100%; white-space: normal; word-break: break-word; }
   .study-hero-title { font-size: 26px; margin-bottom: 16px; word-break: break-word; } 
@@ -437,4 +441,99 @@ nav.scrolled { background: rgba(15, 15, 18, 0.85); box-shadow: 0 15px 40px rgba(
   .exp-t-period { font-size: 13px; color: var(--accent); margin-bottom: 4px; }
   .exp-t-role { font-size: 15px; margin-bottom: 4px; color: #fff; }
   .exp-t-desc { font-size: 14px; line-height: 1.5; word-break: keep-all; }
+}
+
+/* ── 마크다운 테이블 ── */
+.study-markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2em 0 3em;
+  font-size: 15px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.study-markdown-content thead th {
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.study-markdown-content tbody td {
+  padding: 14px 16px;
+  color: #D1D1D1;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: top;
+  line-height: 1.7;
+}
+.study-markdown-content tbody tr:last-child td { border-bottom: none; }
+.study-markdown-content tbody tr:hover td { background: rgba(255,255,255,0.03); }
+.study-markdown-content td code, .study-markdown-content th code {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* 테이블 모바일 — 가로 스크롤 허용 */
+.study-markdown-content .table-scroll-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 2em 0 3em;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.study-markdown-content .table-scroll-wrap table {
+  margin: 0;
+  border: none;
+  min-width: 560px;
+  border-radius: 0;
+}
+
+/* ── 인라인 코드 / 코드블록 모바일 오버플로우 방지 ── */
+.study-markdown-content code {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+.study-markdown-content pre {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: pre;
+}
+.study-markdown-content pre code {
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+/* callout 내부 텍스트도 말줄임 없이 */
+.m-study-callout-text code {
+  font-size: 13px;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  display: inline-block;
+  max-width: 100%;
+}
+
+/* ── 모바일 테이블 전용 추가 픽스 ── */
+@media(max-width: 768px) {
+  .study-markdown-content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    border-radius: 12px;
+    font-size: 13px;
+  }
+  .study-markdown-content thead th,
+  .study-markdown-content tbody td {
+    padding: 12px 14px;
+    font-size: 13px;
+    min-width: 100px;
+  }
+  .study-markdown-content td code {
+    font-size: 12px;
+  }
 }
