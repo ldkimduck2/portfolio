@@ -63,7 +63,7 @@ const GAMES_DATA = [
     releaseDate: "2023. 08",
     playtime: 8,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1086940/header.jpg",
-    tags: ["!명작", "선택과 결과"]
+    tags: ["!턴제", "선택과 결과"]
   },
   {
     title: "Sons of the Forest",
@@ -107,7 +107,7 @@ const GAMES_DATA = [
     releaseDate: "2022. 02",
     playtime: 12,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/534380/header.jpg",
-    tags: ["!좀비 아포칼립스", "파쿠르"]
+    tags: ["!오픈월드","좀비 생존", "파쿠르"]
   },
   {
     title: "Sifu",
@@ -406,7 +406,7 @@ const GAMES_DATA = [
     releaseDate: "2015. 01",
     playtime: 11,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/239140/header.jpg",
-    tags: ["!좀비 생존", "파쿠르"]
+    tags: ["!오픈월드","좀비 생존", "파쿠르"]
   },
   {
     title: "Outlast : Whistleblower",
@@ -785,6 +785,6 @@ const GAMES_DATA = [
     releaseDate: "2026. 03",
     playtime: 15.8, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/3321460/header.jpg", // 붉은사막 공식 썸네일
-    tags: ["!오픈월드", "액션", "기대작"]
+    tags: ["!오픈월드", "액션"]
   },
 ];
