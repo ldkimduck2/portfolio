@@ -94,7 +94,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2022. 02",
-    playtime: 93.6,
+    playtime: 125.7,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg",
     tags: ["!오픈월드", "다크 판타지", "소울라이크"]
   },
@@ -629,7 +629,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2024. 04",
-    playtime: 35.2,
+    playtime: 35.4,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/3489700/header.jpg",
     tags: ["!SF", "포스트 아포칼립스", "소울라이크"]
   },
@@ -651,7 +651,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "진행 중",
     releaseDate: "2016. 04",
-    playtime: 2,
+    playtime: 12.2,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/374320/header.jpg",
     tags: ["!소울라이크", "다크판타지"]
   },
@@ -739,7 +739,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "진행 중",
     releaseDate: "2025. 03",
-    playtime: 10.1,
+    playtime: 15.2,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2001120/header.jpg",
     tags: ["!협동", "퍼즐", "스토리"]
   },
@@ -772,7 +772,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2023. 09",
-    playtime: 32.3,
+    playtime: 42.7,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1627720/header.jpg",
     tags: ["!소울라이크", "다크 판타지", "피노키오"]
   },
@@ -781,9 +781,9 @@ const GAMES_DATA = [
     developer: "Pearl Abyss",
     genre: "액션 어드벤처",
     platform: "Console / PC",
-    status: "진행 중", // 상태 뱃지 (출시 전)
+    status: "진행 중", // 
     releaseDate: "2026. 03",
-    playtime: 7.6, 
+    playtime: 15.8, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/3321460/header.jpg", // 붉은사막 공식 썸네일
     tags: ["!오픈월드", "액션", "기대작"]
   },
