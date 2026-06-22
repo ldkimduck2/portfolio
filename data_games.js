@@ -560,7 +560,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2007. 10",
-    playtime: 1,
+    playtime: 7,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/400/header.jpg",
     tags: ["!스토리", "공간지각"]
   },
