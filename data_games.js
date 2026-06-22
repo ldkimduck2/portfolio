@@ -484,7 +484,7 @@ const GAMES_DATA = [
     releaseDate: "2011. 04",
     playtime: 12.9,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/620/header.jpg",
-    tags: ["!명작", "협동"]
+    tags: ["!퍼즐", "협동"]
   },
   {
     title: "Just Cause 2",
