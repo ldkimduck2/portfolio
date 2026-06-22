@@ -787,4 +787,15 @@ const GAMES_DATA = [
     image: "https://cdn.akamai.steamstatic.com/steam/apps/3321460/header.jpg", // 붉은사막 공식 썸네일
     tags: ["!오픈월드", "액션"]
   },
+  {
+    title: "The Last of Us™ Part I",
+    developer: "Naughty Dog",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2022. 09",
+    playtime: 23.2,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1888930/header.jpg",
+    tags: ["!내러티브", "포스트 아포칼립스", "명작"]
+  },
 ];
