@@ -482,7 +482,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2011. 04",
-    playtime: 1,
+    playtime: 12.9,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/620/header.jpg",
     tags: ["!명작", "협동"]
   },
