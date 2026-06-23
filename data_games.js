@@ -794,7 +794,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2022. 09",
-    playtime: 23.2,
+    playtime: 25.4,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1888930/header.jpg",
     tags: ["!내러티브", "포스트 아포칼립스", "명작"]
   },
