@@ -415,7 +415,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2014. 05",
-    playtime: 1,
+    playtime: 3,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/273300/header.jpg",
     tags: ["!심리적 공포", "도주"]
   },
@@ -460,7 +460,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2013. 09",
-    playtime: 2,
+    playtime: 8,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/238320/header.jpg",
     tags: ["!심리적 공포", "고어"]
   },
