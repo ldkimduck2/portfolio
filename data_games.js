@@ -798,4 +798,15 @@ const GAMES_DATA = [
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1888930/header.jpg",
     tags: ["!내러티브", "포스트 아포칼립스", "명작"]
   },
+  {
+    title: "God of War",
+    developer: "Santa Monica Studio",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "진행 중",
+    releaseDate: "2018. 04",
+    playtime: 4,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1593500/header.jpg",
+    tags: [ "! 내러티브", "원테이크 연출", "북유럽 신화"]
+  },
 ];
