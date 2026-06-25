@@ -2,7 +2,7 @@ const PORTFOLIO_DATA = [
   {
     title: "Leador",
     date: "2025.07.01 — 2026.05.21",
-    desc: "잊혀진 자의 신화적 순례를 다루는 다크 판타지 오픈월드 액션RPG",
+    desc: "소울라이크 오픈월드 액션RPG",
     tags: ["!ELDEN RING", "Unreal Engine 5", "Dark Fantasy", "창작"],
     youtubeMain: "JuzBbLGLK4A", // 👈 메인 영상 ID
     youtubeSub: "2a_eilEKhUQ", // 👈 서브 영상 ID (업로드 후 수정해주세요!)
