@@ -49,7 +49,7 @@ const PORTFOLIO_DATA = [
     title: "Left To Decay",
     date: "2025.03.21 — 2025.04.07",
     desc: "3인칭 액션 어드벤처",
-    tags: ["!LAST OF US", "Unreal Engine 5", "포스트 아포칼립스", "창작"],
+    tags: ["!The Last of Us™", "Unreal Engine 5", "포스트 아포칼립스", "창작"],
     youtubeId: "sKNml5GIzbo",
     thumb: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
     pdfUrl: "pdf/김기덕_액션어드벤처 레벨기획서.pdf",
