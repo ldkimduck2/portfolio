@@ -2,9 +2,6 @@
    main.js - 김기덕 Level Designer Portfolio
    ══════════════════════════════════════ */
 
-// ── 데이터 통합 ──
-
-
 // ── 리사이즈 애니메이션 방지 ──
 let resizeTimer;
 window.addEventListener('resize', () => {
@@ -74,7 +71,7 @@ window.switchCardVideo = function (btn, index, youtubeId) {
   videoWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeId}?mute=1" loading="lazy" allowfullscreen></iframe>`;
 };
 
-// ── 포트폴리오 렌더 ──
+// ── 포트폴리오 렌더 (리스트 창 비율 원상 복구 및 서브 퀘스트 시인성 강화) ──
 document.getElementById('portfolio-list').innerHTML = DATA.portfolio.map((p, index) => {
   let videoHtml = '';
   if (p.youtubeMain && p.youtubeSub) {
@@ -83,9 +80,15 @@ document.getElementById('portfolio-list').innerHTML = DATA.portfolio.map((p, ind
         <div class="video-wrap" id="card-video-${index}">
           <iframe src="https://www.youtube.com/embed/${p.youtubeMain}?mute=1" loading="lazy" allowfullscreen></iframe>
         </div>
-        <div class="card-video-tabs">
-          <button class="c-tab active" onclick="switchCardVideo(this, ${index}, '${p.youtubeMain}')">🎬 Main Quest</button>
-          <button class="c-tab" onclick="switchCardVideo(this, ${index}, '${p.youtubeSub}')">🔍 Sub Quest</button>
+        <!-- 🔥 1줄 가로 배치로 비율을 유지하면서, 서브 퀘스트 탭에 붉은 알림 효과(Pulse) 추가 🔥 -->
+        <div class="card-video-tabs" style="display: flex; gap: 8px; margin-top: 16px;">
+          <button class="c-tab active" style="flex: 1; padding: 12px 0; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="switchCardVideo(this, ${index}, '${p.youtubeMain}')">
+            <span style="font-size: 16px;">🎬</span> Main Quest
+          </button>
+          <button class="c-tab" style="flex: 1; padding: 12px 0; display: flex; align-items: center; justify-content: center; gap: 6px; position: relative; border-color: rgba(224,48,48,0.4);" onclick="switchCardVideo(this, ${index}, '${p.youtubeSub}')">
+            <span style="font-size: 16px;">🔍</span> Sub Quest
+            <span style="position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); animation: pulseDot 2s infinite;"></span>
+          </button>
         </div>
       </div>`;
   } else if (p.youtubeMain || p.youtubeId) {
@@ -222,7 +225,6 @@ document.getElementById('about-lead').innerHTML = leadHtml;
 document.getElementById('about-body').textContent = DATA.about.body;
 
 // 1. 이력(Experience) 렌더링
-// 1. 이력(Experience) 렌더링 (테이블형)
 let expHtml = `<div class="exp-table-wrap">
   <div class="exp-t-header">
     <div>개발 기간</div>
@@ -231,7 +233,6 @@ let expHtml = `<div class="exp-table-wrap">
   </div>`;
   
 expHtml += DATA.about.experience.map(e => {
-  // '진행 중' 글씨만 포인트 컬러로 강조
   let periodStr = esc(e.period).replace('진행 중', '<span style="color:var(--accent); font-weight:800;">진행 중</span>');
   
   return `
@@ -250,7 +251,6 @@ expHtml += `</div>`;
 document.getElementById('about-exp').innerHTML = expHtml;
 
 // 2. 스킬(Skill) 별점 렌더링
-// 2. 스킬(Skill) 별점 렌더링 (실제 로고 이미지 적용)
 if (DATA.about.skills) {
   document.getElementById('about-skills').innerHTML = DATA.about.skills.map(s => {
     let stars = '';
@@ -281,7 +281,6 @@ document.getElementById('contact-links').innerHTML =
   `<a href="javascript:void(0);" onclick="copyText('${esc(DATA.site.email)}', this)"><span>✉</span> ${esc(DATA.site.email)}</a>` +
   DATA.site.links.map(l => {
     
-    // 🌟 이미지가 있으면 로고로, 없으면 이모지로 표시하는 로직
     const iconContent = l.iconImg 
       ? `<img src="${l.iconImg}" alt="icon" style="width: 20px; height: 20px; object-fit: contain;">` 
       : `<span>${l.icon}</span>`;
@@ -409,15 +408,6 @@ function buildSliderHtml(key, title, images) {
   return html;
 }
 
-// ── 모달 내부 탭 전환 ──
-window.switchModalVideo = function (btn, youtubeId) {
-  const container = btn.parentElement;
-  container.querySelectorAll('.v-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  const iframeWrap = document.getElementById('delayed-yt');
-  iframeWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeId}" allowfullscreen></iframe>`;
-};
-
 // ── 모달 열기 ──
 function openModal(type, index) {
   const data = type === 'portfolio' ? DATA.portfolio[index] : DATA.studies[index];
@@ -453,14 +443,29 @@ function openModal(type, index) {
     if (data.youtubeMain || data.youtubeSub || data.youtubeId) {
       html += `<div class="portfolio-section-wrap" id="sect-video"><div class="m-section-title" style="margin-top: 0;">Play Video</div>`;
       if (data.youtubeMain && data.youtubeSub) {
+        // 🔥 모달에서는 메인 퀘스트 / 서브 퀘스트 영상을 강제로 상하 배치 (직관성 확보) 🔥
         html += `
-        <div class="video-tab-wrap">
-          <button class="v-tab active" onclick="switchModalVideo(this, '${data.youtubeMain}')">🎬 Main Quest</button>
-          <button class="v-tab" onclick="switchModalVideo(this, '${data.youtubeSub}')">🔍 Sub Quest</button>
+        <div style="display:flex; flex-direction:column; gap:60px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+              <span style="font-size:32px; line-height: 1;">🎬</span>
+              <h3 style="font-size:26px; font-weight:900; color:#fff; margin:0; letter-spacing:-0.02em;">Main Quest <span style="font-size:15px; color:var(--accent); font-weight:800; margin-left:12px; background:rgba(224,48,48,0.15); padding:6px 16px; border-radius:20px; vertical-align: middle;">메인 스토리라인</span></h3>
+            </div>
+            <div class="m-pdf-wrap delay-iframe" id="delayed-yt-main" data-src="https://www.youtube.com/embed/${data.youtubeMain}" style="margin-bottom:0; box-shadow: 0 10px 30px rgba(0,0,0,0.4);"></div>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+              <span style="font-size:32px; line-height: 1;">🔍</span>
+              <h3 style="font-size:26px; font-weight:900; color:#fff; margin:0; letter-spacing:-0.02em;">Sub Quest <span style="font-size:15px; color:#8b5cf6; font-weight:800; margin-left:12px; background:rgba(139,92,246,0.15); padding:6px 16px; border-radius:20px; vertical-align: middle;">숨겨진 서사</span></h3>
+            </div>
+            <div class="m-pdf-wrap delay-iframe" id="delayed-yt-sub" data-src="https://www.youtube.com/embed/${data.youtubeSub}" style="margin-bottom:0; box-shadow: 0 10px 30px rgba(0,0,0,0.4);"></div>
+          </div>
         </div>`;
+      } else {
+        const initialVideoId = data.youtubeMain || data.youtubeId;
+        html += `<div class="m-pdf-wrap delay-iframe" id="delayed-yt" data-src="https://www.youtube.com/embed/${initialVideoId}"></div>`;
       }
-      const initialVideoId = data.youtubeMain || data.youtubeId;
-      html += `<div class="m-pdf-wrap delay-iframe" id="delayed-yt" data-src="https://www.youtube.com/embed/${initialVideoId}"></div></div>`;
+      html += `</div>`;
     }
 
     if (data.meta) {
@@ -537,7 +542,7 @@ function openModal(type, index) {
   document.getElementById('detail-modal').classList.add('active');
 
   setTimeout(() => {
-    ['yt', 'pdf', 'map'].forEach(id => {
+    ['yt', 'yt-main', 'yt-sub', 'pdf', 'map'].forEach(id => {
       const el = document.getElementById(`delayed-${id}`);
       if (el) { el.innerHTML = `<iframe src="${el.dataset.src}" allowfullscreen></iframe>`; }
     });
