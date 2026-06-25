@@ -455,8 +455,8 @@ function openModal(type, index) {
       if (data.youtubeMain && data.youtubeSub) {
         html += `
         <div class="video-tab-wrap">
-          <button class="v-tab active" onclick="switchModalVideo(this, '${data.youtubeMain}')">🎬 Main Quest (순례의 길)</button>
-          <button class="v-tab" onclick="switchModalVideo(this, '${data.youtubeSub}')">🔍 Sub Quest (숨겨진 서사)</button>
+          <button class="v-tab active" onclick="switchModalVideo(this, '${data.youtubeMain}')">🎬 Main Quest</button>
+          <button class="v-tab" onclick="switchModalVideo(this, '${data.youtubeSub}')">🔍 Sub Quest</button>
         </div>`;
       }
       const initialVideoId = data.youtubeMain || data.youtubeId;
