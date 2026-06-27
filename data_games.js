@@ -770,9 +770,9 @@ const GAMES_DATA = [
     developer: "NEOWIZ",
     genre: "액션 RPG",
     platform: "Console / PC",
-    status: "완료",
+    status: "DLC진행중",
     releaseDate: "2023. 09",
-    playtime: 42.7,
+    playtime: 44.5,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1627720/header.jpg",
     tags: ["!소울라이크", "다크 판타지", "피노키오"]
   },
