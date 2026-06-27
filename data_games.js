@@ -649,9 +649,9 @@ const GAMES_DATA = [
     developer: "FromSoftware",
     genre: "액션 RPG",
     platform: "Console / PC",
-    status: "진행 중",
+    status: "완료",
     releaseDate: "2016. 04",
-    playtime: 12.2,
+    playtime: 32.4,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/374320/header.jpg",
     tags: ["!소울라이크", "다크판타지"]
   },
