@@ -456,7 +456,7 @@ function openModal(type, index) {
           <div>
             <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
               <span style="font-size:32px; line-height: 1;">🔍</span>
-              <h3 style="font-size:26px; font-weight:900; color:#fff; margin:0; letter-spacing:-0.02em;">Sub Quest <span style="font-size:15px; color:#8b5cf6; font-weight:800; margin-left:12px; background:rgba(139,92,246,0.15); padding:6px 16px; border-radius:20px; vertical-align: middle;">숨겨진 서사</span></h3>
+              <h3 style="font-size:26px; font-weight:900; color:#fff; margin:0; letter-spacing:-0.02em;">Sub Quest <span style="font-size:15px; color:#8b5cf6; font-weight:800; margin-left:12px; background:rgba(139,92,246,0.15); padding:6px 16px; border-radius:20px; vertical-align: middle;">사이드 스토리라인</span></h3>
             </div>
             <div class="m-pdf-wrap delay-iframe" id="delayed-yt-sub" data-src="https://www.youtube.com/embed/${data.youtubeSub}" style="margin-bottom:0; box-shadow: 0 10px 30px rgba(0,0,0,0.4);"></div>
           </div>
