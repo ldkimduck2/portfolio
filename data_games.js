@@ -772,7 +772,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "DLC진행중",
     releaseDate: "2023. 09",
-    playtime: 44.5,
+    playtime: 49.2,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1627720/header.jpg",
     tags: ["!소울라이크", "다크 판타지", "피노키오"]
   },
