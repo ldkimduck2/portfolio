@@ -770,7 +770,7 @@ const GAMES_DATA = [
     developer: "NEOWIZ",
     genre: "액션 RPG",
     platform: "Console / PC",
-    status: "DLC진행중",
+    status: "완료",
     releaseDate: "2023. 09",
     playtime: 51.3,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1627720/header.jpg",
