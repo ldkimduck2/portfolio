@@ -809,4 +809,15 @@ const GAMES_DATA = [
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1593500/header.jpg",
     tags: [ "! 내러티브", "원테이크 연출", "북유럽 신화"]
   },
+  {
+    title: "No Rest for the Wicked",
+    developer: "Moon Studios",
+    genre: "액션 RPG",
+    platform: "PC",
+    status: "진행 중", // 
+    releaseDate: "2024. 04",
+    playtime: 3.4, // 
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1371980/header.jpg",
+    tags: ["!쿼터뷰", "소울라이크", "다크 판타지"]
+  },
 ];
