@@ -820,4 +820,15 @@ const GAMES_DATA = [
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1371980/header.jpg",
     tags: ["!쿼터뷰", "소울라이크", "다크 판타지"]
   },
+  {
+    title: "Palworld (팰월드)",
+    developer: "Pocketpair",
+    genre: "생존 / 크래프팅",
+    platform: "PC / Console",
+    status: "진행 중", 
+    releaseDate: "2024. 01",
+    playtime: 12, 
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1623730/header.jpg",
+    tags: ["!오픈월드", "몬스터 수집", "생존"]
+  },
 ];
