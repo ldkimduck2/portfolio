@@ -827,7 +827,7 @@ const GAMES_DATA = [
     platform: "PC / Console",
     status: "진행 중", 
     releaseDate: "2024. 01",
-    playtime: 12, 
+    playtime: 16.5, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1623730/header.jpg",
     tags: ["!오픈월드", "몬스터 수집", "생존"]
   },
