@@ -102,6 +102,107 @@ const STUDY_DATA = [
 },
 /// Next ///
 
+{
+  cat: "System Design & AI Workflow",
+  title: "레벨 디자인 속도를 위한 도구 만들기: MeshSnapTools 에디터 플러그인",
+  date: "2026. 06",
+  desc: "메쉬 치수 확인과 버텍스 스냅을 반복하며 겪은 비효율을 직접 해소하기 위해, AI와 함께 언리얼 에디터 확장 플러그인을 설계하고 트러블슈팅한 개발 기록입니다.",
+  coverImage: "img/MeshSnapTools/MeshSnapTools.jpg",
+  youtubeId: "PPcnrnQ16fs",
+
+  content: `
+> **"레벨 디자인/프로토타입 작업 속도를 높이기 위해, 언리얼 에디터를 직접 확장해보기로 했다."**
+
+이 문서는 **MeshSnapTools**라는 언리얼 엔진 5 에디터 플러그인을 왜, 어떻게 만들었는지에 대한 기록입니다. C++로 에디터 모드(EdMode)와 Slate UI를 직접 다뤄보는 학습 겸, 실제 작업 흐름의 불편함을 해소하기 위한 사이드 프로젝트였습니다.
+
+---
+
+### 🧩 1. 왜 만들었나
+
+레벨 디자인이나 화이트박스 프로토타입 작업을 할 때, 반복적으로 겪는 두 가지 불편함이 있었습니다.
+
+- **메쉬 크기 확인이 번거로움:** 배치한 스태틱 메쉬의 실제 월드 크기(cm/m)를 확인하려면 Details 패널의 Bounds 값을 계산하거나 별도로 확인하는 과정을 거쳐야 했습니다. 빠르게 치수를 맞춰가며 배치하는 작업 흐름에는 맞지 않았습니다.
+- **메쉬 정렬/스냅이 수작업:** 두 메쉬의 면을 딱 맞닿게 붙이거나, 특정 버텍스끼리 정렬하는 작업을 Move 툴로 좌표를 눈대중 조정하며 처리했습니다. 각도가 있거나 크기가 다른 오브젝트를 붙일 때는 특히 시간이 걸렸습니다.
+
+<div class="m-study-callout"><div class="m-study-callout-icon">💡</div><div class="m-study-callout-text">
+<strong>Fab 대신 직접 만든 이유</strong><br><br>
+Fab(구 마켓플레이스)에 비슷한 유료 플러그인들(Snapping Helper 등)이 이미 있습니다. 하지만 프로토타입 단계에서 필요한 기능은 크지 않다고 판단했고, 무엇보다 <strong>언리얼 에디터 확장 구조를 실제로 다뤄보는 것</strong> 자체가 목표였기 때문에 직접 설계·구현하는 쪽을 선택했습니다.
+</div></div>
+
+---
+
+### 🛠️ 2. 무엇을 만들었나
+
+Unreal Engine 5.7용 에디터 전용 플러그인으로, 크게 두 가지 기능으로 구성됩니다.
+
+| 기능 | 위치 | 핵심 동작 |
+| :--- | :--- | :--- |
+| **메쉬 치수 표시 & 면 스냅 패널** | Window 메뉴 → 도킹 패널 | 선택한 액터의 바운딩 박스 크기를 cm/m로 표시, Source/Target 지정 후 축 방향 버튼으로 면 스냅 |
+| **실시간 버텍스 스냅 모드** | Selection Mode 드롭다운 → Vertex Snap | 커서 아래 가장 가까운 버텍스를 실시간 하이라이트하고, 클릭 두 번으로 버텍스 간 정렬 |
+
+**메쉬 치수 표시 & 면 스냅 패널**은 뷰포트에서 선택한 액터의 월드 기준 바운딩 박스 크기를 cm 또는 m 단위로 실시간 표시합니다. Source / Target 액터를 지정한 뒤 원하는 축의 +/- 방향 버튼을 누르면, Source의 바운딩 박스 면이 Target의 반대쪽 면에 정확히 맞닿도록 자동으로 이동합니다. 예를 들어 벽 오브젝트 옆에 다른 벽을 이어 붙일 때, "+X" 버튼 한 번으로 두 벽의 면이 정확히 맞닿습니다.
+
+**실시간 버텍스 스냅 모드**는 Level Editor 툴바의 Selection Mode 목록에 추가되는 전용 에디터 모드입니다. 뷰포트에서 마우스를 메쉬 위로 움직이면 커서에서 가장 가까운 버텍스가 초록색 점으로 실시간 강조되고, 소스 버텍스를 클릭하면 빨간색 점으로 고정됩니다. 이어서 대상 버텍스를 클릭하면 소스 액터 전체가 이동해 두 버텍스가 정확히 맞닿습니다.
+
+<div class="m-study-callout"><div class="m-study-callout-icon">🔁</div><div class="m-study-callout-text">
+<strong>Alt + 클릭 연속 배치</strong><br><br>
+Alt를 누른 채 대상을 클릭하면 소스 액터를 복제한 뒤 그 복제본을 스냅합니다. 원본 소스 픽은 유지되므로 Alt+클릭을 반복해 여러 개를 연속으로 붙여나갈 수 있습니다 — 울타리, 타일 등 반복 배치가 필요한 상황에 유용합니다. 모든 스냅/복제 동작은 Undo(Ctrl+Z)로 되돌릴 수 있습니다.
+</div></div>
+
+---
+
+### 🐛 3. 개발 과정: AI와 함께한 트러블슈팅
+
+전체 개발은 AI(Claude)와의 대화를 통해 코드를 설계하고, C++ 구현 → 빌드 → 에러 수정을 반복하며 진행했습니다. 실제로 빌드가 통과하기까지 세 단계의 문제를 순서대로 만났습니다.
+
+**① 모듈명 충돌**
+
+게임 프로젝트 이름과 플러그인 모듈 이름이 둘 다 \`MeshSnapTools\`로 겹치면서, UnrealBuildTool이 다음과 같은 네임스페이스 충돌 에러를 냈습니다.
+
+\`\`\`
+error CS0101: The namespace '<global namespace>' already contains a definition for 'MeshSnapTools'
+\`\`\`
+
+플러그인 모듈명을 \`MeshSnapToolsEd\`로 분리하여 해결했습니다 — \`.uplugin\`의 모듈 이름, \`Build.cs\` 클래스명, 헤더/cpp 파일명, \`IMPLEMENT_MODULE\` 매크로까지 전부 일관되게 변경이 필요했습니다.
+
+**② Slate 델리게이트 접근 권한**
+
+위젯을 생성하는 헬퍼 함수에서 클래스의 private 멤버 함수를 델리게이트로 바인딩하려다 컴파일 에러가 발생했습니다.
+
+\`\`\`
+error C2248: 'SMeshToolsPanel::IsSnapEnabled': private 멤버에 액세스할 수 없습니다.
+\`\`\`
+
+Slate 델리게이트는 클래스 외부의 헬퍼 함수에서 바인딩되도록 설계된 콜백이므로, 해당 함수들(\`IsSnapEnabled\`, \`OnSnap\`)을 public으로 조정해 해결했습니다.
+
+**③ 불완전한 타입 사용**
+
+\`USelection\`을 전방 선언만 해둔 상태로 실제 멤버 함수를 호출하면서 컴파일 에러가 발생했습니다.
+
+\`\`\`
+error C2027: 정의되지 않은 형식 'USelection'을(를) 사용했습니다.
+\`\`\`
+
+실제 헤더(\`Selection.h\`) include를 추가해 해결했습니다.
+
+<div class="m-study-callout"><div class="m-study-callout-icon">🧠</div><div class="m-study-callout-text">
+<strong>배운 점</strong><br><br>
+자동 빌드 팝업("could not be compiled")은 실제 에러 로그를 숨깁니다. 진짜 원인을 찾으려면 Visual Studio로 직접 <strong>Generate Visual Studio project files → Build Solution</strong>을 실행해 Output 창의 첫 번째 에러를 확인해야 했습니다. AI와 협업하더라도, 결국 정확한 에러 로그를 얼마나 빨리 확보하느냐가 트러블슈팅 속도를 좌우한다는 걸 다시 확인했습니다.
+</div></div>
+
+---
+
+### 🚀 4. 앞으로 개선하고 싶은 부분
+
+- 스냅 시 그리드 스냅과의 상호작용 옵션 추가
+- 여러 액터를 동시에 선택해 한 번에 정렬하는 기능
+- 버텍스 스냅 모드에서 회전까지 함께 맞추는 옵션
+
+> "레벨 디자이너에게 필요한 도구가 없다면, 그 도구를 이해하고 직접 만들어보는 것도 결국 레벨 디자인 역량의 일부다."
+`
+},
+/// Next ///
+
 { 
     cat: "Level Design Theory", 
     title: "GDC - God Of War Level Design", 
