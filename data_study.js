@@ -107,7 +107,7 @@ const STUDY_DATA = [
   title: "레벨 디자인 속도를 위한 도구 만들기: MeshSnapTools 에디터 플러그인",
   date: "2026. 06",
   desc: "메쉬 치수 확인과 버텍스 스냅을 반복하며 겪은 비효율을 직접 해소하기 위해, AI와 함께 언리얼 에디터 확장 플러그인을 설계하고 트러블슈팅한 개발 기록입니다.",
-  coverImage: "img/MeshSnapTools/MeshSnapTools.jpg",
+  coverImage: "img/MeshSnapTools/MeshSnapTools_v2.png",
   youtubeId: "PPcnrnQ16fs",
 
   content: `
