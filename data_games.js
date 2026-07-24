@@ -582,8 +582,7 @@ const GAMES_DATA = [
     platform: "PC",
     status: "완료",
     releaseDate: "2004. 11",
-    playtime: 2679,
-    playtimeText: "약 2600시간+",
+    playtime: 2688,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/240/header.jpg",
     tags: ["!전술 FPS", "클래식"]
   },
@@ -783,7 +782,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "진행 중", // 
     releaseDate: "2026. 03",
-    playtime: 15.8, 
+    playtime: 18.6, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/3321460/header.jpg", // 붉은사막 공식 썸네일
     tags: ["!오픈월드", "액션"]
   },
@@ -816,7 +815,7 @@ const GAMES_DATA = [
     platform: "PC",
     status: "진행 중", // 
     releaseDate: "2024. 04",
-    playtime: 3.4, // 
+    playtime: 4.8, // 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1371980/header.jpg",
     tags: ["!쿼터뷰", "소울라이크", "다크 판타지"]
   },
@@ -831,4 +830,15 @@ const GAMES_DATA = [
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1623730/header.jpg",
     tags: ["!오픈월드", "몬스터 수집", "생존"]
   },
+  {
+    title: "Death's Door",
+    developer: "Acid Nerve",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "진행 중", 
+    releaseDate: "2021. 07",
+    playtime: 2.5,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/894020/header.jpg",
+    tags: ["!액션 어드벤처", "인디", "소울라이크"]
+  }
 ];
