@@ -104,7 +104,6 @@ const STUDY_DATA = [
 
 /// Next ///
 
-
 {
 cat: "System Design & AI Workflow",
 title: "레벨 디자인 속도를 위한 도구 만들기: MeshSnapTools 에디터 플러그인",
