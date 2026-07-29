@@ -189,7 +189,7 @@ const GAMES_DATA = [
   {
     title: "Valorant",
     developer: "Riot Games",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "PC",
     status: "완료",
     releaseDate: "2020. 06",
@@ -840,5 +840,16 @@ const GAMES_DATA = [
     playtime: 2.5,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/894020/header.jpg",
     tags: ["!액션 어드벤처", "인디", "소울라이크"]
-  }
+  },
+  {
+    title: "Manifold Garden",
+    developer: "William Chyr Studio",
+    genre: "퍼즐",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2020. 10",
+    playtime: 5.9,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/473950/header.jpg",
+    tags: ["!퍼즐", "초현실", "중력 조작"]
+  },
 ];
