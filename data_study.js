@@ -107,7 +107,7 @@ const STUDY_DATA = [
 {
 cat: "System Design & AI Workflow",
 title: "레벨 디자인 속도를 위한 도구 만들기: MeshSnapTools 에디터 플러그인",
-date: "2026. 07",
+date: "2026. 06",
 desc: "레퍼런스 영상 하나를 들고 AI와 대화하며, 필요한 스냅 툴을 직접 정의하고 반복적인 테스트와 피드백으로 완성해나간 과정의 기록입니다.",
 coverImage: "img/MeshSnapTools/MeshSnapTools_v2.png",
 youtubeId: "bWaVvlLsYes",
