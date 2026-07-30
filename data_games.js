@@ -835,9 +835,9 @@ const GAMES_DATA = [
     developer: "Acid Nerve",
     genre: "액션 어드벤처",
     platform: "Console / PC",
-    status: "진행 중", 
+    status: "완료", 
     releaseDate: "2021. 07",
-    playtime: 2.5,
+    playtime: 11.3,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/894020/header.jpg",
     tags: ["!액션 어드벤처", "인디", "소울라이크"]
   },
