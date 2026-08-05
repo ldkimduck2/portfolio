@@ -852,4 +852,15 @@ const GAMES_DATA = [
     image: "https://cdn.akamai.steamstatic.com/steam/apps/473950/header.jpg",
     tags: ["!퍼즐", "초현실", "중력 조작"]
   },
+  {
+    title: "Pragmata",
+    developer: "CAPCOM",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "완료",
+    releaseDate: "2026. 02",
+    playtime: 16,
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3357650/e32e168b25ed68a0cf6264c220c07e96c2abfb56/header.jpg?t=1777351016",
+    tags: ["!SF 액션", "해킹", "TPS"]
+  },
 ];
