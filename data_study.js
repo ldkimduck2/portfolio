@@ -1,349 +1,394 @@
 const STUDY_DATA = [
   {
   cat: "System Design",
-  title: "소울라이크 컴뱃 시스템",
+  title: "Soulslike Combat System",
   date: "2026. 06",
-  desc: "레벨을 만들 때 전투 공간과 적 배치를 감으로만 정하지 않기 위해, 공격·회피·스태미나·피격·AI까지 소울라이크 전투의 기본 규칙을 직접 구현하고 수치로 정리한 프로젝트입니다.",
+  desc: "레벨을 만들면서 전투 시스템의 수치가 공간에 어떤 영향을 주는지 직접 확인해보고 싶어 만든 소울라이크 전투 프로토타입입니다.",
   coverImage: "img/DSP/DarkSoulsProject_Big_720.png",
   youtubeId: "3H-1v8gK5qM",
 
   content: `
-### 왜 만들었나
-
-레벨을 만들면서 전투 공간의 크기나 적을 배치하는 간격을 정할 때 감으로 판단하는 부분이 있었습니다.
-
-그런데 같은 공간이라도 **공격 사거리, 회피 거리, 스태미나 소모량, 적이 접근하는 거리와 공격 후 쉬는 시간**에 따라 전투 느낌이 많이 달라집니다.
-
-그래서 소울라이크 전투에서 자주 쓰이는 기능을 직접 만들어보고, 각 기능이 어떤 조건과 수치로 움직이는지 정리해보기로 했습니다.
-
-목표는 완성된 액션 게임을 만드는 것보다, **전투 시스템을 이해한 상태에서 레벨을 설계할 수 있도록 기준을 만드는 것**이었습니다.
+<div class="sys-doc-head">
+  <span class="sys-doc-kicker">SYSTEM DESIGN / UE5 COMBAT PROTOTYPE</span>
+  <h2>Soulslike Combat System</h2>
+  <p>공격, 방어, AI, 성장 시스템을 직접 만들고 실제 레벨에 필요한 수치들을 정리했습니다.</p>
+</div>
 
 ---
 
-### 시스템 개요
+### 01. 왜 만들었나
 
-3인칭 근접 전투를 기준으로 공격, 회피, 가드, 패링과 세 가지 자원인 HP / Stamina / Poise를 구성했습니다.
+레벨을 만들면서 항상 궁금했던 부분이 있었습니다.
+
+공격 사거리나 회피 거리, 락온 거리, 적의 인지 범위 같은 값이 바뀌면  
+같은 공간에서도 전투 느낌이 얼마나 달라지는지 직접 확인해보고 싶었습니다.
+
+기존에는 레벨만 만들다 보니 이미 만들어진 시스템 위에서 공간을 구성하는 경우가 많았습니다.  
+그런데 시스템이 어떤 식으로 움직이는지 모르고서는 전투 공간의 크기나 적 배치 간격을 잡을 때 결국 감에 의존하는 부분이 생겼습니다.
+
+처음에는 Fab에서 소울라이크 전투 프레임워크를 구매해서 사용하려고 했습니다.  
+필요한 기능이 들어간 프레임워크 가격이 약 40만 원 정도였고, 그 정도 비용이면 차라리 직접 만들어보면서 배우는 게 낫겠다고 생각했습니다.
+
+그래서 공격, 회피, 가드, 패링, 스태미나, 락온, 적 AI 같은 기능부터 하나씩 만들기 시작했습니다.
+
+이 프로젝트의 목적은 완성된 게임을 만드는 것이 아니라,  
+**전투 시스템이 어떻게 돌아가고 그 값들이 레벨디자인에 어떤 영향을 주는지 직접 확인하는 것**이었습니다.
+
+<div class="sys-purpose-grid">
+  <div><span>01</span><strong>전투 거리</strong><small>공격 · 회피 · 락온 · AI 거리</small></div>
+  <div><span>02</span><strong>행동 자원</strong><small>공격과 방어에 쓰이는 Stamina</small></div>
+  <div><span>03</span><strong>적 배치</strong><small>인지 · 접근 · 공격 간격</small></div>
+</div>
+
+#### 시스템 값이 레벨에 주는 영향
+
+| 시스템 값 | 레벨에서 확인할 부분 |
+| :--- | :--- |
+| 공격 사거리 | 플레이어와 적이 실제로 맞붙는 거리 |
+| 회피 거리 | 회피할 수 있는 공간 여유 |
+| Stamina Cost | 공격 후 방어 행동을 얼마나 남길 수 있는지 |
+| Lock-on Range | 한 전투 공간의 크기 |
+| AI Sight Range | 적이 플레이어를 발견하는 시점과 배치 간격 |
+| Melee Attack Range | 실제 근접 교전 거리 |
+| Poise | 한 적을 상대할 때 필요한 공격 횟수 |
+| Bonfire 위치 | 한 번에 진행하게 되는 전투 구간 길이 |
+
+---
+
+### 02. 시스템 구성
 
 <div class="system-summary-grid">
   <div class="system-summary-card">
     <span>HP</span>
     <strong>생존</strong>
-    <small>피격과 사망 처리의 기준</small>
+    <small>피격과 사망 처리</small>
   </div>
   <div class="system-summary-card">
     <span>STA</span>
-    <strong>행동 제한</strong>
-    <small>공격 · 회피 · 가드에 사용</small>
+    <strong>행동 자원</strong>
+    <small>공격 · 회피 · 가드 비용</small>
   </div>
   <div class="system-summary-card">
     <span>POI</span>
     <strong>강인도</strong>
-    <small>피격 리액션과 그로기 기준</small>
+    <small>피격 리액션 · 그로기</small>
   </div>
 </div>
 
-전투에서 계속 확인하고 싶었던 것은 단순했습니다.
+기능은 한 곳에 몰아넣지 않고 역할별로 나눴습니다.
 
-- 지금 공격해도 되는가
-- 공격하고도 회피할 스태미나가 남는가
-- 회피 / 가드 / 패링 중 무엇을 선택할 것인가
-- 적의 강인도를 깎아서 처형 기회를 만들 것인가
-
----
-
-### 구현 구조
-
-기능을 한 캐릭터 클래스에 몰아넣지 않고 역할별로 나눴습니다.
-
-| 모듈 | 역할 | 상태 |
+| 시스템 | 역할 | 상태 |
 | :--- | :--- | :---: |
-| AC_Status | HP / Stamina / Poise, 액션, 콤보, 입력 버퍼 | <span class="sys-status done">구현</span> |
-| WeaponData | 무기 데미지, 행동 비용, 스케일링, 몽타주 | <span class="sys-status done">구현</span> |
-| ANS_HitResult | 무기 소켓 Trace, 한 번의 공격에서 중복 타격 방지 | <span class="sys-status done">구현</span> |
-| AC_HitReaction | 피격 반응, 강인도, 처형 가능 상태 | <span class="sys-status done">구현</span> |
-| CombatManager | 공격 토큰, 플레이어 주변 8방향 슬롯 | <span class="sys-status partial">부분 구현</span> |
-
-공격 판정이나 무적, 패링처럼 **시간이 중요한 기능은 Anim Notify / Notify State 구간으로 조절**했습니다.
+| AC_Status | HP / Stamina / Poise, 액션 상태, 콤보, 선입력 | <span class="sys-status done">구현</span> |
+| WeaponData | 무기 데미지, Stamina 비용, 스케일링, 몽타주 | <span class="sys-status done">구현</span> |
+| ANS_HitResult | 무기 소켓 기반 공격 Trace, 중복 타격 방지 | <span class="sys-status done">구현</span> |
+| AC_HitReaction | 피격, 가드, 패링, 강인도, 처형 가능 상태 | <span class="sys-status done">구현</span> |
+| AC_LockOn | 타깃 탐색 · 전환 · 거리 해제 | <span class="sys-status done">구현</span> |
+| StateTree AI | 인지 · 접근 · 공격 · 후퇴 · 재탐색 | <span class="sys-status done">구현</span> |
+| CombatManager | 공격 토큰 · 8방향 위치 슬롯 | <span class="sys-status partial">AI 연동 필요</span> |
+| Bonfire / Rune | 체크포인트 · 회복 · 레벨업 · 사망 소울 회수 | <span class="sys-status done">구현</span> |
 
 ---
 
-### 플레이어 액션
+### 03. 플레이어 행동
 
-모든 액션은 **발동 조건 → 비용 → 실행 → 종료** 순서로 확인합니다.
-
-| 액션 | 발동 조건 | 비용 | 결과 |
+| 행동 | 조건 | 비용 | 결과 |
 | :--- | :--- | :---: | :--- |
-| Light Attack | 무기 장착, 회피 중이 아님 | 15 | 약공격 콤보 진행 |
-| Heavy Attack | 무기 장착, 회피 중이 아님 | 25 | 강공격 콤보 / 차지 가능 |
-| Dodge | 스태미나 충분, 방향 입력 | 15 | 무적 구간 + 위치 재조정 |
-| Guard | 가드 입력 유지 | 지속 소비 | 피해 완화 / 스태미나 압박 |
-| Parry | 패링 입력 + 유효 타이밍 | 20 | 성공 시 적을 처형 가능 상태로 유도 |
-| Heal | Estus 보유, 공격·피격 중이 아님 | Estus 1 | HP 회복 / 긴 후딜 |
+| Light Attack | 무기 장착 / 회피 중 아님 | 15 | 약공격 콤보 |
+| Heavy Attack | 무기 장착 / 회피 중 아님 | 25 | 강공격 / 차지 가능 |
+| Dodge | Stamina 충분 / 방향 입력 | 15 | I-Frame + 위치 변경 |
+| Guard | 가드 입력 유지 | 지속 소모 | 피해 완화 |
+| Parry | 패링 입력 / 유효 타이밍 | 20 | 성공 시 처형 기회 |
+| Heal | Estus 보유 / 공격·피격 중 아님 | Estus 1 | HP 회복 |
+| Sprint | 질주 입력 / 이동 가능 상태 | 지속 | 이동 속도 증가 |
+| Jump | **질주 중일 때만 가능** | - | 점프 |
+
+점프는 기본 상태에서 바로 쓸 수 없고, Blueprint에서 **질주 중일 때만 실행되도록 제한**했습니다.
 
 ---
 
-### 공격과 선입력
+### 04. 공격 / 콤보 / 선입력
 
 공격 중 다음 입력이 들어오면 바로 실행하지 않고 최대 **0.5초 동안 저장**합니다.
 
-회피 입력은 공격 입력보다 우선하도록 했습니다. 공격 중 회피가 들어오면 예약된 공격을 취소하고 회피를 먼저 실행합니다.
-
-<div class="system-flow-wrap">
-  <div class="system-flow-row">
-    <div class="system-flow-node"><span>01</span><strong>입력</strong><small>Light / Heavy / Dodge</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>02</span><strong>현재 행동 확인</strong><small>즉시 실행 가능한지 확인</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>03</span><strong>선입력 저장</strong><small>Input Buffer 0.5s</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>04</span><strong>몽타주 종료</strong><small>현재 행동 종료</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>05</span><strong>예약 행동 실행</strong><small>ProcessQueuedInput</small></div>
+<div class="sys-flow">
+  <div class="sys-flow-title">ATTACK / INPUT BUFFER</div>
+  <div class="sys-flow-line">
+    <div class="sys-flow-box"><b>Input</b><span>Light / Heavy / Dodge</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>행동 가능?</b><span>현재 상태 확인</span></div>
+    <i>→</i>
+    <div class="sys-flow-box accent"><b>즉시 실행</b><span>가능한 경우</span></div>
+  </div>
+  <div class="sys-flow-branch">공격 중이라면</div>
+  <div class="sys-flow-line">
+    <div class="sys-flow-box"><b>입력 저장</b><span>최대 0.5초</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>현재 공격 종료</b><span>몽타주 종료</span></div>
+    <i>→</i>
+    <div class="sys-flow-box accent"><b>예약 행동 실행</b><span>ProcessQueuedInput()</span></div>
   </div>
 </div>
 
-버튼을 정확한 프레임에 누르지 않아도 입력은 받아주되, 현재 공격 모션이 끝나기 전에는 다음 행동이 바로 나오지 않도록 했습니다.
+회피 입력은 공격보다 우선하도록 했습니다.  
+공격이 예약되어 있더라도 회피 입력이 들어오면 공격 큐를 지우고 회피를 먼저 실행합니다.
 
 ---
 
-### 자원
+### 05. 공격 판정
 
-<div class="system-number-grid">
-  <div class="system-number-card"><strong>100</strong><span>기본 Max HP</span><small>Vigor 10 초과 1당 +20</small></div>
-  <div class="system-number-card"><strong>100</strong><span>기본 Max Stamina</span><small>Endurance 10 초과 1당 +10</small></div>
-  <div class="system-number-card"><strong>100</strong><span>기본 Max Poise</span><small>피격 리액션 / 그로기 기준</small></div>
-  <div class="system-number-card"><strong>5</strong><span>기본 Estus</span><small>전투 중 제한된 회복</small></div>
+공격이 실제로 맞는 구간은 Anim Notify State로 정했습니다.
+
+<div class="sys-flow">
+  <div class="sys-flow-title">HIT RESOLUTION</div>
+  <div class="sys-flow-line wide">
+    <div class="sys-flow-box"><b>Notify Begin</b><span>HitActors 초기화</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Weapon Trace</b><span>StartSocket → EndSocket</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Hit Payload</b><span>Damage / Poise / 방향</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>방어 상태 확인</b><span>I-Frame / Guard / Parry</span></div>
+    <i>→</i>
+    <div class="sys-flow-box accent"><b>결과 적용</b><span>피해 / 리액션 / 그로기</span></div>
+  </div>
 </div>
 
-| 자원 | 역할 | 플레이 중 선택 |
-| :--- | :--- | :--- |
-| HP | 생존 / 사망 | 피해를 감수할지 뒤로 빠질지 |
-| Stamina | 공격 / 회피 / 가드 공통 비용 | 연속 공격을 할지 방어 여유를 남길지 |
-| Poise | 피격 반응 / 그로기 기준 | 강공격과 차지를 노릴지 |
-| Souls | 성장 비용 + 사망 리스크 | 더 진행할지 화톳불로 돌아갈지 |
+한 번의 공격에서 같은 적이 여러 번 맞는 것을 막기 위해 공격 시작 시 HitActors를 비우고, 이미 맞은 대상은 다시 처리하지 않도록 했습니다.
 
 ---
 
-### 데미지 계산
+### 06. 회피 / 가드 / 패링
 
-무기 DataAsset에 기본 데미지와 스태미나 비용, Strength Scaling 값을 두고 실제 타격 시 플레이어 스탯과 합쳐 최종 데미지를 계산합니다.
+세 기능은 모두 방어 수단이지만 쓰는 이유는 다르게 잡았습니다.
+
+| 행동 | 성공 조건 | 비용 / 실패 | 성공했을 때 |
+| :--- | :--- | :--- | :--- |
+| Dodge | 공격 판정과 I-Frame이 겹침 | Stamina 15 / 방향 선택 실패 시 피격 | 피해 무효 + 위치 변경 |
+| Guard | 가드 중 전방 공격 | Stamina 지속 소모 | 피해 완화 |
+| Parry | Parry Window에 공격 적중 | Stamina 20 / 실패 시 피격 | 적 Executable |
+
+<div class="sys-flow">
+  <div class="sys-flow-title">DEFENSE CHECK</div>
+  <div class="sys-flow-line">
+    <div class="sys-flow-box"><b>Enemy Hit</b><span>공격 판정</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>I-Frame?</b><span>Dodge</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Parry?</b><span>Parry Window</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Guard?</b><span>전방 가드</span></div>
+    <i>→</i>
+    <div class="sys-flow-box accent"><b>Damage</b><span>일반 피격</span></div>
+  </div>
+</div>
+
+---
+
+### 07. 패링 / 그로기 / 처형
+
+패링에 성공하거나 적의 Poise를 전부 깎으면 처형 가능한 상태가 됩니다.
+
+<div class="sys-flow">
+  <div class="sys-flow-title">PARRY / EXECUTION</div>
+  <div class="sys-flow-line wide">
+    <div class="sys-flow-box"><b>패링 성공</b><span>또는 Poise 붕괴</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Groggy</b><span>Executable = True</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>조건 확인</b><span>거리 / 방향 / 위치</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>위치 정렬</b><span>공격자 · 대상</span></div>
+    <i>→</i>
+    <div class="sys-flow-box accent"><b>Execution</b><span>전용 Montage</span></div>
+  </div>
+</div>
+
+| 처형 | 조건 | 기본 피해 |
+| :--- | :--- | ---: |
+| Riposte | Executable 상태 + 전방 Trace | 150 |
+| Backstab | 후방 각도 + 거리 조건 | 120 |
+
+---
+
+### 08. 전투 데이터
+
+<div class="system-number-grid">
+  <div class="system-number-card"><strong>100</strong><span>Max HP</span><small>Vigor 10 초과당 +20</small></div>
+  <div class="system-number-card"><strong>100</strong><span>Max Stamina</span><small>Endurance 10 초과당 +10</small></div>
+  <div class="system-number-card"><strong>100</strong><span>Max Poise</span><small>피격 / 그로기 기준</small></div>
+  <div class="system-number-card"><strong>5</strong><span>Estus</span><small>화톳불에서 보충</small></div>
+</div>
+
+#### WeaponData
+
+무기 관련 값은 DataTable이 아니라 **WeaponData DataAsset**에서 관리했습니다.
+
+| 항목 | Light | Heavy |
+| :--- | ---: | ---: |
+| Base Damage | 20 | 35 |
+| Poise Damage | 10 | 25 |
+| Stamina Cost | 15 | 25 |
+| Charge | - | Multiplier 적용 |
 
 <div class="system-formula">
-  <span>Scaled Damage</span>
+  <span>Damage Scaling</span>
   <strong>BaseDamage + BaseDamage × (Scaling% / 100) × Clamp((Strength − 1) / 99) × 2</strong>
 </div>
 
-| 공격 | Base Damage | Poise Damage | 특징 |
-| :--- | ---: | ---: | :--- |
-| Light | 20 | 10 | 빠른 콤보 |
-| Heavy | 35 | 25 | 높은 강인도 피해 / 차지 가능 |
-| Charged Heavy | 35 × Multiplier | 25 × Multiplier | 최대 차지 시간 도달 시 강화 |
-| Riposte | 150 | - | 처형 가능 상태에서 사용 |
-| Backstab | 120 | - | 후방 위치 조건 만족 시 사용 |
-
 ---
 
-### 공격 판정
+### 09. 락온
 
-공격 판정은 코드 타이머가 아니라 애니메이션의 Notify State 구간에 맞춰 켜고 끕니다.
+락온 중에는 카메라뿐 아니라 플레이어의 이동과 회전 기준도 대상 중심으로 바뀝니다.
 
-<div class="system-flow-wrap">
-  <div class="system-flow-row">
-    <div class="system-flow-node"><span>01</span><strong>Window Begin</strong><small>이전 HitActors 초기화</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>02</span><strong>Weapon Trace</strong><small>StartSocket → EndSocket</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>03</span><strong>Hit Payload 생성</strong><small>Damage / Poise / 방향 정보</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>04</span><strong>방어 상태 확인</strong><small>무적 / 가드 / 패링 / 강인도</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>05</span><strong>결과 적용</strong><small>피해 / 리액션 / 그로기</small></div>
-  </div>
-</div>
-
-한 번의 공격에서 같은 대상을 여러 번 때리지 않도록 HitActors를 기록합니다.
-
----
-
-### 회피 / 가드 / 패링
-
-세 기능은 모두 공격을 방어하지만 사용하는 이유가 다르게 잡았습니다.
-
-| 방어 | 성공 조건 | 위험 | 얻는 것 |
-| :--- | :--- | :--- | :--- |
-| Dodge | 공격 판정과 I-Frame이 겹침 | 방향을 잘못 잡으면 피격 | 피해 무효 + 위치 변경 |
-| Guard | 가드 중 전방 피격 | 스태미나 소모 / 붕괴 위험 | 비교적 안정적인 방어 |
-| Parry | Parry Window에 공격 적중 | 실패하면 그대로 피격 | 적을 처형할 기회 |
-
----
-
-### 패링과 처형
-
-패링에 성공하거나 적의 강인도를 무너뜨리면 처형을 시도할 수 있습니다.
-
-<div class="system-flow-wrap">
-  <div class="system-flow-row">
-    <div class="system-flow-node"><span>01</span><strong>패링 성공</strong><small>공격 타이밍 읽기</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>02</span><strong>적 그로기</strong><small>Executable 상태</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>03</span><strong>처형 조건 확인</strong><small>전방 Trace / 위치·방향</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>04</span><strong>위치 정렬</strong><small>공격자와 대상 동기화</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>05</span><strong>처형</strong><small>전용 몽타주 + 큰 데미지</small></div>
-  </div>
-</div>
-
-**Riposte**는 처형 가능 상태의 적에게 사용하며 기본 데미지는 150입니다.  
-**Backstab**은 거리와 후방 각도 조건을 만족했을 때 사용하며 기본 데미지는 120입니다.
-
----
-
-### 락온 / 카메라
-
-락온은 카메라만 적을 바라보는 기능이 아니라, 플레이어의 이동과 회전 기준을 적 중심으로 바꾸는 전투 모드로 구성했습니다.
-
-| 데이터 | 기본값 | 역할 |
+| 항목 | 값 | 용도 |
 | :--- | ---: | :--- |
-| LockOnRange | 2500 | 처음 락온할 후보 탐색 범위 |
-| MaxLockOnDistance | 3500 | 거리가 멀어졌을 때 자동 해제 |
-| SwitchTarget | 방향 입력 | 다음 락온 대상 선택 |
-| Camera Rotation | 보간 | 락온 대상 중심으로 카메라 회전 |
+| LockOnRange | 2500 | 처음 타깃을 찾는 거리 |
+| MaxLockOnDistance | 3500 | 자동으로 락온이 풀리는 거리 |
+| SwitchTarget | 방향 입력 | 다음 타깃 선택 |
+| Camera Rotation | 보간 | 대상 중심 카메라 유지 |
 
-근접전에서는 타깃이 쉽게 풀리지 않는 것이 중요하고, 여러 적이 있을 때는 원하는 적으로 전환할 수 있어야 합니다.
+락온 거리는 전투 공간 크기를 볼 때 생각보다 영향을 많이 주는 값이었습니다.  
+공간이 너무 넓으면 타깃이 쉽게 풀리고, 반대로 너무 좁으면 다수전에서 카메라가 답답해졌습니다.
 
 ---
 
-### 적 AI
+### 10. 적 AI
 
-적 AI는 **인지 → 접근 → 공격 → 다시 거리 조절**을 기본 흐름으로 잡았습니다.
+적 AI는 StateTree로 구성했습니다.
 
-<div class="system-flow-wrap">
-  <div class="system-flow-row">
-    <div class="system-flow-node"><span>01</span><strong>Peaceful</strong><small>대기 / 배회</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>02</span><strong>Perception</strong><small>시야 / 청각 감지</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>03</span><strong>Approach</strong><small>공격 거리까지 접근</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>04</span><strong>Attack</strong><small>일반 / 특수 공격</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><span>05</span><strong>Reposition</strong><small>간보기 / 거리 재조정</small></div>
+<div class="sys-flow">
+  <div class="sys-flow-title">ENEMY COMBAT</div>
+  <div class="sys-flow-line wide">
+    <div class="sys-flow-box"><b>Peaceful</b><span>대기 / 배회</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Perception</b><span>시야 / 청각</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Approach</b><span>공격 거리까지 접근</span></div>
+    <i>→</i>
+    <div class="sys-flow-box accent"><b>Attack</b><span>일반 / 특수 공격</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Reposition</b><span>거리 조절</span></div>
   </div>
 </div>
 
-#### Perception
-
-| 항목 | 값 |
+| AI 데이터 | 값 |
 | :--- | ---: |
 | Sight Radius | 1000 |
 | Lose Sight Radius | 1200 |
 | Peripheral Vision | 60° |
 | Hearing Range | 1000 |
-| Sight Max Age | 5초 |
-| Hearing Max Age | 3초 |
+| Sight Max Age | 5 sec |
+| Hearing Max Age | 3 sec |
+| Melee Attack Range | 200 |
 
-시야에서 플레이어를 놓치면 마지막으로 본 위치를 저장하고, 해당 위치를 확인한 뒤 다시 탐색하도록 구성했습니다.
-
-#### Combat Task
-
-| Task | 역할 |
-| :--- | :--- |
-| Approach | MeleeAttackRange 200까지 접근 |
-| GuardApproach | 가드 상태로 접근 |
-| Attack | 공격 몽타주 실행 + 쿨다운 |
-| StandOff | 바로 공격하지 않고 거리 유지 |
-| Groggy | 강인도 붕괴 후 그로기 |
-| Retreat / Reposition | 공격 후 거리와 위치 재조정 |
+플레이어를 놓치면 마지막으로 본 위치를 저장하고 그 위치까지 확인한 뒤 다시 탐색하도록 했습니다.
 
 ---
 
-### 다대일 전투
+### 11. 다대일 전투
 
-적이 많을 때 모두가 동시에 공격하면 상황을 읽기 어렵기 때문에, 동시에 적극적으로 공격할 적의 수를 제한하는 구조도 만들었습니다.
+여러 적이 동시에 달려들면 전투를 읽기 어려워져서, 공격 토큰과 위치 슬롯도 만들어봤습니다.
 
 <div class="system-dual-card">
-  <div>
-    <strong>1</strong>
-    <span>공격 토큰</span>
-    <small>기본적으로 토큰을 가진 적만 적극 공격</small>
+  <div><strong>1</strong><span>Attack Token</span><small>동시에 적극적으로 공격하는 적 수 제한</small></div>
+  <div><strong>8</strong><span>Position Slot</span><small>플레이어 주변을 45° 간격으로 분할</small></div>
+</div>
+
+현재 CombatManager 안에 토큰과 슬롯 기능은 구현되어 있지만, 실제 StateTree 공격 Task와 연결하는 작업은 남아 있습니다.
+
+---
+
+### 12. 사망 / Souls / Rune
+
+사망 이후 흐름은 Blueprint에서 연결했습니다.
+
+<div class="sys-flow important">
+  <div class="sys-flow-title">DEATH / RUNE</div>
+  <div class="sys-flow-line wide">
+    <div class="sys-flow-box danger"><b>Player Death</b><span>HP ≤ 0</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Souls 저장</b><span>Current → Dropped</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Current Souls = 0</b><span>현재 소울 초기화</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Map Restart</b><span>레벨 다시 시작</span></div>
+    <i>→</i>
+    <div class="sys-flow-box accent"><b>Rune 생성</b><span>이전 사망 위치</span></div>
   </div>
-  <div>
-    <strong>8</strong>
-    <span>위치 슬롯</span>
-    <small>플레이어 주변을 45° 단위로 나눠 배치</small>
+  <div class="sys-flow-bottom"><span>다시 사망 위치에 도착</span><b>→ Rune 회수 → Souls 복구</b></div>
+</div>
+
+이 흐름을 만들고 나니 화톳불 위치가 단순 체크포인트가 아니라,  
+**지금 가진 Souls를 들고 더 진행할지 돌아갈지 결정하는 지점**이라는 것도 같이 보였습니다.
+
+---
+
+### 13. 화톳불 / 레벨업
+
+화톳불에서는 체크포인트 설정, 회복, Estus 보충, 레벨업을 할 수 있습니다.
+
+<div class="sys-flow important">
+  <div class="sys-flow-title">BONFIRE</div>
+  <div class="sys-flow-line wide">
+    <div class="sys-flow-box"><b>상호작용</b><span>Bonfire 접근</span></div>
+    <i>→</i>
+    <div class="sys-flow-box accent"><b>활성화</b><span>체크포인트 지정</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>회복</b><span>HP / Stamina</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Estus 보충</b><span>기본 5개</span></div>
+    <i>→</i>
+    <div class="sys-flow-box"><b>Level Up</b><span>활성화된 화톳불에서만</span></div>
   </div>
 </div>
 
-다만 현재 CombatManager의 토큰과 슬롯 기능은 구현되어 있지만 StateTree Task와의 연결은 남아 있습니다.
-
----
-
-### 성장 / 화톳불
-
-적을 처치해 얻는 Souls를 성장 자원으로 사용하고, 사망 시 잃을 수 있는 위험 요소로도 사용합니다.
+레벨업 UI는 아무 곳에서나 열 수 없고, **활성화된 화톳불에서만 열리도록 Blueprint에서 연결**했습니다.
 
 <div class="system-formula">
   <span>Level Up Cost</span>
   <strong>Required Souls = 500 + Level² × 10</strong>
 </div>
 
-<div class="system-flow-wrap">
-  <div class="system-flow-row">
-    <div class="system-flow-node"><strong>적 처치</strong><small>Souls 획득</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><strong>계속 진행</strong><small>더 많은 Souls 획득 가능</small></div>
-    <div class="system-flow-arrow">↔</div>
-    <div class="system-flow-node"><strong>화톳불 귀환</strong><small>회복 / Estus / 레벨업</small></div>
-    <div class="system-flow-arrow">↔</div>
-    <div class="system-flow-node"><strong>사망</strong><small>Souls 드랍</small></div>
-    <div class="system-flow-arrow">→</div>
-    <div class="system-flow-node"><strong>회수</strong><small>드랍 위치 재방문</small></div>
-  </div>
-</div>
+---
 
-| 요소 | 현재 규칙 | 상태 |
-| :--- | :--- | :---: |
-| Enemy Reward | 적 사망 시 Souls 지급 | <span class="sys-status done">구현</span> |
-| Level Up | Souls 비용 지불 후 스탯 상승 | <span class="sys-status done">구현</span> |
-| Bonfire | HP 회복 / Estus 보충 / 레벨업 거점 | <span class="sys-status done">구현</span> |
-| Death Rune | 사망 Souls 드랍 후 회수 | <span class="sys-status partial">부분 구현</span> |
+### 14. 레벨을 만들 때 같이 보는 값
+
+이 프로젝트를 만든 이유와 가장 가까운 부분입니다.
+
+| 항목 | 현재 값 | 레벨에서 보는 부분 |
+| :--- | :--- | :--- |
+| InputQueueWindow | 0.5 sec | 공격 템포 |
+| Light / Heavy Cost | 15 / 25 | 공격 후 회피 여유 |
+| Dodge Cost | 15 | 연속 회피 가능 횟수 |
+| LockOnRange | 2500 | 전투 공간 크기 |
+| MaxLockOnDistance | 3500 | 락온이 유지될 수 있는 최대 거리 |
+| AI Sight Radius | 1000 | 적을 처음 발견하는 위치 |
+| Melee Attack Range | 200 | 실제 교전 거리 |
+| Max Poise | 100 | 그로기까지 필요한 공격 횟수 |
+| Bonfire | 체크포인트 | 한 전투 구간의 길이 |
+
+수치 자체가 정답이라고 생각하지는 않았습니다.
+
+이 값들을 직접 바꿔보고 플레이해보면서  
+**공간을 넓혀야 하는지, 적 사이를 더 벌려야 하는지, 전투 구간을 짧게 가져가야 하는지** 판단할 수 있는 기준을 만들고 싶었습니다.
 
 ---
 
-### 주요 조절 데이터
+### 15. 개선할 부분
 
-제가 레벨을 만들 때 같이 확인하려고 한 값들입니다.
-
-| 구분 | 변수 | 기본값 | 레벨에서 영향을 받는 부분 |
-| :--- | :--- | :--- | :--- |
-| Input | InputQueueWindow | 0.5초 | 입력 템포 |
-| Stamina | Light / Heavy / Dodge / Parry | 15 / 25 / 15 / 20 | 한 번에 가능한 행동 수 |
-| Combat | Light / Heavy Damage | 20 / 35 | 적 체력과 전투 시간 |
-| Poise | Base Max Poise | 100 | 그로기까지 필요한 공격 횟수 |
-| Lock-on | Range / MaxDistance | 2500 / 3500 | 전투 공간과 타깃 유지 거리 |
-| AI | Sight / Hearing | 1000 / 1000 | 적 배치 간 인지 범위 |
-| AI | Melee Attack Range | 200 | 실제 근접전 거리 |
-| Progression | Required Souls | 500 + Level²×10 | 성장 속도 |
-
-이 값들은 고정된 정답이라기보다, 실제 플레이하면서 전투 공간과 적 배치를 조정할 때 같이 바꿔보는 값으로 두었습니다.
-
----
-
-### 개선할 부분
-
-현재 구현에서 우선적으로 손볼 부분도 따로 정리했습니다.
-
-| 우선순위 | 항목 | 현재 문제 | 개선 방향 |
+| 우선순위 | 항목 | 현재 상태 | 개선 방향 |
 | :---: | :--- | :--- | :--- |
-| P0 | Stamina Cost Validation | 일부 행동 가능 판정에서 실제 Cost 확인이 빠짐 | CurrentStamina ≥ Cost일 때만 시작 |
-| P0 | 상태 관리 | Action State와 Boolean 상태가 같이 존재 | Action State + Modifier Flag로 정리 |
-| P1 | CombatManager 연결 | 공격 토큰 / 슬롯이 AI와 연결되지 않음 | StateTree Task에서 획득·반납 처리 |
-| P1 | Death Rune | 생성 → 회수 흐름이 완전히 연결되지 않음 | 사망 위치 생성 / 회수 / 덮어쓰기 규칙 확정 |
-| P2 | 전투 피드백 | 실패 행동이나 패링 성공 피드백이 부족 | Sound / VFX / HUD 피드백 보강 |
+| P0 | Stamina Cost | 일부 행동 가능 판정에서 Cost 확인이 느슨함 | 실제 행동 Cost 기준으로 통일 |
+| P0 | 상태 관리 | State와 Boolean Flag가 같이 사용됨 | 역할을 나눠 정리 |
+| P1 | CombatManager | 토큰·슬롯은 구현, AI와 미연동 | StateTree 공격 Task와 연결 |
+| P1 | Rune 예외 처리 | 기본 사망 / 생성 / 회수 루프 구현 | 연속 사망 시 기존 Rune 처리 추가 |
+| P2 | 전투 피드백 | 패링 성공이나 행동 실패 피드백이 부족함 | Sound / VFX / HUD 추가 |
+| P2 | 데이터 정리 | 일부 값이 코드와 Component에 나뉘어 있음 | 조절 값들을 DataAsset 쪽으로 정리 |
 
-이 프로젝트는 여기서 기능을 계속 늘리기보다, 먼저 **전투 규칙과 수치가 실제 레벨 안에서 어떻게 느껴지는지 플레이하면서 확인하고 수정하는 것**을 다음 단계로 잡았습니다.
+앞으로는 기능을 더 많이 붙이는 것보다,  
+현재 만들어둔 시스템을 실제 전투 레벨에 넣고 **수치를 바꿨을 때 공간과 전투가 어떻게 달라지는지 비교해보는 것**을 먼저 해볼 생각입니다.
 `
 },
 
