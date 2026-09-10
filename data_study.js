@@ -1,7 +1,7 @@
 const STUDY_DATA = [
   {
   cat: "System Design",
-  title: "Soulslike Combat System",
+  title: "소울라이크 전투 시스템",
   date: "2026. 06",
   desc: "레벨을 만들면서 전투 시스템의 수치가 공간에 어떤 영향을 주는지 직접 확인해보고 싶어 만든 소울라이크 전투 프로토타입입니다.",
   coverImage: "img/DSP/DarkSoulsProject_Big_720.png",
