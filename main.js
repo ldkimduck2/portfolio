@@ -30,7 +30,7 @@ function updateReadingProgress(el) {
 }
 
 // ── 유틸 함수 ──
-const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const renderTags = tags => (tags || []).map(t =>
   t.startsWith('!') ? `<span class="tag hi">${esc(t.slice(1))}</span>` : `<span class="tag">${esc(t)}</span>`
 ).join('');
@@ -136,8 +136,10 @@ function createGameItemHTML(g) {
   const displayPlaytime = g.playtimeText ? esc(g.playtimeText) : `${g.playtime}시간`;
   const displayYear = g.releaseDate ? `<span class="stat-badge">📅 ${esc(g.releaseDate)}</span>` : '';
   let statusIcon = "🎯", statusClass = "";
-  if (g.status.includes("완료")) { statusIcon = "✅"; statusClass = "done"; }
-  else if (g.status.includes("진행")) { statusIcon = "🔥"; statusClass = "hi"; }
+  const gameStatus = g.status || "";
+  if (gameStatus.includes("완료")) { statusIcon = "✅"; statusClass = "done"; }
+  else if (gameStatus.includes("중단")) { statusIcon = "⏸"; statusClass = "paused"; }
+  else if (gameStatus.includes("진행") || gameStatus.includes("플레이")) { statusIcon = "🔥"; statusClass = "hi"; }
   return `
     <div class="game-item modern-card hover-effect">
       <div class="game-image-wrap">${imgContent}</div>
@@ -145,7 +147,7 @@ function createGameItemHTML(g) {
         <h3 class="game-title">${esc(g.title)}</h3>
         <div class="game-studio">${esc(g.developer)} <span class="sep">/</span> ${esc(g.genre)}</div>
         <div class="game-stats">
-          <span class="stat-badge ${statusClass}">${statusIcon} ${esc(g.status)}</span>
+          <span class="stat-badge ${statusClass}">${statusIcon} ${esc(gameStatus || "기록")}</span>
           ${displayYear}
           <span class="stat-badge">⏱ ${displayPlaytime}</span>
         </div>
@@ -153,6 +155,57 @@ function createGameItemHTML(g) {
       </div>
     </div>`;
 }
+
+
+// ── 현재 플레이 중 ──
+// data_games.js의 CURRENTLY_PLAYING 배열만 수정하면 이 영역이 자동으로 갱신됩니다.
+function createCurrentlyPlayingHTML(g) {
+  const imgContent = g.image
+    ? `<img src="${esc(g.image)}" loading="lazy" alt="${esc(g.title)}">`
+    : `<div class="currently-playing-no-image">NOW PLAYING</div>`;
+
+  const playtime = (g.playtime !== undefined && g.playtime !== null && g.playtime !== "")
+    ? `<span>⏱ ${esc(g.playtimeText || `${g.playtime}시간`)}</span>`
+    : '';
+
+  const meta = [g.developer, g.genre].filter(Boolean).map(esc).join(' / ');
+
+  return `
+    <article class="currently-playing-card">
+      <div class="currently-playing-image">${imgContent}</div>
+      <div class="currently-playing-info">
+        <div class="currently-playing-badge"><i></i> PLAYING NOW</div>
+        <h3>${esc(g.title || '게임 이름')}</h3>
+        ${meta ? `<p>${meta}</p>` : ''}
+        <div class="currently-playing-meta">
+          ${g.platform ? `<span>🎮 ${esc(g.platform)}</span>` : ''}
+          ${playtime}
+        </div>
+        ${g.tags?.length ? `<div class="tags">${renderTags(g.tags)}</div>` : ''}
+      </div>
+    </article>`;
+}
+
+function renderCurrentlyPlaying() {
+  const section = document.getElementById('currently-playing-section');
+  const container = document.getElementById('currently-playing-list');
+  if (!section || !container) return;
+
+  const games = (typeof CURRENTLY_PLAYING !== 'undefined' && Array.isArray(CURRENTLY_PLAYING))
+    ? CURRENTLY_PLAYING.filter(g => g && (g.title || '').trim())
+    : [];
+
+  if (!games.length) {
+    section.hidden = true;
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = games.map(createCurrentlyPlayingHTML).join('');
+  section.hidden = false;
+}
+
+renderCurrentlyPlaying();
 
 // ── 게임 필터 & 정렬 ──
 let currentSortMode = 'latest';

@@ -1,3 +1,36 @@
+/* ══════════════════════════════════════════════════════
+   CURRENTLY PLAYING
+   현재 플레이 중인 게임은 아래 배열만 직접 수정하면 됩니다.
+
+   - 여러 개 입력 가능
+   - image / developer / genre / playtime / tags는 원하는 만큼 수정
+   - 아무 게임도 표시하지 않으려면 [] 상태로 두면 됩니다.
+
+   예시:
+   {
+     title: "게임 이름",
+     developer: "개발사",
+     genre: "장르",
+     platform: "PC",
+     playtime: 10,
+     image: "이미지 URL",
+     tags: ["!현재 플레이", "태그"]
+   },
+   ══════════════════════════════════════════════════════ */
+
+const CURRENTLY_PLAYING = [
+  // 여기에 현재 플레이 중인 게임을 직접 추가하세요.
+  {
+    title: "Hades II",
+    developer: "Supergiant Games",
+    genre: "액션 로그라이크",
+    platform: "PC",
+    playtime: "7",
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1145350/91ac334a2c137d08968ccc0bc474a02579602100/header.jpg?t=1779901265",
+    tags: ["!현재 플레이", "액션 로그라이크", "던전 크롤러"]
+  },
+];
+
 const GAMES_DATA = [
   {
     title: "Escape Simulator 2",
@@ -59,7 +92,7 @@ const GAMES_DATA = [
     developer: "Larian Studios",
     genre: "턴제 RPG",
     platform: "Console / PC",
-    status: "진행 중",
+    status: "중단",
     releaseDate: "2023. 08",
     playtime: 8,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1086940/header.jpg",
@@ -615,7 +648,7 @@ const GAMES_DATA = [
     developer: "Game Science",
     genre: "액션 RPG",
     platform: "Console / PC",
-    status: "진행 중",
+    status: "중단",
     releaseDate: "2024. 08",
     playtime: 5,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2358720/header.jpg",
@@ -659,7 +692,7 @@ const GAMES_DATA = [
     developer: "FromSoftware",
     genre: "액션 RPG",
     platform: "Console / PC",
-    status: "진행 중",
+    status: "중단",
     releaseDate: "2025. 05",
     playtime: 6.7,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2622380/header.jpg",
@@ -692,7 +725,7 @@ const GAMES_DATA = [
     developer: "Ghost Town Games",
     genre: "파티 / 캐주얼",
     platform: "Console / PC",
-    status: "진행 중", 
+    status: "중단", 
     releaseDate: "2018. 08",
     playtime: 3.7, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/728880/header.jpg",
@@ -703,7 +736,7 @@ const GAMES_DATA = [
     developer: "FoamPunch",
     genre: "스포츠 / 레이싱",
     platform: "Console / PC",
-    status: "진행 중",
+    status: "중단",
     releaseDate: "2022. 03",
     playtime: 2.1,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1874170/header.jpg",
@@ -736,7 +769,7 @@ const GAMES_DATA = [
     developer: "Hazelight Studios",
     genre: "액션 어드벤처",
     platform: "Console / PC",
-    status: "진행 중",
+    status: "중단",
     releaseDate: "2025. 03",
     playtime: 15.2,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2001120/header.jpg",
@@ -747,7 +780,7 @@ const GAMES_DATA = [
     developer: "Nintendo",
     genre: "액션 어드벤처",
     platform: "Console",
-    status: "진행 중", // 👈 아직 플레이 중이시라면 "진행 중"으로 수정해 주세요!
+    status: "중단", // 👈 아직 플레이 중이시라면 "진행 중"으로 수정해 주세요!
     releaseDate: "2017. 03",
     playtime: 7, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
     image: "https://assets.nintendo.com/image/upload/c_fill,w_1200/ncom/en_US/games/switch/t/the-legend-of-zelda-breath-of-the-wild-switch/hero",
@@ -780,7 +813,7 @@ const GAMES_DATA = [
     developer: "Pearl Abyss",
     genre: "액션 어드벤처",
     platform: "Console / PC",
-    status: "진행 중", // 
+    status: "중단", // 
     releaseDate: "2026. 03",
     playtime: 18.6, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/3321460/header.jpg", // 붉은사막 공식 썸네일
@@ -802,7 +835,7 @@ const GAMES_DATA = [
     developer: "Santa Monica Studio",
     genre: "액션 어드벤처",
     platform: "Console / PC",
-    status: "진행 중",
+    status: "중단",
     releaseDate: "2018. 04",
     playtime: 4,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1593500/header.jpg",
@@ -813,7 +846,7 @@ const GAMES_DATA = [
     developer: "Moon Studios",
     genre: "액션 RPG",
     platform: "PC",
-    status: "진행 중", // 
+    status: "중단", // 
     releaseDate: "2024. 04",
     playtime: 4.8, // 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1371980/header.jpg",
@@ -824,7 +857,7 @@ const GAMES_DATA = [
     developer: "Pocketpair",
     genre: "생존 / 크래프팅",
     platform: "PC / Console",
-    status: "진행 중", 
+    status: "중단", 
     releaseDate: "2024. 01",
     playtime: 16.5, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/1623730/header.jpg",

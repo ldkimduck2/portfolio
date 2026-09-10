@@ -75,6 +75,18 @@ const DATA = { site: PROFILE_DATA.site, landing: PROFILE_DATA.landing, about: PR
   <section class="page" id="page-games">
     <div class="page-inner">
       <h2 class="sec-title" style="margin-bottom: 24px;">Game PlayList</h2>
+
+      <section class="currently-playing-section" id="currently-playing-section" hidden>
+        <div class="currently-playing-head">
+          <div>
+            <span class="currently-playing-kicker">NOW PLAYING</span>
+            <h3>현재 플레이 중</h3>
+          </div>
+          <span class="currently-playing-live"><i></i> PLAYING</span>
+        </div>
+        <div class="currently-playing-list" id="currently-playing-list"></div>
+      </section>
+
       <div class="game-filter-wrap" id="game-filter-wrap">
         <button class="filter-btn active" onclick="renderGames('sort', 'latest')">최신발매순</button>
         <button class="filter-btn" onclick="renderGames('sort', 'playtime')">플레이타임순</button>
