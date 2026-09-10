@@ -26,8 +26,20 @@ const CURRENTLY_PLAYING = [
     genre: "액션 로그라이크",
     platform: "PC",
     playtime: "7",
+    status: "진행 중",
     image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1145350/91ac334a2c137d08968ccc0bc474a02579602100/header.jpg?t=1779901265",
     tags: ["!현재 플레이", "액션 로그라이크", "던전 크롤러"]
+  },
+    {
+    title: "Shape of Dreams",
+    developer: "Lizard Smoothie",
+    genre: "로그라이트",
+    platform: "PC",
+    status: "진행 중",
+    releaseDate: "2025. 09",
+    playtime: 5.2, 
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2444750/header.jpg",
+    tags: ["!로그라이트", "MOBA 전투", "협동"]
   },
 ];
 
@@ -68,7 +80,7 @@ const GAMES_DATA = [
   {
     title: "Deadlock",
     developer: "Valve",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (TPS)",
     platform: "PC",
     status: "완료",
     releaseDate: "2024. 08",
@@ -79,7 +91,7 @@ const GAMES_DATA = [
   {
     title: "Counter Strike 2",
     developer: "Valve",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "PC",
     status: "완료",
     releaseDate: "2023. 09",
@@ -244,7 +256,7 @@ const GAMES_DATA = [
   {
     title: "Borderland 3",
     developer: "GearBox Software",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2019. 09",
@@ -255,7 +267,7 @@ const GAMES_DATA = [
   {
     title: "World War Z",
     developer: "Saber Interactive",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2019. 04",
@@ -266,7 +278,7 @@ const GAMES_DATA = [
   {
     title: "Apex Legends",
     developer: "Respawn",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2019. 02",
@@ -355,7 +367,7 @@ const GAMES_DATA = [
   {
     title: "Escape From Tarakov",
     developer: "Battlestate Games",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "PC",
     status: "완료",
     releaseDate: "2017. 07",
@@ -366,7 +378,7 @@ const GAMES_DATA = [
   {
     title: "Tom Clancy's Ghost Recon® Wildlands",
     developer: "Ubisoft Paris",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (TPS)",
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2017. 03",
@@ -410,7 +422,7 @@ const GAMES_DATA = [
   {
     title: "Overwatch",
     developer: "Blizzard Entertainment",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "PC",
     status: "완료",
     releaseDate: "2016. 05",
@@ -533,7 +545,7 @@ const GAMES_DATA = [
   {
     title: "Left 4 Dead 2",
     developer: "Valve",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2009. 11",
@@ -555,7 +567,7 @@ const GAMES_DATA = [
   {
     title: "Left 4 Dead",
     developer: "Valve",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2008. 11",
@@ -611,7 +623,7 @@ const GAMES_DATA = [
   {
     title: "Counter Strike : Source",
     developer: "Valve",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (FPS)",
     platform: "PC",
     status: "완료",
     releaseDate: "2004. 11",
@@ -701,24 +713,13 @@ const GAMES_DATA = [
   {
     title: "Tom Clancy's The Division® 2",
     developer: "Ubisoft",
-    genre: "슈팅 (FPS / TPS)",
+    genre: "슈팅 (TPS)",
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2019. 03",
     playtime: 42.6,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2221490/header.jpg",
     tags: ["!루트 슈터", "포스트 아포칼립스"]
-  },
-  {
-    title: "Shape of Dreams",
-    developer: "Lizard Smoothie",
-    genre: "로그라이트",
-    platform: "PC",
-    status: "완료",
-    releaseDate: "2025. 09",
-    playtime: 5.2, 
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/2444750/header.jpg",
-    tags: ["!로그라이트", "MOBA 전투", "협동"]
   },
   {
     title: "Overcooked! 2",
