@@ -1,194 +1,410 @@
 const STUDY_DATA = [
   {
-  cat: "System Design & AI Workflow",
-  title: "AI 파트너십을 통한 시스템 역기획: 레벨 디자인의 근거를 찾는 실험",
+  cat: "System Design",
+  title: "소울라이크 컴뱃 시스템",
   date: "2026. 06",
-  desc: "단순한 공간 구성을 넘어, 소울라이크 전투 시스템을 AI와 함께 역기획하며 시스템적 이해가 실제 레벨 디자인에 어떻게 강력한 무기가 될 수 있는지 검증해 나가는 실험 기록입니다.",
+  desc: "레벨을 만들 때 전투 공간과 적 배치를 감으로만 정하지 않기 위해, 공격·회피·스태미나·피격·AI까지 소울라이크 전투의 기본 규칙을 직접 구현하고 수치로 정리한 프로젝트입니다.",
   coverImage: "img/DSP/DarkSoulsProject_Big_720.png",
   youtubeId: "3H-1v8gK5qM",
 
   content: `
-> **"본 프로젝트는 AI를 활용해 소울라이크 전투 시스템을 역기획하고, 이러한 시스템적 이해도가 실제 레벨 디자인에 어떠한 강점으로 작용하는지 검증하는 실험입니다."**
+### 왜 만들었나
 
-이 문서는 **DarkSoulUE5** 프로젝트의 시스템 설계 과정과, 생성형 AI를 실무 파이프라인에 적용하여 C++ 기반의 엔진 스펙(Component, AnimNotify, State Tree)을 직접 역기획해 낸 연구 기록입니다.
+레벨을 만들면서 전투 공간의 크기나 적을 배치하는 간격을 정할 때 감으로 판단하는 부분이 있었습니다.
 
-아래 뷰어에서 기획서 원본을 직접 확인하실 수 있습니다.
+그런데 같은 공간이라도 **공격 사거리, 회피 거리, 스태미나 소모량, 적이 접근하는 거리와 공격 후 쉬는 시간**에 따라 전투 느낌이 많이 달라집니다.
 
-<div class="m-pdf-wrap" style="margin-top: 32px; margin-bottom: 64px;">
-  <iframe src="pdf/김기덕_다크소울시스템기획서.pdf" title="DarkSoulUE5 기획서" allowfullscreen></iframe>
+그래서 소울라이크 전투에서 자주 쓰이는 기능을 직접 만들어보고, 각 기능이 어떤 조건과 수치로 움직이는지 정리해보기로 했습니다.
+
+목표는 완성된 액션 게임을 만드는 것보다, **전투 시스템을 이해한 상태에서 레벨을 설계할 수 있도록 기준을 만드는 것**이었습니다.
+
+---
+
+### 시스템 개요
+
+3인칭 근접 전투를 기준으로 공격, 회피, 가드, 패링과 세 가지 자원인 HP / Stamina / Poise를 구성했습니다.
+
+<div class="system-summary-grid">
+  <div class="system-summary-card">
+    <span>HP</span>
+    <strong>생존</strong>
+    <small>피격과 사망 처리의 기준</small>
+  </div>
+  <div class="system-summary-card">
+    <span>STA</span>
+    <strong>행동 제한</strong>
+    <small>공격 · 회피 · 가드에 사용</small>
+  </div>
+  <div class="system-summary-card">
+    <span>POI</span>
+    <strong>강인도</strong>
+    <small>피격 리액션과 그로기 기준</small>
+  </div>
 </div>
 
-### 🧠 1. 시스템 역기획과 레벨 디자인의 연결
+전투에서 계속 확인하고 싶었던 것은 단순했습니다.
 
-레벨 디자인은 단순히 공간을 꾸미는 것이 아니라, **엔진의 논리적 규칙과 수치(Metrics) 위에서 플레이어의 경험을 통제하는 작업**입니다. AI를 파트너 삼아 복잡한 소울라이크 시스템을 직접 코어 단위로 역기획하는 이 과정은, **'시스템에 대한 깊은 이해'가 향후 탄탄한 레벨 디자인을 전개하는 데 있어 얼마나 강력한 강점이 될 수 있는지 스스로 검증해 나가는 실험**입니다.
-
-- **스태미나 경제와 공간의 거리(Metrics):** \`AC_Status\`의 \`MaxStamina\`(기본 100), 스프린트 소모율(\`SprintCost\` 10/sec), 구르기 소모(\`DodgeStaminaCost\` 15), 회복 딜레이(\`StaminaRegenDelay\` 1.5초) 수치를 직접 분석함으로써, 화톳불 간의 간격과 인카운터 구역의 크기를 짐작이 아닌 '정확한 수치'를 바탕으로 설계할 수 있는 근거를 마련합니다.
-- **전투 매니저와 다대일 전투 템포:** 여러 적의 동시 공격을 조율하는 \`CombatManagerSubsystem\`과, 공격 후 쿨다운(\`AttackCooldown\` 기본 3초) 및 게걸음 간보기 확률(\`CirclingChance\` 60%)의 원리를 이해하여, 몬스터 배치 밀도와 병목(Choke point) 구간을 정교하게 다듬는 기획적 시야를 확보합니다.
+- 지금 공격해도 되는가
+- 공격하고도 회피할 스태미나가 남는가
+- 회피 / 가드 / 패링 중 무엇을 선택할 것인가
+- 적의 강인도를 깎아서 처형 기회를 만들 것인가
 
 ---
 
-### ⚙️ 2. C++ 기반 컴포넌트 아키텍처 (Component Architecture)
+### 구현 구조
 
-유지보수와 확장을 고려하여 플레이어와 적 모두 철저한 **C++ 컴포넌트 기반 아키텍처**로 분리하여 설계했습니다. 특히 \`EnemyBase\`가 \`AC_Enemy\` 컴포넌트 하나의 \`bIsBoss\` 플래그 분기만으로 일반 적과 보스를 동일한 구조에서 처리한다는 점이 이 아키텍처의 핵심입니다 — 보스 전용 클래스를 따로 만들지 않고도 보스 이름(\`BossName\`), 전용 체력바(\`BossHealthBarClass\`), 입장 트리거(\`ActivateBossFight()\`)가 조건부로 활성화됩니다.
+기능을 한 캐릭터 클래스에 몰아넣지 않고 역할별로 나눴습니다.
 
-| C++ 클래스명 | 적용 대상 | 핵심 책임 (Responsibility) |
+| 모듈 | 역할 | 상태 |
+| :--- | :--- | :---: |
+| AC_Status | HP / Stamina / Poise, 액션, 콤보, 입력 버퍼 | <span class="sys-status done">구현</span> |
+| WeaponData | 무기 데미지, 행동 비용, 스케일링, 몽타주 | <span class="sys-status done">구현</span> |
+| ANS_HitResult | 무기 소켓 Trace, 한 번의 공격에서 중복 타격 방지 | <span class="sys-status done">구현</span> |
+| AC_HitReaction | 피격 반응, 강인도, 처형 가능 상태 | <span class="sys-status done">구현</span> |
+| CombatManager | 공격 토큰, 플레이어 주변 8방향 슬롯 | <span class="sys-status partial">부분 구현</span> |
+
+공격 판정이나 무적, 패링처럼 **시간이 중요한 기능은 Anim Notify / Notify State 구간으로 조절**했습니다.
+
+---
+
+### 플레이어 액션
+
+모든 액션은 **발동 조건 → 비용 → 실행 → 종료** 순서로 확인합니다.
+
+| 액션 | 발동 조건 | 비용 | 결과 |
+| :--- | :--- | :---: | :--- |
+| Light Attack | 무기 장착, 회피 중이 아님 | 15 | 약공격 콤보 진행 |
+| Heavy Attack | 무기 장착, 회피 중이 아님 | 25 | 강공격 콤보 / 차지 가능 |
+| Dodge | 스태미나 충분, 방향 입력 | 15 | 무적 구간 + 위치 재조정 |
+| Guard | 가드 입력 유지 | 지속 소비 | 피해 완화 / 스태미나 압박 |
+| Parry | 패링 입력 + 유효 타이밍 | 20 | 성공 시 적을 처형 가능 상태로 유도 |
+| Heal | Estus 보유, 공격·피격 중이 아님 | Estus 1 | HP 회복 / 긴 후딜 |
+
+---
+
+### 공격과 선입력
+
+공격 중 다음 입력이 들어오면 바로 실행하지 않고 최대 **0.5초 동안 저장**합니다.
+
+회피 입력은 공격 입력보다 우선하도록 했습니다. 공격 중 회피가 들어오면 예약된 공격을 취소하고 회피를 먼저 실행합니다.
+
+<div class="system-flow-wrap">
+  <div class="system-flow-row">
+    <div class="system-flow-node"><span>01</span><strong>입력</strong><small>Light / Heavy / Dodge</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>02</span><strong>현재 행동 확인</strong><small>즉시 실행 가능한지 확인</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>03</span><strong>선입력 저장</strong><small>Input Buffer 0.5s</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>04</span><strong>몽타주 종료</strong><small>현재 행동 종료</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>05</span><strong>예약 행동 실행</strong><small>ProcessQueuedInput</small></div>
+  </div>
+</div>
+
+버튼을 정확한 프레임에 누르지 않아도 입력은 받아주되, 현재 공격 모션이 끝나기 전에는 다음 행동이 바로 나오지 않도록 했습니다.
+
+---
+
+### 자원
+
+<div class="system-number-grid">
+  <div class="system-number-card"><strong>100</strong><span>기본 Max HP</span><small>Vigor 10 초과 1당 +20</small></div>
+  <div class="system-number-card"><strong>100</strong><span>기본 Max Stamina</span><small>Endurance 10 초과 1당 +10</small></div>
+  <div class="system-number-card"><strong>100</strong><span>기본 Max Poise</span><small>피격 리액션 / 그로기 기준</small></div>
+  <div class="system-number-card"><strong>5</strong><span>기본 Estus</span><small>전투 중 제한된 회복</small></div>
+</div>
+
+| 자원 | 역할 | 플레이 중 선택 |
 | :--- | :--- | :--- |
-| **\`AC_Status.cpp\`** | 플레이어·적 | HP·스태미나·강인도(Poise)·소울·에스트 병·장비·행동 상태(15종 bool) 통합 관리 |
-| **\`AC_State.cpp\`** | 플레이어·적 | \`EActionState\` Enum — Idle / Attacking / Dodging / Blocking / Parrying / Staggered / Executing / BeingExecuted |
-| **\`AC_HitReaction.cpp\`** | 플레이어·적 | \`FHitPayload\`를 수신해 피격 방향 × 공격 유형 × 높이 조합으로 모션을 동적 디스패치 |
-| **\`AC_Hitbox.cpp\`** | 플레이어·적 | 무기 히트박스 활성화·비활성화 제어 |
-| **\`AC_Enemy.cpp\`** | 적 전용 | 배회 방식(\`EPeacefulBehavior\`)·전투 대치·감지 반경·특수공격(\`FSpecialAttackData\`) 파라미터 세팅 변수 집합. \`bIsBoss\` 플래그로 일반 적과 보스를 단일 구조에서 분기 |
-| **\`AC_LockOn.cpp\`** | 플레이어 전용 | 락온 타겟 탐색·좌우 전환 및 \`AC_DynamicCamera\` 거리/회전 연동 |
+| HP | 생존 / 사망 | 피해를 감수할지 뒤로 빠질지 |
+| Stamina | 공격 / 회피 / 가드 공통 비용 | 연속 공격을 할지 방어 여유를 남길지 |
+| Poise | 피격 반응 / 그로기 기준 | 강공격과 차지를 노릴지 |
+| Souls | 성장 비용 + 사망 리스크 | 더 진행할지 화톳불로 돌아갈지 |
 
 ---
 
-### 🎬 3. 프레임 단위 전투 제어: AnimNotify 시스템
+### 데미지 계산
 
-치밀한 공방의 핵심인 액션의 '판정'을 언리얼 엔진의 애니메이션 몽타주 **AnimNotify / AnimNotifyState**를 활용해 C++ 클래스 단에서 프레임 단위로 제어하도록 설계했습니다.
+무기 DataAsset에 기본 데미지와 스태미나 비용, Strength Scaling 값을 두고 실제 타격 시 플레이어 스탯과 합쳐 최종 데미지를 계산합니다.
 
-\`ANS_HitResult\`가 공격 활성 구간 동안 구체 스윕(Sphere Sweep, 반경 15cm)으로 적중을 감지하면, **\`FHitPayload\`** 구조체 — \`DamageAmount\`, \`PoiseDamage\`, \`AttackType\`, \`HitHeight\`, \`HitDirection\`, \`WeaponType\` 을 한 번에 묶어 피격 측 \`AC_HitReaction\`에 전달합니다. \`AC_HitReaction\`은 이 페이로드를 받아 공격 유형 → 방향 → 높이 순으로 테이블을 내려가며 최종 모션 하나를 결정합니다. 즉 \`FHitPayload\`는 공격 측과 피격 측을 연결하는 **전투 데이터 버스**입니다.
+<div class="system-formula">
+  <span>Scaled Damage</span>
+  <strong>BaseDamage + BaseDamage × (Scaling% / 100) × Clamp((Strength − 1) / 99) × 2</strong>
+</div>
 
-- **\`ANS_Invincibility\` & \`ANS_ParryWindow\`:** 구르기 무적 프레임 구간 및 패링 유효 윈도우(\`ParryStaminaCost\` 10 소모) 프레임 단위 설정.
-- **\`ANS_ExecutableWindow\`:** 패링 성공 → \`bIsExecutable = true\` 활성화 구간. 이 상태의 적에게 공격 입력 시 앞잡(리포스트) 판정으로 전환됩니다.
-- **\`ANS_ChargeWindow\`:** 차징 공격 입력 수용 구간 제어 (최대 차징 시간 \`MaxChargeTime\` 1.5초).
-- **\`AN_EnableCombo\` & \`AN_ResetCombo\`:** 공격 선입력 버퍼(\`InputQueueWindow\` 0.5초) 수용 및 콤보 인덱스(\`CurrentComboIndex\`) 순환·초기화 제어.
-- **\`ANS_SendAlert\`:** 공격 발동 시 주변 적에게 \`AlertLevel\`을 전파하여 군집 전투 참여 유도.
-- **\`ANS_AI_Rotate\` & \`ANS_ModifyPlayRate\`:** AI 공격 중 플레이어 방향 추적 회전 및 공격 속도 동적 조절.
-
----
-
-### ⚔️ 3-1. 처형 시스템: 패링 → 리포스트 / 백스탭
-
-처형은 이 프로젝트에서 가장 정교하게 구현된 메커니즘입니다. \`AC_Status::ExecuteAttack()\` 내부에서 두 가지 처형 조건을 동시에 판별합니다.
-
-<div class="m-study-callout"><div class="m-study-callout-icon">🗡️</div><div class="m-study-callout-text">
-<strong>처형 판별 플로우 (AC_Status::ExecuteAttack 내부)</strong><br><br>
-1. <strong>앞잡(리포스트) 조건 :</strong> 적의 \`bIsExecutable == true\` — 패링 성공 후 \`ANS_ExecutableWindow\`가 활성화한 그로기 상태.<br>
-2. <strong>뒤잡(백스탭) 조건 :</strong> \`FVector::DotProduct(PlayerToEnemy, EnemyForward) > 0.5f\` — 플레이어가 적의 후방 약 60° 이내에 위치. \`bIsInvincible\` 상태가 아닌 경우에만 유효.<br>
-3. <strong>애니메이션 동기화 :</strong> 두 조건이 충족되면 플레이어 측(\`FatalStrikeMontage\` 또는 \`BackstabStrikeMontage\`)과 적 측(\`ExecutedMontage\` 또는 \`BackstabbedMontage\`)이 동시에 재생되며, 적 AI의 \`BrainComponent\`는 \`StopLogic("BeingExecuted")\`로 즉시 정지됩니다.<br>
-4. <strong>데미지 :</strong> 리포스트 \`RiposteDamage\`(기본 150) / 백스탭 \`BackstabDamage\`(기본 120) — 모두 \`WeaponDataAsset\`에서 무기별로 독립 설정.
-</div></div>
+| 공격 | Base Damage | Poise Damage | 특징 |
+| :--- | ---: | ---: | :--- |
+| Light | 20 | 10 | 빠른 콤보 |
+| Heavy | 35 | 25 | 높은 강인도 피해 / 차지 가능 |
+| Charged Heavy | 35 × Multiplier | 25 × Multiplier | 최대 차지 시간 도달 시 강화 |
+| Riposte | 150 | - | 처형 가능 상태에서 사용 |
+| Backstab | 120 | - | 후방 위치 조건 만족 시 사용 |
 
 ---
 
-### 🤖 4. State Tree 기반 다층 적 AI 행동 설계
+### 공격 판정
 
-전통적인 Behavior Tree를 넘어, UE5의 최신 **State Tree** 시스템을 채택하여 \`STEvaluator_EnemyCombat\`을 통해 전투 상황을 평가하고 유기적인 행동을 설계했습니다.
+공격 판정은 코드 타이머가 아니라 애니메이션의 Notify State 구간에 맞춰 켜고 끕니다.
 
-<div class="m-study-callout"><div class="m-study-callout-icon">⚔️</div><div class="m-study-callout-text">
-<strong>C++ 커스텀 태스크(Task) 행동 루프</strong><br><br>
-1. <strong>평화 배회 (\`STTask_Idle\`) :</strong> Stand Still 또는 무작위 위치·웨이포인트 순찰(\`EPeacefulBehavior\` / \`EWanderingStyle\`) 중 선택.<br>
-2. <strong>수색 (\`STTask_MoveToLocation\`) :</strong> 시각·청각(\`UAISenseConfig_Sight\` / \`Hearing\`) 자극 감지 시 \`LastKnownLocation\`으로 이동하여 \`LookAroundCount\`(기본 3회) 두리번거림. 수색 실패 시 \`SpawnLocation\`으로 복귀.<br>
-3. <strong>전투 대치 (\`STTask_StandOff\`) :</strong> 플레이어 주변을 \`CirclingChance\`(60%) 확률로 \`CirclingDuration\`(4초) 동안 게걸음 치며 간을 보는 텐션 제어.<br>
-4. <strong>접근 (\`STTask_Approach\` / \`STTask_GuardApproach\`) :</strong> \`MeleeAttackRange\`(200cm) 이내 진입 시 공격 전환.<br>
-5. <strong>공격 (\`STTask_Attack\`) :</strong> Random 또는 Sequential 순서로 몽타주 재생. \`FSpecialAttackData\`로 체력·거리 조건부 특수기 발동.<br>
-6. <strong>그로기 (\`STTask_Groggy\`) :</strong> 강인도(Poise) 파괴 시 경직 유지 — 처형 취약 상태 진입.<br>
-7. <strong>쿨다운 (\`STTask_Wait\`) :</strong> 공격 후 \`AttackCooldown\`(기본 3초) 적용 후 대치 재개.
-</div></div>
+<div class="system-flow-wrap">
+  <div class="system-flow-row">
+    <div class="system-flow-node"><span>01</span><strong>Window Begin</strong><small>이전 HitActors 초기화</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>02</span><strong>Weapon Trace</strong><small>StartSocket → EndSocket</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>03</span><strong>Hit Payload 생성</strong><small>Damage / Poise / 방향 정보</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>04</span><strong>방어 상태 확인</strong><small>무적 / 가드 / 패링 / 강인도</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>05</span><strong>결과 적용</strong><small>피해 / 리액션 / 그로기</small></div>
+  </div>
+</div>
 
----
-
-### 🛡️ 5. 자원 경제와 환경 상호작용
-
-- **DataAsset 기반 무기 모듈화 (\`WeaponData.cpp\`):** \`UWeaponDataAsset\`으로 무기 타입(\`EWeaponType\`: Protector·GreatSword·Axe·Nodachi), 약공격·강공격·앞잡·뒤잡 데미지, 스태미나 소비, 콤보 몽타주 배열, 애니메이션 레이어(\`LinkedAnimLayerClass\`), 강인도 데미지, 근력 스케일링(\`StrengthScalingPercentage\`)을 C++ 수정 없이 디자이너가 직관적으로 세팅.
-- **소울 드랍 & 회수 (\`DroppedRune.cpp\`):** 사망 시 \`CurrentSouls\`를 \`DroppedRune\` 오브젝트로 스폰. \`SoulsGameInstance\`가 \`DroppedSoulsAmount\` + \`DroppedRuneLocation\` + \`bHasDroppedRune\` 세 값을 씬 전환 후에도 런타임에서 유지합니다 — 별도 세이브 파일 없이 GameInstance가 임시 세이브 계층을 담당하는 구조입니다. 레벨 디자인 관점에서는 이 구조 덕분에 씬(레벨) 경계를 자유롭게 나눌 수 있고, 룬 위치만 기억하면 되므로 전환 비용이 낮습니다.
-- **화톳불 (\`Bonfire.cpp\`):** 점화(\`bIsLit\`) 시 거점 등록. 휴식 시 HP 전량·\`CurrentEstus\` → \`MaxEstus\`(기본 3개) 충전, \`EnemySpawner\`를 통해 주변 적 리스폰. \`LastBonfireTransform\`을 동일한 \`SoulsGameInstance\`에 보존 — 룬 드랍 위치와 마지막 화톳불 위치가 한 객체 안에서 관리되는 설계입니다.
-- **사다리 (\`Ladder.cpp\`):** 상·하단 상호작용 존 독립 설계로 양방향 탑승·하차. \`SlideDownSpeed\`(기본 800cm/s) 고속 하강 및 \`SlideMontage\` 재생 지원. \`InstancedStaticMeshComponent\`로 에디터에서 높이·디딤 간격(\`StepHeight\`) 동적 설정.
+한 번의 공격에서 같은 대상을 여러 번 때리지 않도록 HitActors를 기록합니다.
 
 ---
 
-> **"이러한 시스템적 구조화와 C++ 코어 레벨의 반복 검증 과정을 AI와 함께 수행하면서, 저는 단순한 맵 배치를 넘어 게임의 논리적 규칙과 템포를 완벽하게 융합하는 레벨 디자이너로 성장하고 있습니다."**
+### 회피 / 가드 / 패링
+
+세 기능은 모두 공격을 방어하지만 사용하는 이유가 다르게 잡았습니다.
+
+| 방어 | 성공 조건 | 위험 | 얻는 것 |
+| :--- | :--- | :--- | :--- |
+| Dodge | 공격 판정과 I-Frame이 겹침 | 방향을 잘못 잡으면 피격 | 피해 무효 + 위치 변경 |
+| Guard | 가드 중 전방 피격 | 스태미나 소모 / 붕괴 위험 | 비교적 안정적인 방어 |
+| Parry | Parry Window에 공격 적중 | 실패하면 그대로 피격 | 적을 처형할 기회 |
+
+---
+
+### 패링과 처형
+
+패링에 성공하거나 적의 강인도를 무너뜨리면 처형을 시도할 수 있습니다.
+
+<div class="system-flow-wrap">
+  <div class="system-flow-row">
+    <div class="system-flow-node"><span>01</span><strong>패링 성공</strong><small>공격 타이밍 읽기</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>02</span><strong>적 그로기</strong><small>Executable 상태</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>03</span><strong>처형 조건 확인</strong><small>전방 Trace / 위치·방향</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>04</span><strong>위치 정렬</strong><small>공격자와 대상 동기화</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>05</span><strong>처형</strong><small>전용 몽타주 + 큰 데미지</small></div>
+  </div>
+</div>
+
+**Riposte**는 처형 가능 상태의 적에게 사용하며 기본 데미지는 150입니다.  
+**Backstab**은 거리와 후방 각도 조건을 만족했을 때 사용하며 기본 데미지는 120입니다.
+
+---
+
+### 락온 / 카메라
+
+락온은 카메라만 적을 바라보는 기능이 아니라, 플레이어의 이동과 회전 기준을 적 중심으로 바꾸는 전투 모드로 구성했습니다.
+
+| 데이터 | 기본값 | 역할 |
+| :--- | ---: | :--- |
+| LockOnRange | 2500 | 처음 락온할 후보 탐색 범위 |
+| MaxLockOnDistance | 3500 | 거리가 멀어졌을 때 자동 해제 |
+| SwitchTarget | 방향 입력 | 다음 락온 대상 선택 |
+| Camera Rotation | 보간 | 락온 대상 중심으로 카메라 회전 |
+
+근접전에서는 타깃이 쉽게 풀리지 않는 것이 중요하고, 여러 적이 있을 때는 원하는 적으로 전환할 수 있어야 합니다.
+
+---
+
+### 적 AI
+
+적 AI는 **인지 → 접근 → 공격 → 다시 거리 조절**을 기본 흐름으로 잡았습니다.
+
+<div class="system-flow-wrap">
+  <div class="system-flow-row">
+    <div class="system-flow-node"><span>01</span><strong>Peaceful</strong><small>대기 / 배회</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>02</span><strong>Perception</strong><small>시야 / 청각 감지</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>03</span><strong>Approach</strong><small>공격 거리까지 접근</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>04</span><strong>Attack</strong><small>일반 / 특수 공격</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><span>05</span><strong>Reposition</strong><small>간보기 / 거리 재조정</small></div>
+  </div>
+</div>
+
+#### Perception
+
+| 항목 | 값 |
+| :--- | ---: |
+| Sight Radius | 1000 |
+| Lose Sight Radius | 1200 |
+| Peripheral Vision | 60° |
+| Hearing Range | 1000 |
+| Sight Max Age | 5초 |
+| Hearing Max Age | 3초 |
+
+시야에서 플레이어를 놓치면 마지막으로 본 위치를 저장하고, 해당 위치를 확인한 뒤 다시 탐색하도록 구성했습니다.
+
+#### Combat Task
+
+| Task | 역할 |
+| :--- | :--- |
+| Approach | MeleeAttackRange 200까지 접근 |
+| GuardApproach | 가드 상태로 접근 |
+| Attack | 공격 몽타주 실행 + 쿨다운 |
+| StandOff | 바로 공격하지 않고 거리 유지 |
+| Groggy | 강인도 붕괴 후 그로기 |
+| Retreat / Reposition | 공격 후 거리와 위치 재조정 |
+
+---
+
+### 다대일 전투
+
+적이 많을 때 모두가 동시에 공격하면 상황을 읽기 어렵기 때문에, 동시에 적극적으로 공격할 적의 수를 제한하는 구조도 만들었습니다.
+
+<div class="system-dual-card">
+  <div>
+    <strong>1</strong>
+    <span>공격 토큰</span>
+    <small>기본적으로 토큰을 가진 적만 적극 공격</small>
+  </div>
+  <div>
+    <strong>8</strong>
+    <span>위치 슬롯</span>
+    <small>플레이어 주변을 45° 단위로 나눠 배치</small>
+  </div>
+</div>
+
+다만 현재 CombatManager의 토큰과 슬롯 기능은 구현되어 있지만 StateTree Task와의 연결은 남아 있습니다.
+
+---
+
+### 성장 / 화톳불
+
+적을 처치해 얻는 Souls를 성장 자원으로 사용하고, 사망 시 잃을 수 있는 위험 요소로도 사용합니다.
+
+<div class="system-formula">
+  <span>Level Up Cost</span>
+  <strong>Required Souls = 500 + Level² × 10</strong>
+</div>
+
+<div class="system-flow-wrap">
+  <div class="system-flow-row">
+    <div class="system-flow-node"><strong>적 처치</strong><small>Souls 획득</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><strong>계속 진행</strong><small>더 많은 Souls 획득 가능</small></div>
+    <div class="system-flow-arrow">↔</div>
+    <div class="system-flow-node"><strong>화톳불 귀환</strong><small>회복 / Estus / 레벨업</small></div>
+    <div class="system-flow-arrow">↔</div>
+    <div class="system-flow-node"><strong>사망</strong><small>Souls 드랍</small></div>
+    <div class="system-flow-arrow">→</div>
+    <div class="system-flow-node"><strong>회수</strong><small>드랍 위치 재방문</small></div>
+  </div>
+</div>
+
+| 요소 | 현재 규칙 | 상태 |
+| :--- | :--- | :---: |
+| Enemy Reward | 적 사망 시 Souls 지급 | <span class="sys-status done">구현</span> |
+| Level Up | Souls 비용 지불 후 스탯 상승 | <span class="sys-status done">구현</span> |
+| Bonfire | HP 회복 / Estus 보충 / 레벨업 거점 | <span class="sys-status done">구현</span> |
+| Death Rune | 사망 Souls 드랍 후 회수 | <span class="sys-status partial">부분 구현</span> |
+
+---
+
+### 주요 조절 데이터
+
+제가 레벨을 만들 때 같이 확인하려고 한 값들입니다.
+
+| 구분 | 변수 | 기본값 | 레벨에서 영향을 받는 부분 |
+| :--- | :--- | :--- | :--- |
+| Input | InputQueueWindow | 0.5초 | 입력 템포 |
+| Stamina | Light / Heavy / Dodge / Parry | 15 / 25 / 15 / 20 | 한 번에 가능한 행동 수 |
+| Combat | Light / Heavy Damage | 20 / 35 | 적 체력과 전투 시간 |
+| Poise | Base Max Poise | 100 | 그로기까지 필요한 공격 횟수 |
+| Lock-on | Range / MaxDistance | 2500 / 3500 | 전투 공간과 타깃 유지 거리 |
+| AI | Sight / Hearing | 1000 / 1000 | 적 배치 간 인지 범위 |
+| AI | Melee Attack Range | 200 | 실제 근접전 거리 |
+| Progression | Required Souls | 500 + Level²×10 | 성장 속도 |
+
+이 값들은 고정된 정답이라기보다, 실제 플레이하면서 전투 공간과 적 배치를 조정할 때 같이 바꿔보는 값으로 두었습니다.
+
+---
+
+### 개선할 부분
+
+현재 구현에서 우선적으로 손볼 부분도 따로 정리했습니다.
+
+| 우선순위 | 항목 | 현재 문제 | 개선 방향 |
+| :---: | :--- | :--- | :--- |
+| P0 | Stamina Cost Validation | 일부 행동 가능 판정에서 실제 Cost 확인이 빠짐 | CurrentStamina ≥ Cost일 때만 시작 |
+| P0 | 상태 관리 | Action State와 Boolean 상태가 같이 존재 | Action State + Modifier Flag로 정리 |
+| P1 | CombatManager 연결 | 공격 토큰 / 슬롯이 AI와 연결되지 않음 | StateTree Task에서 획득·반납 처리 |
+| P1 | Death Rune | 생성 → 회수 흐름이 완전히 연결되지 않음 | 사망 위치 생성 / 회수 / 덮어쓰기 규칙 확정 |
+| P2 | 전투 피드백 | 실패 행동이나 패링 성공 피드백이 부족 | Sound / VFX / HUD 피드백 보강 |
+
+이 프로젝트는 여기서 기능을 계속 늘리기보다, 먼저 **전투 규칙과 수치가 실제 레벨 안에서 어떻게 느껴지는지 플레이하면서 확인하고 수정하는 것**을 다음 단계로 잡았습니다.
 `
 },
-
 
 /// Next ///
 
 {
-cat: "System Design & AI Workflow",
-title: "레벨 디자인 속도를 위한 도구 만들기: MeshSnapTools 에디터 플러그인",
+cat: "Tools & Workflow",
+title: "모듈러 배치 작업을 줄이기 위해 만든 MeshSnapTools",
 date: "2026. 06",
-desc: "레퍼런스 영상 하나를 들고 AI와 대화하며, 필요한 스냅 툴을 직접 정의하고 반복적인 테스트와 피드백으로 완성해나간 과정의 기록입니다.",
+desc: "모듈러 메쉬를 배치할 때 모서리나 버텍스를 맞추기 위해 위치를 조금씩 조정하는 작업이 반복돼, 원하는 지점을 직접 찍어 붙일 수 있도록 만든 UE5 에디터 플러그인입니다.",
 coverImage: "img/MeshSnapTools/MeshSnapTools_v2.png",
 youtubeId: "bWaVvlLsYes",
 
 content: `
+### 왜 만들었나
 
-> **"이런 워크플로우가 필요한데, 이걸 나 대신 만들어줄 수 있어?"**
+레벨을 만들다 보면 벽, 기둥, 문틀 같은 모듈러 메쉬를 계속 이어 붙이게 됩니다.
 
-이 문서는 **MeshSnapTools**라는 언리얼 엔진 5 에디터 플러그인을 AI인 Claude와 함께 만들어나간 과정의 기록입니다.
+그리드 스냅으로 바로 맞는 경우도 있지만, 피벗 위치가 애매하거나 서로 다른 형태의 메쉬를 붙일 때는 모서리나 버텍스를 기준으로 위치를 맞춰야 했습니다. 그럴 때마다 이동 기즈모로 X, Y, Z 값을 조금씩 조절해서 맞추는 작업이 반복됐습니다.
 
-저는 C++이나 언리얼 엔진의 내부 구조를 깊이 이해하고 있지 않습니다. 대신 **레벨 디자이너로서 무엇이 불편한지, 어떤 기능이 필요한지를 구체적으로 전달하고, 결과물을 직접 사용하며 문제를 찾아 개선하는 역할**을 맡았습니다.
+특히 같은 벽을 여러 개 이어 붙이거나, 문과 문틀처럼 여러 액터를 같이 옮길 때 이 과정이 계속 생겨서 작업 흐름이 자주 끊겼습니다.
 
----
-
-### 🧩 1. 왜 만들었나
-
-레벨 디자인이나 화이트박스 프로토타입 작업을 할 때는 오브젝트의 면을 맞추거나 특정 지점끼리 정렬하는 작업을 반복하게 됩니다.
-
-기존에는 이동 툴로 좌표를 눈대중으로 조정했습니다. 하지만 정확하게 맞추기 어려웠고, 같은 작업을 반복할수록 손이 많이 갔습니다.
-
-마침 다른 3D 툴에서 사용되는 스냅 기능을 담은 레퍼런스 영상을 발견했습니다. 오브젝트의 버텍스나 바운딩 박스 모서리를 선택한 뒤, 다른 오브젝트의 지점에 정확하게 붙이는 방식이었습니다.
-
-**"이런 기능을 언리얼 에디터 안에서 사용할 수 있다면 레벨 제작 속도를 높일 수 있겠다."**
-
-이 생각에서 MeshSnapTools 제작을 시작했습니다.
-
-<div class="m-study-callout"><div class="m-study-callout-icon">💡</div><div class="m-study-callout-text">
-<strong>왜 직접 만들었나</strong><br><br>
-비슷한 기능을 제공하는 유료 플러그인이 마켓플레이스에 이미 있었습니다. 하지만 제가 원하는 조작 방식과 정확히 같은지는 알기 어려웠습니다.<br><br>
-AI와 함께라면 필요한 기능만 골라 제 작업 방식에 맞는 도구를 만들 수 있다고 생각했습니다. 코드를 직접 작성하는 것이 아니라, <strong>제가 원하는 도구의 모습과 작동 방식을 정의하고 실제로 쓸 만한지 검증하는 것</strong>이 목표였습니다.
-</div></div>
+그래서 **메쉬에서 원하는 지점을 하나 찍고, 다른 메쉬의 원하는 지점에 바로 붙일 수 있는 기능**을 만들었습니다. 같은 메쉬를 반복해서 배치할 때는 복제와 스냅도 한 번에 할 수 있도록 했습니다.
 
 ---
 
-### 💬 2. AI와 어떻게 작업했나
+### 기능 / 조작 방법
 
-작업은 처음부터 끝까지 대화와 테스트를 반복하는 방식으로 진행했습니다.
+**1. 액터 선택**  
+스냅할 액터를 선택하면 사용할 수 있는 스냅 포인트가 표시됩니다.
 
-<div class="m-study-callout"><div class="m-study-callout-icon">🔁</div><div class="m-study-callout-text">
-<strong>레퍼런스 제시 → 요구사항 구체화 → 구현 → 테스트 → 피드백 → 재작업</strong><br><br>
-1. <strong>레퍼런스 공유 :</strong> 스냅 포인트가 어떻게 보이는지, 어떤 조작으로 정렬되는지, 복제 기능은 어떻게 작동해야 하는지 설명했습니다.<br>
-2. <strong>구현 방식 논의 :</strong> AI가 언리얼 엔진에서 사용할 수 있는 구현 방식을 제시했고, 현재 엔진 버전에서 빌드할 수 있는 방식을 선택했습니다.<br>
-3. <strong>빌드 및 오류 확인 :</strong> 받은 코드를 프로젝트에 적용했습니다. 빌드 오류가 발생하면 로그를 전달하고 수정된 코드를 다시 적용했습니다.<br>
-4. <strong>사용성 테스트 :</strong> 실제 에디터에서 사용하며 클릭 판정, 입력 방식, 복제 결과, 미리보기 형태를 확인했습니다. 불편하거나 의도와 다른 부분은 상황을 구체적으로 설명해 다시 수정했습니다.
-</div></div>
+**2. 기준점 선택**  
+원하는 포인트를 좌클릭하면 해당 지점이 기준점으로 잡힙니다.
 
-처음부터 한 번에 제대로 작동한 것은 아니었습니다.
+**3. 붙일 위치 선택**  
+다른 액터에 마우스를 올리면 가까운 스냅 포인트가 표시되고, 실제로 이동했을 때의 위치를 와이어프레임으로 미리 볼 수 있습니다.
 
-스냅을 확정하는 조작만 해도 드래그 앤 드롭, 우클릭, 휠 클릭, 스페이스바 순서로 여러 번 변경했습니다.
+**4. Space - 이동 후 스냅**  
+원하는 포인트에 마우스를 올린 상태에서 \`Space\`를 누르면 기준점과 목표점이 맞도록 액터가 이동합니다.
 
-어떤 방식은 에디터의 카메라 조작과 겹쳤고, 어떤 방식은 우클릭 메뉴가 함께 열려 오작동했습니다. 설명만 들었을 때는 괜찮아 보였지만, 실제로 사용해봐야 알 수 있는 문제였습니다.
+**5. Shift + Space - 복제 후 스냅**  
+원본은 그대로 두고 복제된 액터를 목표 위치에 붙입니다. 복제된 액터가 다시 선택되기 때문에 같은 벽이나 기둥을 연속해서 배치할 때 사용할 수 있습니다.
 
-복제 기능을 사용할 때 메쉬 크기가 비정상적으로 커지는 버그도 있었습니다. 문제가 발생한 상황과 기대했던 결과를 전달하면 AI가 원인을 추적해 수정안을 제시했습니다. 이후 수정된 버전을 같은 조건에서 다시 테스트해 문제가 해결됐는지 확인했습니다.
+**6. 여러 액터 같이 스냅**  
+여러 액터를 선택한 뒤 그중 하나의 스냅 포인트를 기준으로 잡으면, 나머지 액터도 상대 위치를 유지한 채 같이 이동하거나 복제됩니다.
 
----
-
-### 🎨 3. 결과물이 계속 나아진 이유
-
-결과물의 완성도를 높인 것은 한 번에 완벽한 답을 요구한 것이 아니라, **무엇이 왜 불편한지를 구체적으로 전달한 것**이었습니다.
-
-* "클릭이 잘 안 된다"가 아니라, 어떤 상황에서 어떤 입력이 작동하지 않는지 설명했습니다.
-* "미리보기가 이상하다"가 아니라, 원기둥 메쉬가 네모난 박스로 표시되어 실제 형태를 확인하기 어렵다고 전달했습니다.
-* 문제만 지적하지 않고, 드래그 방식이나 포인트 선택 방식처럼 원하는 조작 방향도 함께 제안했습니다.
-* 수정된 기능은 같은 상황에서 다시 사용하며 문제가 실제로 해결됐는지 확인했습니다.
-
-저는 코드를 직접 읽고 수정하기보다, **최종 사용자 입장에서 기능을 검증하고 다음 개선 방향을 제시했습니다.**
-
-레벨을 테스트하며 플레이어의 행동을 관찰하고 공간을 수정하듯, 이번에는 제 작업 과정을 관찰하며 도구의 기능과 조작 방식을 반복해서 개선했습니다.
+이동과 복제는 Unreal Editor의 Transaction으로 처리해서 \`Ctrl + Z\`로 되돌릴 수 있습니다.
 
 ---
 
-### 🚀 4. 앞으로 개선하고 싶은 부분
+### 개선하고 싶은 부분
 
-* 여러 오브젝트를 동시에 선택해 한 번에 정렬하는 기능
-* 스냅할 때 회전까지 함께 맞추는 옵션
-* 특정 축을 제외하고 스냅하는 2D 모드
+현재는 위치를 맞추는 기능만 있어서, 회전된 메쉬끼리 면 방향까지 맞춰주는 기능은 없습니다. 이후에는 필요하다면 **회전 정렬**도 추가해보고 싶습니다.
 
-> **"필요한 기능을 구체적으로 정의하고 반복해서 검증한다면, 구현 지식이 부족하더라도 AI와 함께 실제 작업에 사용할 수 있는 도구를 만들 수 있다는 것을 확인했습니다."**
-> `
+버텍스가 많은 메쉬는 스냅 포인트도 많아져 화면이 복잡해질 수 있습니다. 그래서 **모서리 / 면 중심 / 버텍스처럼 표시할 포인트 종류를 나눠서 켜고 끌 수 있는 기능**이 있으면 더 편할 것 같습니다.
+
+또 현재 단축키로 사용하는 \`Space\`는 Unreal Editor의 기본 조작과 겹칠 가능성이 있어, 실제 작업에서 계속 사용해 보면서 별도의 단축키로 바꾸는 것도 고려하고 있습니다.
+
+마지막으로 피벗을 잡은 뒤 선택된 액터 구성이 바뀌면 미리보기 캐시가 바로 갱신되지 않는 경우가 있어, 선택 변경 시 자동으로 갱신되도록 개선할 수 있습니다.
+`
 },
-
 
 /// Next ///
 
