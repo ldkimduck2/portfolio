@@ -1,5 +1,141 @@
 const STUDY_DATA = [
   {
+  cat: "Tools & Workflow",
+  title: "Grid Size 변경 작업을 줄이기 위해 만든 Quick Grid Size",
+  date: "2026. 09",
+  desc: "Position·Rotation뿐 아니라 Scale Grid Size까지 현재 Transform 모드에 맞춰 같은 단축키로 빠르게 Increment / Decrement할 수 있도록 만든 UE5 에디터 플러그인입니다.",
+  // TODO: Quick Grid Size 전용 이미지로 교체 예정. 현재는 MeshSnapTools 이미지를 임시 사용.
+  coverImage: "img/QuickGridSize/QGS_Thumb02.png",
+  // TODO: Quick Grid Size 전용 영상으로 교체 예정. 현재는 MeshSnapTools 영상을 임시 사용.
+  youtubeId: "bWaVvlLsYes",
+
+  content: `
+### 왜 만들었나
+
+언리얼 엔진에서 레벨을 만들 때 **Position Grid Size**와 **Rotation Grid Size**는 단축키로 Increment / Decrement할 수 있지만, Scale 작업에서는 같은 흐름으로 Grid Size를 빠르게 바꾸기 어려웠습니다.
+
+특히 모듈러 메쉬나 블록아웃 오브젝트를 반복해서 배치하다 보면 Position, Rotation, Scale 모드를 계속 오가게 됩니다. 이때마다 뷰포트 상단의 Grid Size 메뉴로 시선을 옮겨 값을 바꾸는 과정이 생각보다 자주 작업 흐름을 끊었습니다.
+
+그래서 **현재 Transform 모드에 따라 같은 두 개의 단축키가 Position / Rotation / Scale Grid Size를 자동으로 Increment / Decrement하도록 하는 에디터 플러그인**을 만들었습니다.
+
+이 플러그인의 시작점은 단순했습니다.
+
+**“Scale Grid Size도 Position, Rotation처럼 바로 올리고 내릴 수 있으면 좋겠다.”**
+
+---
+
+### 기본 동작
+
+Quick Grid Size는 현재 활성화된 Transform 모드를 확인한 뒤 같은 단축키를 다른 Grid Size에 연결합니다.
+
+| Transform Mode | Increment / Decrement 대상 |
+| :--- | :--- |
+| W - Position | Position Grid Size |
+| E - Rotation | Rotation Grid Size |
+| R - Scale | Scale Grid Size |
+
+기본 단축키는 마우스 엄지 버튼을 사용하도록 했습니다.
+
+- **Grid Size: Increment** - Thumb Mouse Button 2
+- **Grid Size: Decrement** - Thumb Mouse Button
+
+단축키는 플러그인 설정에서 사용자가 원하는 키 조합으로 직접 바꿀 수 있습니다.
+
+예를 들어 \`Ctrl + Shift + [\`처럼 Modifier가 포함된 조합이나 마우스 버튼도 하나의 Shortcut으로 지정할 수 있도록 했습니다.
+
+---
+
+### Scale Grid Size
+
+이 플러그인을 만든 가장 큰 이유는 **Scale Grid Size를 빠르게 바꾸고 싶었기 때문**입니다.
+
+Unreal Engine의 기본 Scale Grid Size 배열은 큰 값에서 작은 값 순서로 저장되어 있습니다.
+
+\`10 → 1 → 0.5 → 0.25 → ... → 0.03125\`
+
+하지만 Increment / Decrement를 사용하는 입장에서는 작은 값에서 큰 값으로 올라가는 흐름이 더 직관적이라고 생각했습니다.
+
+그래서 Quick Grid Size 설정에서는 Scale Preset을 다음처럼 보여줍니다.
+
+\`0.03125 → 0.0625 → 0.1 → 0.125 → 0.25 → 0.5 → 1 → 10\`
+
+Unreal Engine 내부의 원본 설정 순서는 그대로 유지하고, Quick Grid Size 설정 화면에서만 작업 흐름에 맞는 순서로 보여주도록 구성했습니다.
+
+---
+
+### Grid Size Presets
+
+플러그인 설정 안에서 현재 사용하는 Grid Size Preset을 바로 확인하고 수정할 수 있도록 했습니다.
+
+- Position - Active Grid Sizes
+- Rotation - Active Grid Sizes
+- Scale - Active Grid Sizes
+
+별도의 값을 복사해서 관리하는 방식이 아니라 **Unreal Engine의 Level Editor Viewport 설정과 연결**하도록 구성했습니다.
+
+따라서 Preset을 수정하면 Quick Grid Size에서도 같은 값을 사용하고, 기존 Unreal Editor 설정과 따로 놀지 않습니다.
+
+---
+
+### 시선을 뷰포트에 유지하기
+
+단축키로 값을 빠르게 바꿀 수 있게 되자 다른 문제가 보였습니다.
+
+Grid Size를 변경한 뒤 현재 값이 무엇인지 확인하기 위해 다시 상단 UI를 보면, 결국 시선이 작업 중인 오브젝트와 기즈모에서 벗어나게 됩니다.
+
+그래서 Grid Size가 바뀔 때 **현재 Transform 기즈모 주변에 변경된 값을 잠깐 표시하는 HUD**를 추가했습니다.
+
+- Position - \`50 cm\`
+- Rotation - \`15°\`
+- Scale - \`0.25\`
+
+연속해서 값을 바꿀 때 알림이 여러 개 쌓이지 않고 같은 HUD가 최신 값으로 갱신되도록 했습니다.
+
+이 기능의 목적도 결국 동일합니다.
+
+**Grid Size를 바꾸기 위해 작업 중인 공간에서 시선을 떼지 않는 것**입니다.
+
+---
+
+### 플러그인 설정
+
+Quick Grid Size는 \`Editor Preferences → Plugins → Quick Grid Size\`에서 설정할 수 있습니다.
+
+| 설정 | 역할 |
+| :--- | :--- |
+| Enable Quick Grid Size | 플러그인 기능 전체 ON / OFF |
+| Position Grid Size | Position 모드에서 사용 여부 |
+| Rotation Grid Size | Rotation 모드에서 사용 여부 |
+| Scale Grid Size | Scale 모드에서 사용 여부 |
+| Grid Size: Increment | Grid Size를 다음 단계로 변경 |
+| Grid Size: Decrement | Grid Size를 이전 단계로 변경 |
+| Grid Size Presets | 현재 사용하는 Grid Size 목록 수정 |
+| Minimum / Maximum Behavior | 끝 값에서 정지 또는 Loop |
+
+또 사용자가 지정한 Shortcut이 Unreal Editor의 기존 Shortcut과 겹치는 경우를 확인할 수 있도록 **Shortcut Conflict Warning**도 추가했습니다.
+
+---
+
+### 만들면서 중요하게 본 부분
+
+처음에는 Scale Grid Size를 빠르게 바꾸는 작은 기능에서 시작했지만, 실제로 반복해서 사용하다 보니 단축키 하나만 추가하는 것으로 끝나지 않았습니다.
+
+- 현재 Position / Rotation / Scale 중 어떤 모드인지 판단해야 했고
+- 기존 Unreal Grid Size Preset과 같은 값을 사용해야 했으며
+- Scale의 기본 배열 순서를 사용자에게는 더 자연스럽게 보여줘야 했고
+- Shortcut을 자유롭게 바꿀 수 있어야 했고
+- 기존 Editor Shortcut과 충돌하는지도 확인해야 했고
+- 값을 변경한 뒤 시선을 돌리지 않고 결과를 확인할 수 있어야 했습니다.
+
+작은 불편 하나를 줄이기 위해 시작했지만, 그 불편이 실제 작업 흐름의 어디에서 발생하는지 따라가면서 기능을 확장했습니다.
+
+앞으로도 레벨 제작 중 반복해서 손이 가거나 시선이 끊기는 작업을 발견하면 이런 식으로 직접 툴을 만들어 개선해보고 싶습니다.
+  `
+},
+
+/// Next ///
+
+  {
   cat: "System Design",
   title: "소울라이크 전투 시스템",
   date: "2026. 06",
