@@ -750,7 +750,7 @@ const GAMES_DATA = [
     platform: "Console / PC",
     status: "완료",
     releaseDate: "2024. 09",
-    playtime: 14, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요!
+    playtime: 14, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2669320/header.jpg",
     tags: ["!축구", "스포츠", "멀티플레이"]
   },
@@ -760,8 +760,8 @@ const GAMES_DATA = [
     genre: "스포츠 / 레이싱",
     platform: "PC",
     status: "완료",
-    releaseDate: "2018. 05", // (구 FIFA 온라인 4 출시 기준)
-    playtime: 265, // 👈 현재 플레이하신 시간으로 숫자를 수정해 주세요! (예: 500, "약 500시간+")
+    releaseDate: "2018. 05", 
+    playtime: 265, 
     image: "https://i.namu.wiki/i/fWsl5HTrlMF7fOrO2Q7UxBLap6ja838uMRKL5FlHQhmP-z1ERW7fRulQuzdsWgRDFSwIfaLtfIwJOhbEPTyN-w.webp", // 넥슨 공식 메타 이미지
     tags: ["!축구", "경쟁", "팀 구성"]
   },
@@ -770,9 +770,9 @@ const GAMES_DATA = [
     developer: "Hazelight Studios",
     genre: "액션 어드벤처",
     platform: "Console / PC",
-    status: "중단",
+    status: "완료",
     releaseDate: "2025. 03",
-    playtime: 15.2,
+    playtime: 25.5,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2001120/header.jpg",
     tags: ["!협동", "퍼즐", "스토리"]
   },
