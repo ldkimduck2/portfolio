@@ -24,8 +24,8 @@ const CURRENTLY_PLAYING = [
     title: "Hades II",
     developer: "Supergiant Games",
     genre: "액션 로그라이크",
-    platform: "PC",
-    playtime: "7",
+    platform: "Console / PC",
+    playtime: 7,
     status: "진행 중",
     image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1145350/91ac334a2c137d08968ccc0bc474a02579602100/header.jpg?t=1779901265",
     tags: ["!현재 플레이", "액션 로그라이크", "던전 크롤러"]
@@ -40,6 +40,17 @@ const CURRENTLY_PLAYING = [
     playtime: 5.2, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/2444750/header.jpg",
     tags: ["!로그라이트", "MOBA 전투", "협동"]
+  },
+  {
+    title: "Dying Light: The Beast",
+    developer: "Techland",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "진행 중", 
+    releaseDate: "2025. 08", 
+    playtime: 12, 
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/3008130/header.jpg",
+    tags: ["!파쿠르", "좀비 생존", "오픈월드"]
   },
 ];
 
