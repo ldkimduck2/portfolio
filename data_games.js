@@ -30,17 +30,7 @@ const CURRENTLY_PLAYING = [
     image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1145350/91ac334a2c137d08968ccc0bc474a02579602100/header.jpg?t=1779901265",
     tags: ["!현재 플레이", "액션 로그라이크", "던전 크롤러"]
   },
-    {
-    title: "Shape of Dreams",
-    developer: "Lizard Smoothie",
-    genre: "로그라이트",
-    platform: "PC",
-    status: "진행 중",
-    releaseDate: "2025. 09",
-    playtime: 5.2, 
-    image: "https://cdn.akamai.steamstatic.com/steam/apps/2444750/header.jpg",
-    tags: ["!로그라이트", "MOBA 전투", "협동"]
-  },
+  
   {
     title: "Dying Light: The Beast",
     developer: "Techland",
@@ -51,6 +41,17 @@ const CURRENTLY_PLAYING = [
     playtime: 12, 
     image: "https://cdn.akamai.steamstatic.com/steam/apps/3008130/header.jpg",
     tags: ["!파쿠르", "좀비 생존", "오픈월드"]
+  },
+  {
+    title: "Sekiro™: Shadows Die Twice",
+    developer: "FromSoftware",
+    genre: "액션 어드벤처",
+    platform: "Console / PC",
+    status: "진행 중",
+    releaseDate: "2019. 03",
+    playtime: 6.2,
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/814380/header.jpg",
+    tags: ["!체간", "소울라이크", "닌자"]
   },
 ];
 
@@ -263,6 +264,17 @@ const GAMES_DATA = [
     playtime: 9,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/703080/header.jpg",
     tags: ["!경영", "동물원", "건축"]
+  },
+  {
+    title: "Shape of Dreams",
+    developer: "Lizard Smoothie",
+    genre: "로그라이트",
+    platform: "PC",
+    status: "중단",
+    releaseDate: "2025. 09",
+    playtime: 5.2, 
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2444750/header.jpg",
+    tags: ["!로그라이트", "MOBA 전투", "협동"]
   },
   {
     title: "Borderland 3",
