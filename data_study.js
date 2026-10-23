@@ -7,7 +7,7 @@ const STUDY_DATA = [
   // TODO: Quick Grid Size 전용 이미지로 교체 예정. 현재는 MeshSnapTools 이미지를 임시 사용.
   coverImage: "img/QuickGridSize/QGS_Thumb02.png",
   // TODO: Quick Grid Size 전용 영상으로 교체 예정. 현재는 MeshSnapTools 영상을 임시 사용.
-  youtubeId: "bWaVvlLsYes",
+  youtubeId: "iuelyXJELSQ",
 
   content: `
 ### 왜 만들었나
@@ -100,6 +100,8 @@ Grid Size를 변경한 뒤 현재 값이 무엇인지 확인하기 위해 다시
 ### 플러그인 설정
 
 Quick Grid Size는 \`Editor Preferences → Plugins → Quick Grid Size\`에서 설정할 수 있습니다.
+
+![Quick Grid Size 플러그인 설정 화면](img/QuickGridSize/QuickGridSizeSettings.png)
 
 | 설정 | 역할 |
 | :--- | :--- |

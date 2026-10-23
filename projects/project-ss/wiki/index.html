@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Project SS · 시스템 위키</title><link rel="stylesheet" href="style.css"></head>
+<body><a class="skip-link" href="#content">본문으로 이동</a>
+<header class="topbar"><div class="brand"><strong>PROJECT SS</strong><span>시스템 위키</span></div><div class="top-actions"><button class="button menu-toggle" id="menu" type="button" aria-expanded="false" aria-controls="sidebar">목차</button><button class="button" id="expand" type="button">설명 모두 펼치기</button></div></header>
+<aside class="sidebar" id="sidebar"><label for="search">WIKI SEARCH</label><div class="search-wrap"><input id="search" type="search" placeholder="규칙이나 기능 검색" autocomplete="off"><button type="button" id="clear" aria-label="검색 지우기" hidden>×</button></div><p class="search-result" id="search-result" role="status" aria-live="polite">13개 주제</p><nav aria-label="위키 목차"><a href="#overview" data-section="overview"><span>01</span>프로젝트 개요</a><a href="#combat" data-section="combat"><span>02</span>가드 · 패링 · 체간</a><a href="#execution" data-section="execution"><span>03</span>체간 붕괴와 인살</a><a href="#attack-data" data-section="attack-data"><span>04</span>무기와 공격 데이터</a><a href="#notify" data-section="notify"><span>05</span>몽타주와 노티파이</a><a href="#enemy-ai" data-section="enemy-ai"><span>06</span>적의 판단과 행동</a><a href="#attack-token" data-section="attack-token"><span>07</span>여러 적의 공격 순서</a><a href="#movement" data-section="movement"><span>08</span>이동과 데모 구간</a><a href="#ui" data-section="ui"><span>09</span>UI와 메뉴 흐름</a><a href="#tools" data-section="tools"><span>10</span>콘텐츠 제작 도구</a><a href="#save" data-section="save"><span>11</span>저장과 진행 상태</a><a href="#iteration" data-section="iteration"><span>12</span>테스트와 다음 작업</a><a href="#troubleshooting" data-section="troubleshooting"><span>13</span>문제가 생겼을 때</a></nav><p class="sidebar-foot">게임 기획 · 구현 구조<br>전투 / AI / 제작 도구 / UI</p></aside>
+<main id="content"><div class="intro"><span class="eyebrow">PROJECT DOCUMENTATION</span><h1>규칙부터 제작 도구까지</h1><p>Project SS가 어떻게 움직이는지,<br>무엇을 바꾸며 개선해 나가는지 정리했습니다.</p><div class="intro-tags"><span>Unreal Engine 5</span><span>플레이 가능 데모</span><span>개발 구조 정리</span></div></div>
+<p class="empty" id="empty" hidden>일치하는 내용이 없습니다. 다른 단어로 검색해 보세요.</p><section id="overview" data-search="프로젝트"><header class="section-head"><span class="eyebrow">01 / 프로젝트</span><h2>프로젝트 개요</h2></header>
+<p class="lead">공격과 패링으로 적의 체간을 쌓고, 인살로 마무리하는 3인칭 액션 게임 데모입니다. 이 위키에서는 전투 규칙과 콘텐츠를 조정하는 방법을 함께 설명합니다.</p>
+<div class="grid three"><article class="card"><span class="eyebrow">COMBAT</span><h3>방어가 공격 기회로</h3><p>가드로 공격을 받아내고, 패링으로 적의 체간을 쌓아 인살 기회를 만듭니다.</p></article><article class="card"><span class="eyebrow">DEMO LEVEL</span><h3>핵심 기능을 직접 체험</h3><p>전투와 훅·벽 달리기를 차례로 경험하도록 구간을 나누고 동선을 연결했습니다.</p></article><article class="card"><span class="eyebrow">AUTHORING</span><h3>수치와 타이밍을 나눠 조정</h3><p>공격 데이터는 수치와 모션을, 노티파이는 판정과 입력이 열리는 시간을 담당합니다.</p></article></div>
+<div class="note">이 문서는 개발 소스의 구조를 기준으로 정리했습니다. 브라우저 UI 체험은 화면과 메뉴 흐름을 확인하는 용도이며, 실제 전투는 데모 빌드에서 플레이할 수 있습니다.</div>
+</section><section id="combat" data-search="전투"><header class="section-head"><span class="eyebrow">02 / 전투</span><h2>가드 · 패링 · 체간</h2></header>
+<p>같은 공격을 맞더라도 방어 결과에 따라 체력과 체간에 적용되는 값이 달라집니다. 아래는 방어 배율의 기본 설정입니다.</p>
+<div class="table-wrap"><table><thead><tr><th>결과</th><th>공격을 받은 쪽</th><th>공격한 쪽</th></tr></thead><tbody><tr><th>피격</th><td>HP 피해와 체간 피해 적용<br>생존 시 피격 반응</td><td>방어 결과에 따른 추가 체간 없음</td></tr><tr><th>가드</th><td>HP 피해 없음<br>체간 + 공격 체간 피해량 × 1.0</td><td>방어 결과에 따른 추가 체간 없음</td></tr><tr><th>패링</th><td>HP 피해 없음<br>자신의 추가 체간 피해 없음</td><td>체간 + 공격 체간 피해량 × 1.5</td></tr></tbody></table></div>
+<p class="caption">배율은 방어 밸런스 데이터에서 조정할 수 있습니다. 공격 종류와 방어 가능한 방향 등 다른 조건도 판정에 함께 사용됩니다.</p>
+<div class="flow" aria-label="공격 처리 흐름"><span>공격 접촉</span><i>→</i><span>방향 · 방어 조건 확인</span><i>→</i><span>피격 / 가드 / 패링</span><i>→</i><span>HP · 체간 · 반응 적용</span></div>
+<details><summary>구현 구조 보기</summary><p><code>AC_Defense</code>가 방어 결과를 결정하고, <code>AC_Health</code>와 <code>AC_Posture</code>가 각각 체력과 체간을 처리합니다. <code>GuardPostureMultiplier</code>, <code>ParrySelfPostureMultiplier</code>, <code>ParryAttackerPostureMultiplier</code>로 배율을 조정합니다.</p></details>
+</section><section id="execution" data-search="전투"><header class="section-head"><span class="eyebrow">03 / 전투</span><h2>체간 붕괴와 인살</h2></header>
+<p>체간은 공격을 받아낼수록 쌓이는 부담입니다. 최대치에 도달하면 체간이 무너지고, 적에게 인살을 시도할 기회가 생깁니다.</p>
+<div class="flow"><span>공격 · 패링</span><i>→</i><span>적 체간 누적</span><i>→</i><span>체간 붕괴</span><i>→</i><span>인살 가능 조건 확인</span><i>→</i><span>인살</span></div>
+<div class="grid two"><article class="card"><h3>플레이어에게 주는 선택</h3><p>HP를 줄이는 공격과 체간을 쌓는 패링을 함께 사용합니다. 계속 가드하면 자신의 체간도 쌓이므로 공방의 흐름을 읽어야 합니다.</p></article><article class="card"><h3>조정할 항목</h3><p>최대 체간, 회복 속도와 지연, 체간 붕괴 유지 시간을 조정합니다. 인살은 대상의 상태와 위치 조건을 함께 확인합니다.</p></article></div>
+<details><summary>구현 구조 보기</summary><p><code>AC_Posture</code>의 <code>MaxPosture</code>, <code>RecoveryPerSecond</code>, <code>RecoveryDelay</code>, <code>BrokenSeconds</code>가 체간의 흐름을 정합니다. 인살 처리는 <code>AC_Execution</code>이 담당합니다.</p></details>
+</section><section id="attack-data" data-search="제작 도구"><header class="section-head"><span class="eyebrow">04 / 제작 도구</span><h2>무기와 공격 데이터</h2></header>
+<p>공격 한 동작에 필요한 수치와 모션을 데이터로 관리합니다. 같은 무기라도 일반 공격, 강공격, 대시 공격, 점프 공격 등을 나눠 구성할 수 있습니다.</p>
+<div class="table-wrap"><table><thead><tr><th>항목</th><th>정하는 내용</th><th>확인할 점</th></tr></thead><tbody><tr><td><code>Montage</code></td><td>공격에 재생할 모션</td><td>올바른 무기와 캐릭터에서 재생되는가?</td></tr><tr><td><code>Damage</code> / <code>PostureDamage</code></td><td>HP 피해와 체간 피해</td><td>피격·가드·패링의 결과가 의도와 맞는가?</td></tr><tr><td><code>HitMethod</code></td><td>근접·투사체·범위 등 판정 방식</td><td>실제 공격 방식과 일치하는가?</td></tr><tr><td><code>bCanBlock</code> / <code>bCanParry</code></td><td>가드·패링 허용 여부</td><td>플레이어가 대응 방법을 구분할 수 있는가?</td></tr><tr><td><code>ComboBranches</code></td><td>입력에 따른 다음 공격</td><td>분기할 공격과 순서가 연결되어 있는가?</td></tr></tbody></table></div>
+<details><summary>데이터 구조 보기</summary><pre><code>FST_WeaponAttackGroup
+└─ Attacks[]
+   └─ FST_AttackStep
+      ├─ Montage
+      ├─ Damage / PostureDamage
+      ├─ HitMethod
+      └─ ComboBranches</code></pre><p>타격이 켜지는 시간과 검이 움직이는 방향은 공격 수치와 분리해 몽타주 노티파이에서 설정합니다.</p></details>
+</section><section id="notify" data-search="제작 도구"><header class="section-head"><span class="eyebrow">05 / 제작 도구</span><h2>몽타주와 노티파이</h2></header>
+<p>노티파이는 애니메이션의 특정 구간에서 판정이나 입력을 여는 장치입니다. 모션을 보면서 타격 시점, 연계 입력, 회피로 전환할 수 있는 구간을 조정합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>노티파이</th><th>역할</th></tr></thead><tbody><tr><td><code>ANS_AttackTrace</code></td><td>타격 판정을 켭니다. 사용할 소켓, 판정 반경, 공격 궤적 방향을 설정합니다.</td></tr><tr><td><code>ANS_InputBufferWindow</code></td><td>다음 공격 입력을 받아둘 구간을 정합니다.</td></tr><tr><td><code>ANS_ComboWindow</code></td><td>입력한 다음 공격으로 넘어갈 구간을 정합니다.</td></tr><tr><td><code>ANS_CancelWindow</code></td><td>닷지·점프 등 허용한 행동으로 전환할 구간을 정합니다.</td></tr></tbody></table></div>
+<div class="note">공격 방향과 피격 방향은 다릅니다. 공격 궤적은 모션에 맞춰 설정하고, 피격 방향은 실제로 맞는 순간의 상대 위치를 기준으로 계산합니다.</div>
+<details><summary>판정 미리보기</summary><p><code>ANS_AttackTrace</code>에는 몽타주 에디터에서 소켓 위치와 판정 궤적을 보는 기능이 있습니다. 인게임 피해를 적용하지 않고 판정 범위를 확인하는 용도입니다.</p></details>
+</section><section id="enemy-ai" data-search="적 AI"><header class="section-head"><span class="eyebrow">06 / 적 AI</span><h2>적의 판단과 행동</h2></header>
+<p>적은 플레이어를 발견하고 접근한 뒤, 현재 상태와 공격 조건에 맞는 행동을 선택합니다. 공격 중인 상태와 다시 판단하는 상태를 나눠 동작이 중간에 끊기지 않도록 관리합니다.</p>
+<div class="grid three"><article class="card"><h3>인지</h3><p>주변 정보를 바탕으로 대상과 이동할 위치를 정합니다. 경계 상태와 실제 전투 상태를 구분합니다.</p></article><article class="card"><h3>선택</h3><p>공격 거리, 재사용 대기시간과 현재 상태에 따라 사용할 공격을 고릅니다.</p></article><article class="card"><h3>실행</h3><p>선택한 공격의 몽타주와 노티파이로 동작과 판정을 진행합니다. 완료 뒤 다음 판단으로 이어집니다.</p></article></div>
+<details><summary>구현 구조 보기</summary><p>적 행동의 상태 흐름은 <code>StickEnemyStateTree</code>, 적별 설정은 <code>StickEnemyData</code>와 구성 데이터에서 관리합니다. 공격 실행과 방어·체간 처리는 공통 전투 컴포넌트를 사용합니다.</p></details>
+</section><section id="attack-token" data-search="적 AI"><header class="section-head"><span class="eyebrow">07 / 적 AI</span><h2>여러 적의 공격 순서</h2></header>
+<p>여러 적이 한꺼번에 공격하면 플레이어가 대응할 틈이 사라집니다. 공격할 수 있는 적에게 토큰을 주고, 나머지 적은 거리를 유지하거나 다음 공격을 준비하도록 구성했습니다.</p>
+<div class="flow"><span>교전 중인 적 확인</span><i>→</i><span>토큰 요청</span><i>→</i><span>공격 담당 선정</span><i>→</i><span>공격 실행</span><i>→</i><span>반납 · 다음 적으로 전환</span></div>
+<div class="grid three"><article class="card"><h3>공격 담당</h3><p>토큰을 받아 접근하고 공격을 시작하는 적입니다.</p></article><article class="card"><h3>다음 공격 후보</h3><p>다음 기회를 준비하며 위치를 조정하는 적입니다.</p></article><article class="card"><h3>외곽 대기</h3><p>적끼리 겹치지 않도록 간격을 두고 대기하는 적입니다.</p></article></div>
+<p>동시 공격 수, 공격 후 양보 시간, 공격자 교대 간격을 조정할 수 있습니다. 공방 중인 상대를 잠시 유지하거나 화면 밖 적의 새 공격 시작을 제한하는 설정도 분리했습니다.</p>
+<details><summary>조정 항목 보기</summary><div class="table-wrap"><table><thead><tr><th>항목</th><th>역할</th></tr></thead><tbody><tr><td><code>MaxAttackTokens</code></td><td>한 대상에게 동시에 공격할 수 있는 수</td></tr><tr><td><code>YieldSeconds</code> / <code>HandoffSeconds</code></td><td>공격 후 양보와 공격자 교대 간격</td></tr><tr><td><code>DuelHoldSeconds</code></td><td>현재 공방 상대를 유지할 시간</td></tr><tr><td><code>bLimitOffscreenAttacks</code></td><td>화면 밖 적의 새로운 공격 시작 제한</td></tr></tbody></table></div><p><code>StickCombatCoordinator</code>가 토큰과 역할 배정을 관리합니다. 현재 헤더의 동시 공격 기본값은 1이며, 실제 배치에서는 설정을 변경할 수 있습니다.</p></details>
+</section><section id="movement" data-search="플레이"><header class="section-head"><span class="eyebrow">08 / 플레이</span><h2>이동과 데모 구간</h2></header>
+<p>현재 레벨은 핵심 기능을 체험하기 위한 데모입니다. 전투와 이동 기믹을 경험할 수 있도록 구간을 나누고, 훅과 벽 달리기, 숏컷으로 동선을 연결했습니다.</p>
+<div class="grid two"><article class="card"><h3>훅과 벽 달리기</h3><p>사용 가능한 대상과 표면을 통해 이동합니다. 도착할 위치와 다음 경로가 보이도록 배치하는 것이 중요합니다.</p></article><article class="card"><h3>숏컷</h3><p>지나온 공간을 다시 연결하고 재도전 시 이동 부담을 줄이는 역할입니다.</p></article></div>
+<div class="note">다음 단계에서는 구간별 목표와 전투·탐험의 흐름을 더 구체적으로 설계하고, 반복 플레이로 경로와 이동 부담을 확인할 예정입니다.</div>
+</section><section id="ui" data-search="플레이"><header class="section-head"><span class="eyebrow">09 / 플레이</span><h2>UI와 메뉴 흐름</h2></header>
+<p>메인메뉴부터 인게임 HUD, 인벤토리, 화톳불, 강화, 대화, 상점, 사망·부활까지 화면이 이어지도록 구성했습니다.</p>
+<div class="grid two"><article class="card"><h3>플레이 중 확인하는 정보</h3><p>HP와 체간, 회복 횟수, 선택 아이템, 적의 경계와 인살 기회를 전달합니다.</p></article><article class="card"><h3>메뉴에서 결정하는 행동</h3><p>장비와 검술 선택, 강화, 이동, 대화와 구매를 화면별로 나눴습니다. 결정과 취소 후 돌아갈 화면을 함께 확인합니다.</p></article></div>
+<p>포트폴리오의 UI 체험 영역에서 메뉴를 직접 눌러볼 수 있습니다. 체력 변경, 장비 선택, 대화와 상점 등의 흐름을 브라우저에서 확인합니다.</p>
+<button class="button accent" type="button" id="open-ui">포트폴리오에서 UI 체험하기 ↓</button>
+</section><section id="tools" data-search="제작 도구"><header class="section-head"><span class="eyebrow">10 / 제작 도구</span><h2>콘텐츠 제작 도구</h2></header>
+<p>기획한 값을 바꾸고 결과를 확인하는 과정을 줄이기 위해 적 생성, 세부 설정, 판정 미리보기와 디버그 도구를 마련했습니다.</p>
+<div class="grid three"><article class="card"><h3>적 생성과 설정</h3><p>프리셋을 고르고 체력·체간·무기와 행동 설정을 조정합니다.</p></article><article class="card"><h3>노티파이 미리보기</h3><p>몽타주에서 타격 판정의 위치와 궤적을 보며 모션과 맞춥니다.</p></article><article class="card"><h3>디버그 표시</h3><p>필요한 상태와 판정 정보를 켜서 플레이 중 어색한 부분을 찾습니다.</p></article></div>
+<details><summary>공격을 수정할 때 확인하는 순서</summary><ol><li>수정하려는 공격과 재현 조건을 정합니다.</li><li>공격 데이터에서 수치와 모션을 확인합니다.</li><li>몽타주에서 타격·입력·전환 구간을 조정합니다.</li><li>같은 조건으로 실행해 변경 전후를 비교합니다.</li></ol></details>
+</section><section id="save" data-search="프로젝트"><header class="section-head"><span class="eyebrow">11 / 프로젝트</span><h2>저장과 진행 상태</h2></header>
+<p>저장 구조에는 장비, 성장, 수집 상태, 활성화한 화톳불과 진행 위치 등을 담습니다. 단순히 저장 버튼이 반응하는지보다 게임을 종료하고 다시 켰을 때 상태가 이어지는지를 확인해야 합니다.</p>
+<div class="grid two"><article class="card"><h3>게임 저장</h3><p>데모 실행 파일에서 사용하는 진행 데이터입니다. 재실행과 이어하기까지 확인하는 것이 점검 기준입니다.</p></article><article class="card"><h3>UI 체험 저장</h3><p>현재 브라우저에만 저장되는 체험 상태입니다. 실제 데모의 저장 파일과 서로 연결되지 않습니다.</p></article></div>
+<div class="note">초기 1회 플레이테스트에서 저장이 되지 않는 문제가 확인됐습니다. 저장·불러오기와 재실행 후 상태 유지를 우선 점검할 과제로 두었습니다.</div>
+<details><summary>구현 구조 보기</summary><p><code>StickSaveGame</code>에는 장비, 강화, 화톳불, 수집품과 진행 관련 필드가 있습니다. 슬롯 관리는 <code>StickSaveSlotSubsystem</code>에서 담당합니다. 구조가 있다는 사실과 실제 빌드에서 정상적으로 이어지는지는 구분해 확인합니다.</p></details>
+</section><section id="iteration" data-search="프로젝트"><header class="section-head"><span class="eyebrow">12 / 프로젝트</span><h2>테스트와 다음 작업</h2></header>
+<p>현재까지의 플레이테스트는 1회입니다. 발견한 문제를 바탕으로 안정성을 먼저 확인하고, 전투와 데모 구간을 더 깊이 설계한 뒤 반복 테스트를 진행할 예정입니다.</p>
+<div class="table-wrap"><table><thead><tr><th>우선 과제</th><th>진행할 내용</th><th>확인할 기준</th></tr></thead><tbody><tr><td>플레이 안정성</td><td>저장·불러오기와 재실행 점검</td><td>진행 상태가 이어지는가?</td></tr><tr><td>전투 기획</td><td>적 역할과 배치, 대응 방법, 피격과 동작 연결 보완</td><td>상황에 따라 대응을 고를 수 있는가?</td></tr><tr><td>레벨 설계</td><td>기능 체험용 데모에서 구간별 목표가 있는 플레이 흐름으로 확장</td><td>다음 경로와 목표가 보이는가?</td></tr><tr><td>반복 플레이테스트</td><td>규칙 오해와 이동 정체를 기록하고 수정 전후 비교</td><td>같은 문제가 줄어드는가?</td></tr></tbody></table></div>
+</section><section id="troubleshooting" data-search="빠른 확인"><header class="section-head"><span class="eyebrow">13 / 빠른 확인</span><h2>문제가 생겼을 때</h2></header>
+<details><summary>다음 공격이 이어지지 않아요</summary><p>공격 그룹의 다음 동작이 있는지 확인한 뒤 입력을 받아두는 구간과 다음 공격으로 넘어가는 구간을 차례로 봅니다. <code>ANS_InputBufferWindow</code>와 <code>ANS_ComboWindow</code>를 확인합니다.</p></details>
+<details><summary>모션과 타격 시점이 달라요</summary><p>몽타주의 타격 구간, 판정에 사용하는 소켓과 반경을 확인합니다. 판정 미리보기로 검이나 손의 실제 움직임과 겹치는지 봅니다.</p></details>
+<details><summary>적이 한꺼번에 공격해요</summary><p>그룹 토큰 사용 여부, 동시 공격 수와 토큰 반환을 확인합니다. 같은 교전으로 인식되는 적인지도 함께 확인합니다.</p></details>
+<details><summary>체간이 예상과 다르게 쌓여요</summary><p>공격의 체간 피해량과 방어 결과를 먼저 확인합니다. 그다음 방어 데이터의 가드·패링 배율과 회복 조건을 봅니다.</p></details>
+<details><summary>UI 체험의 상태가 실제 게임에 없어요</summary><p>브라우저 UI 체험과 게임 빌드는 저장 공간이 다릅니다. UI 체험에서 바꾼 체력이나 장비는 실제 게임에 적용되지 않습니다.</p></details>
+</section><footer>PROJECT SS · SYSTEM WIKI</footer></main><script src="wiki.js"></script></body></html>

@@ -37,17 +37,50 @@ const renderTags = tags => (tags || []).map(t =>
 
 // Project resources share the existing detail-button design.
 function renderProjectResources(project) {
-  if (!project.demoUrl && !project.uiPreviewUrl) return '';
+  if (!project.demoUrl && !project.uiPreviewUrl && !project.wikiUrl) return '';
   const links = [];
   if (project.youtubeMain || project.youtubeId) {
     const videoId = project.youtubeMain || project.youtubeId;
     links.push(`<a class="btn-detail project-resource-link" href="https://www.youtube.com/watch?v=${esc(videoId)}" target="_blank" rel="noopener noreferrer">플레이 영상 ↗</a>`);
   }
   if (project.demoUrl) links.push(`<a class="btn-detail project-resource-link" href="${esc(project.demoUrl)}" target="_blank" rel="noopener noreferrer">데모 다운로드 ↗</a>`);
-  if (project.uiPreviewUrl) links.push(`<a class="btn-detail project-resource-link" href="${esc(project.uiPreviewUrl)}" target="_blank" rel="noopener noreferrer">UI 미리보기 ↗</a>`);
   if (project.pdfUrl) links.push(`<a class="btn-detail project-resource-link" href="${esc(project.pdfUrl)}" target="_blank" rel="noopener noreferrer">기획서 PDF ↗</a>`);
+  if (project.uiPreviewUrl) links.push(`<a class="btn-detail project-resource-link" href="#sect-ui" onclick="jumpToProjectSection(event, 'sect-ui')">UI 체험 ↓</a>`);
+  if (project.wikiUrl) links.push(`<a class="btn-detail project-resource-link" href="#sect-wiki" onclick="jumpToProjectSection(event, 'sect-wiki')">시스템 위키 ↓</a>`);
   return `<div class="project-resource-links">${links.join('')}</div>`;
 }
+
+function jumpToProjectSection(event, id) {
+  if (event) event.preventDefault();
+  const section=document.getElementById(id);
+  if (!section) return;
+  section.scrollIntoView({behavior:'smooth',block:'start'});
+  const title=section.querySelector('.m-section-title');
+  if(title){title.tabIndex=-1;title.focus({preventScroll:true});}
+}
+
+async function toggleProjectViewer(button) {
+  const viewer=button.closest('.project-viewer');
+  if(document.fullscreenElement===viewer){await document.exitFullscreen();return;}
+  if(viewer.classList.contains('is-expanded')){viewer.classList.remove('is-expanded');updateProjectViewerButtons();return;}
+  try{if(!viewer.requestFullscreen)throw new Error('Fullscreen unavailable');await viewer.requestFullscreen();}
+  catch{viewer.classList.add('is-expanded');updateProjectViewerButtons();}
+}
+
+function updateProjectViewerButtons() {
+  document.querySelectorAll('.project-viewer-expand').forEach(button=>{
+    const viewer=button.closest('.project-viewer'),expanded=document.fullscreenElement===viewer||viewer.classList.contains('is-expanded');
+    button.textContent=expanded?'화면 축소 ↙':'크게 보기 ↗';button.setAttribute('aria-expanded',String(expanded));
+    button.setAttribute('aria-label',(viewer.classList.contains('project-ui-viewer')?'UI 체험':'시스템 위키')+(expanded?' 화면 축소':' 크게 보기'));
+  });
+}
+document.addEventListener('fullscreenchange',updateProjectViewerButtons);
+document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.querySelectorAll('.project-viewer.is-expanded').forEach(el=>el.classList.remove('is-expanded'));updateProjectViewerButtons();}});
+window.addEventListener('message',event=>{
+  if(event.origin!==location.origin||event.data?.type!=='projectss:navigate'||event.data.section!=='sect-ui')return;
+  const wiki=document.getElementById('project-wiki-frame');
+  if(wiki&&event.source===wiki.contentWindow)jumpToProjectSection(null,'sect-ui');
+});
 
 // ── 히어로 타이틀 ──
 let styledHeadline = DATA.landing.headline
@@ -569,15 +602,6 @@ function openModal(type, index) {
       </div>`;
     }
 
-    if (data.uiPreviewUrl) {
-      html += `<div class="portfolio-section-wrap" id="sect-ui">
-        <div class="m-section-title" style="margin-top: 0;">UI Preview</div>
-        <p class="m-article-desc project-section-intro">브라우저에서 게임 UI의 화면과 메뉴 흐름을 직접 확인할 수 있습니다.</p>
-        <a class="btn-detail project-resource-link" href="${esc(data.uiPreviewUrl)}" target="_blank" rel="noopener noreferrer">UI 미리보기 열기 ↗</a>
-        ${data.uiPreviewImage ? `<a class="project-ui-preview slider-wrapper" href="${esc(data.uiPreviewUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Project SS UI 미리보기 새 창에서 열기"><img src="${esc(data.uiPreviewImage)}" alt="Project SS UI 미리보기의 메인메뉴 화면" loading="lazy"></a>` : ''}
-      </div>`;
-    }
-
     if (data.pdfUrl) {
       let viewerUrl = data.pdfUrl;
       if (viewerUrl.includes('drive.google.com')) viewerUrl = viewerUrl.replace('/view', '/preview').split('?')[0];
@@ -585,6 +609,28 @@ function openModal(type, index) {
       <div class="portfolio-section-wrap" id="sect-doc">
         <div class="m-section-title" style="margin-top: 0;">Full Document</div>
         <div class="m-pdf-wrap delay-iframe" id="delayed-pdf" data-src="${viewerUrl}"></div>
+      </div>`;
+    }
+
+    if (data.uiPreviewUrl) {
+      html += `<div class="portfolio-section-wrap" id="sect-ui">
+        <div class="m-section-title" style="margin-top: 0;">UI Preview</div>
+        <p class="m-article-desc project-section-intro">메인메뉴·HUD·인벤토리 등 주요 화면 구성과 메뉴 전환 흐름 구현</p>
+        <div class="modern-card project-viewer project-ui-viewer">
+          <div class="project-viewer-toolbar"><span>PROJECT SS · UI 체험</span><button type="button" class="btn-detail project-viewer-expand" aria-expanded="false" aria-label="UI 체험 크게 보기" onclick="toggleProjectViewer(this)">크게 보기 ↗</button></div>
+          <iframe id="project-ui-frame" src="${esc(data.uiPreviewUrl)}?embed=1" title="Project SS 인터랙티브 UI 체험" loading="lazy" allowfullscreen></iframe>
+        </div>
+      </div>`;
+    }
+
+    if (data.wikiUrl) {
+      html += `<div class="portfolio-section-wrap" id="sect-wiki">
+        <div class="m-section-title" style="margin-top: 0;">System Wiki</div>
+        <p class="m-article-desc project-section-intro">전투 규칙과 적 AI, 콘텐츠 제작 도구를 정리했습니다. 목차와 검색으로 필요한 내용을 찾아볼 수 있습니다.</p>
+        <div class="modern-card project-viewer">
+          <div class="project-viewer-toolbar"><span>PROJECT SS · 시스템 위키</span><button type="button" class="btn-detail project-viewer-expand" aria-expanded="false" aria-label="시스템 위키 크게 보기" onclick="toggleProjectViewer(this)">크게 보기 ↗</button></div>
+          <iframe id="project-wiki-frame" src="${esc(data.wikiUrl)}?embed=1" title="Project SS 시스템 위키" loading="lazy" allowfullscreen></iframe>
+        </div>
       </div>`;
     }
 
@@ -651,8 +697,9 @@ function openModal(type, index) {
       const sections = [
         { id: 'sect-video', label: 'Play Video', exists: !!(data.youtubeMain || data.youtubeId) },
         { id: 'sect-insight', label: 'Project Insight', exists: !!(data.meta || data.projectOverview) },
-        { id: 'sect-ui', label: 'UI Preview', exists: !!data.uiPreviewUrl },
         { id: 'sect-doc', label: 'Documentation', exists: !!data.pdfUrl },
+        { id: 'sect-ui', label: 'UI Preview', exists: !!data.uiPreviewUrl },
+        { id: 'sect-wiki', label: 'System Wiki', exists: !!data.wikiUrl },
         { id: 'sect-map', label: 'Map View', exists: !!data.mapUrl },
         { id: 'sect-gallery', label: 'Gallery', exists: !!(data.overviewImages || data.processImages) }
       ];
