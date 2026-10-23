@@ -35,6 +35,20 @@ const renderTags = tags => (tags || []).map(t =>
   t.startsWith('!') ? `<span class="tag hi">${esc(t.slice(1))}</span>` : `<span class="tag">${esc(t)}</span>`
 ).join('');
 
+// Project resources share the existing detail-button design.
+function renderProjectResources(project) {
+  if (!project.demoUrl && !project.uiPreviewUrl) return '';
+  const links = [];
+  if (project.youtubeMain || project.youtubeId) {
+    const videoId = project.youtubeMain || project.youtubeId;
+    links.push(`<a class="btn-detail project-resource-link" href="https://www.youtube.com/watch?v=${esc(videoId)}" target="_blank" rel="noopener noreferrer">플레이 영상 ↗</a>`);
+  }
+  if (project.demoUrl) links.push(`<a class="btn-detail project-resource-link" href="${esc(project.demoUrl)}" target="_blank" rel="noopener noreferrer">데모 다운로드 ↗</a>`);
+  if (project.uiPreviewUrl) links.push(`<a class="btn-detail project-resource-link" href="${esc(project.uiPreviewUrl)}" target="_blank" rel="noopener noreferrer">UI 미리보기 ↗</a>`);
+  if (project.pdfUrl) links.push(`<a class="btn-detail project-resource-link" href="${esc(project.pdfUrl)}" target="_blank" rel="noopener noreferrer">기획서 PDF ↗</a>`);
+  return `<div class="project-resource-links">${links.join('')}</div>`;
+}
+
 // ── 히어로 타이틀 ──
 let styledHeadline = DATA.landing.headline
   .replace('서사', '<span style="color: var(--accent); font-weight: 900;">서사</span>')
@@ -490,6 +504,7 @@ function openModal(type, index) {
         ${dateHtmlModal}
         <h1 class="m-article-title">${esc(data.title)}</h1>
         <p class="m-article-desc">${esc(data.desc)}</p>
+        ${renderProjectResources(data)}
       </div>
     </div>`;
 
@@ -521,6 +536,20 @@ function openModal(type, index) {
       html += `</div>`;
     }
 
+    if (data.projectOverview) {
+      const overview = data.projectOverview;
+      html += `<div class="portfolio-section-wrap" id="sect-insight">
+        <div class="m-section-title">Project Insight</div>
+        <p class="m-article-desc project-section-intro">${esc(overview.summary)}</p>
+        <div class="detail-bento">
+          <div class="d-bento-card d-span-4"><span class="d-meta-label">장르</span><span class="d-meta-value">${esc(overview.genre)}</span></div>
+          <div class="d-bento-card d-span-4"><span class="d-meta-label">제작 엔진</span><span class="d-meta-value">${esc(overview.engine)}</span></div>
+          <div class="d-bento-card d-span-4"><span class="d-meta-label">본인 역할</span><span class="d-meta-value">${esc(overview.role)}</span></div>
+          ${overview.highlights.map((item, i) => `<div class="d-bento-card d-span-4 intent-card"><div class="intent-bg-num">0${i + 1}</div><div class="intent-content"><h4 class="intent-title">${esc(item.title)}</h4><p class="intent-desc">${esc(item.desc)}</p></div></div>`).join('')}
+        </div>
+      </div>`;
+    }
+
     if (data.meta) {
       html += `
       <div class="portfolio-section-wrap" id="sect-insight">
@@ -537,6 +566,15 @@ function openModal(type, index) {
           <div class="d-bento-card d-span-4 intent-card"><div class="intent-bg-num">02</div><div class="intent-content"><h4 class="intent-title">${esc(data.meta.intent2.title)}</h4><p class="intent-desc">${esc(data.meta.intent2.desc)}</p></div></div>
           <div class="d-bento-card d-span-4 intent-card"><div class="intent-bg-num">03</div><div class="intent-content"><h4 class="intent-title">${esc(data.meta.intent3.title)}</h4><p class="intent-desc">${esc(data.meta.intent3.desc)}</p></div></div>
         </div>
+      </div>`;
+    }
+
+    if (data.uiPreviewUrl) {
+      html += `<div class="portfolio-section-wrap" id="sect-ui">
+        <div class="m-section-title" style="margin-top: 0;">UI Preview</div>
+        <p class="m-article-desc project-section-intro">브라우저에서 게임 UI의 화면과 메뉴 흐름을 직접 확인할 수 있습니다.</p>
+        <a class="btn-detail project-resource-link" href="${esc(data.uiPreviewUrl)}" target="_blank" rel="noopener noreferrer">UI 미리보기 열기 ↗</a>
+        ${data.uiPreviewImage ? `<a class="project-ui-preview slider-wrapper" href="${esc(data.uiPreviewUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Project SS UI 미리보기 새 창에서 열기"><img src="${esc(data.uiPreviewImage)}" alt="Project SS UI 미리보기의 메인메뉴 화면" loading="lazy"></a>` : ''}
       </div>`;
     }
 
@@ -612,7 +650,8 @@ function openModal(type, index) {
     if (type === 'portfolio') {
       const sections = [
         { id: 'sect-video', label: 'Play Video', exists: !!(data.youtubeMain || data.youtubeId) },
-        { id: 'sect-insight', label: 'Project Insight', exists: !!data.meta },
+        { id: 'sect-insight', label: 'Project Insight', exists: !!(data.meta || data.projectOverview) },
+        { id: 'sect-ui', label: 'UI Preview', exists: !!data.uiPreviewUrl },
         { id: 'sect-doc', label: 'Documentation', exists: !!data.pdfUrl },
         { id: 'sect-map', label: 'Map View', exists: !!data.mapUrl },
         { id: 'sect-gallery', label: 'Gallery', exists: !!(data.overviewImages || data.processImages) }

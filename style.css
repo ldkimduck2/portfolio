@@ -1125,3 +1125,11 @@ nav.scrolled { background: rgba(15, 15, 18, 0.85); box-shadow: 0 15px 40px rgba(
     font-size: 19px;
   }
 }
+
+/* Additional project resources reuse the site's existing cards and buttons. */
+.project-resource-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.project-resource-link { display: inline-flex; align-items: center; justify-content: center; }
+.project-resource-link:focus-visible, .project-ui-preview:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.project-section-intro { margin-bottom: 32px; }
+.project-ui-preview { display: block; margin: 24px 0 80px; }
+.project-ui-preview img { display: block; width: 100%; height: auto; }

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>PROJECTSS — UI Atlas</title>
+ <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232a3323'/%3E%3Cpath d='M19 3 7 19h8l-2 10 12-17h-8Z' fill='%23edf0e7'/%3E%3C/svg%3E">
+ <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="native.css">
+</head>
+<body>
+ <header class="bench-head">
+  <a href="#main" class="wordmark">PROJECTSS<span>UI ATLAS · IN GAME</span></a>
+  <div class="bench-actions"><span class="build-label">2026.10.18 · INTERACTIVE</span><button id="device" type="button">키보드 / 마우스</button><button id="fullscreen" type="button" aria-label="게임 화면 크게 보기">화면 확대 ↗</button><a href="Documents/Guide.html">사용 안내</a></div>
+ </header>
+ <div class="workspace">
+  <aside class="catalog">
+   <div class="catalog-title">INTERFACE LIBRARY<span id="category-count">12 CATEGORIES</span></div>
+   <nav id="categories" aria-label="UI 큰 카테고리"></nav>
+   <div class="catalog-foot"><span class="status-dot"></span> 모든 화면이 이어집니다.<br><small>게임 UI 원본 이식 · 별도 체험 저장</small></div>
+  </aside>
+  <main class="viewer">
+   <div class="view-top"><div><div class="view-eyebrow" id="group-code">01 / FRONT END</div><h1 id="group-name">메인메뉴</h1></div><p id="group-description">첫 시작부터 저장한 여정을 이어가는 화면.</p></div>
+   <nav class="scene-tabs" id="scene-tabs" aria-label="세부 화면"></nav>
+   <div class="frame" id="frame" tabindex="-1" aria-label="게임 UI 상호작용 화면">
+    <div id="canvas">
+     <div id="world" class="world"></div>
+     <div id="screen"></div>
+     <div id="modal-layer"></div>
+    </div>
+   </div>
+   <section class="testbench" aria-label="현재 화면 체험 도구"><div class="testbench-title">TRY THE FLOW<span>아래 버튼으로 상태를 바꿔볼 수 있어요.</span></div><div id="tools"></div><div id="toast" class="toast" role="status" aria-live="polite"></div></section>
+   <div class="bench-foot"><p id="screen-note">화면 안의 메뉴를 직접 눌러보세요.</p><span>마우스 · 키보드 · 게임패드</span></div>
+  </main>
+ </div>
+ <button id="cinema-exit" type="button">× 화면 축소</button>
+ <script src="Data/game-data.js"></script>
+ <script src="Scripts/model.js"></script>
+ <script src="Data/native-ui.js"></script><script src="Scripts/native-ui.js"></script><script src="Scripts/app.js"></script>
+</body>
+</html>

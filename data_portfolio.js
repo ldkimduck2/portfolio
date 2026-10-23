@@ -1,5 +1,29 @@
 const PORTFOLIO_DATA = [
   {
+    id: "project-ss",
+    title: "Project SS",
+    desc: "공격과 패링으로 적의 체간을 쌓아 인살로 마무리하는 3인칭 액션 게임 데모입니다. 전투와 이동 기능, 제작 도구를 함께 구현했습니다.",
+    tags: ["!게임 기획", "Unreal Engine 5", "AI 협업", "플레이 가능 데모"],
+    youtubeId: "23m7CR67wzs",
+    thumb: "img/ProjectSS/demo-play.jpg",
+    demoUrl: "https://drive.google.com/file/d/1flOpIT7x2gmjcHBgCb9Mo25hWXaSFSph/view?usp=sharing",
+    uiPreviewUrl: "projects/project-ss/ui/index.html",
+    uiPreviewImage: "img/ProjectSS/ui-preview.jpg",
+    pdfUrl: "pdf/ProjectSS_Portfolio.pdf",
+    projectOverview: {
+      genre: "3인칭 액션",
+      engine: "Unreal Engine 5",
+      role: "게임 기획 · 구현 검토",
+      summary: "전투와 이동의 핵심 기능을 체험할 수 있는 데모입니다. 레퍼런스와 기획 조건을 정리하고, AI가 구현한 결과를 직접 플레이하며 수정 방향을 판단했습니다.",
+      highlights: [
+        { title: "체간을 쌓아 인살로", desc: "공격과 패링으로 적의 체간을 쌓고, 인살로 마무리하는 전투를 구현했습니다." },
+        { title: "핵심 기능을 체험하는 데모", desc: "전투와 훅·월런 등 이동 기능을 차례로 체험하도록 구간을 나누고 동선을 연결했습니다." },
+        { title: "직접 조정하는 제작 도구", desc: "적 생성과 세부 설정, 노티파이 미리보기와 디버그 도구로 수정과 확인을 돕습니다." }
+      ]
+    },
+    overviewImages: ["img/ProjectSS/demo-play.jpg", "img/ProjectSS/demo-route.jpg", "img/ProjectSS/designer-tools.jpg"]
+  },
+  {
     title: "Leador",
     date: "2025.07.01 — 2026.05.21",
     desc: "소울라이크 오픈월드 액션RPG",
