@@ -21,16 +21,16 @@
 const CURRENTLY_PLAYING = [
   // 여기에 현재 플레이 중인 게임을 직접 추가하세요.
   {
-    title: "Hades II",
-    developer: "Supergiant Games",
-    genre: "액션 로그라이크",
+    title: "Phantom Blade Zero",
+    developer: "S-GAME Studio",
+    genre: "액션 RPG",
     platform: "Console / PC",
-    playtime: 7,
-    status: "진행 중",
-    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1145350/91ac334a2c137d08968ccc0bc474a02579602100/header.jpg?t=1779901265",
-    tags: ["!현재 플레이", "액션 로그라이크", "던전 크롤러"]
+    status: "진행 중", // 👈 완료하셨다면 "완료"로 수정해 주세요!
+    releaseDate: "2026. 10",
+    playtime: 5, // 👈 실제 플레이하신 시간으로 숫자를 수정해 주세요!
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4115450/7f882f889630270d3d3fb93825ac6f55b55e7a6c/header.jpg?t=1793261976",
+    tags: ["!무협", "쿵푸 펑크"]
   },
-  
   {
     title: "Dying Light: The Beast",
     developer: "Techland",
@@ -56,6 +56,16 @@ const CURRENTLY_PLAYING = [
 ];
 
 const GAMES_DATA = [
+  {
+    title: "Hades II",
+    developer: "Supergiant Games",
+    genre: "액션 로그라이크",
+    platform: "Console / PC",
+    playtime: 7,
+    status: "진행 중",
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1145350/91ac334a2c137d08968ccc0bc474a02579602100/header.jpg?t=1779901265",
+    tags: ["!현재 플레이", "액션 로그라이크", "던전 크롤러"]
+  },
   {
     title: "Escape Simulator 2",
     developer: "Pine Studio",

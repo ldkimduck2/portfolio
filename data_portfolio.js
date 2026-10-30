@@ -11,7 +11,7 @@ const PORTFOLIO_DATA = [
     wikiUrl: "projects/project-ss/wiki/index.html",
     pdfUrl: "pdf/ProjectSS_Portfolio.pdf",
     projectOverview: {
-      genre: "3인칭 액션",
+      genre: "3인칭 액션 어드벤쳐",
       engine: "Unreal Engine 5.8",
       role: "게임 기획 · AI 협업 · 구현 검토",
       summary: "전투와 이동의 핵심 기능을 체험하는 데모. 레퍼런스와 기획 조건을 정리하고, AI 구현 결과를 직접 플레이하며 수정 방향 판단",
