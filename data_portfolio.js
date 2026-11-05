@@ -1,6 +1,7 @@
 const PORTFOLIO_DATA = [
   {
     id: "project-ss",
+    date: "2026.10.21 — 2026.11.05",
     title: "Project SS",
     desc: "3인칭 액션 RPG 게임 데모입니다.",
     tags: ["!게임 기획", "Unreal Engine 5", "AI 협업", "플레이 가능 데모"],
