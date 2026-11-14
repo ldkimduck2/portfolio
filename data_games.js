@@ -27,7 +27,7 @@ const CURRENTLY_PLAYING = [
     platform: "Console / PC",
     status: "진행 중", // 👈 완료하셨다면 "완료"로 수정해 주세요!
     releaseDate: "2026. 10",
-    playtime: 5, // 👈 실제 플레이하신 시간으로 숫자를 수정해 주세요!
+    playtime: 13, // 👈 실제 플레이하신 시간으로 숫자를 수정해 주세요!
     image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4115450/7f882f889630270d3d3fb93825ac6f55b55e7a6c/header.jpg?t=1793261976",
     tags: ["!무협", "쿵푸 펑크"]
   },
