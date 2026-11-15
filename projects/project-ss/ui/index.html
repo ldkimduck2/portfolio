@@ -246,6 +246,14 @@ body.sx #tools a{color:#d6d5cc;font-size:12px;white-space:nowrap}
 .sx-peril .sx-peril-ring{position:absolute;inset:10%;border-radius:50%;border:3px solid rgb(255,4,11);box-shadow:0 0 14px 4px rgba(255,4,11,.45);animation:sx-peril-ring .5s ease-out both}
 @keyframes sx-peril-ring{from{transform:scale(1);opacity:.95}to{transform:scale(1.9);opacity:0}}
 @keyframes sx-peril-pop{0%{transform:scale(1.15)}60%{transform:scale(.96)}100%{transform:scale(1)}}
+/* 세키로식 사망 화면 레이어 */
+.dx-fill{width:100%;height:100%}
+.dx-wash .dx-fill{background:#6f0000}
+.dx-edge .dx-fill{background:radial-gradient(ellipse 72% 74% at 50% 50%,rgba(124,12,12,0) 42%,rgba(124,12,12,1) 100%)}
+.dx-fade .dx-fill{background:#000}
+.dx-wash,.dx-edge,.dx-fade,.dx-vig,.dx-grey,.dx-red,.dx-glow,.dx-cap,.dx-flash,.dx-ghost{opacity:0;pointer-events:none}.dx-death,.dx-death *{animation:none!important;transition:none!important}
+.dx-front .n-prompt-button{color:#e6e6e6!important}
+.dx-front .n-prompt-button:focus-visible:after{display:none}
 /* 사망 화면 버튼 내용은 가운데 정렬(StickResurrectionWidget.cpp:96 HAlign_Center) → 포커스 선이 글자 아래에 온다 */
 .n-death .n-prompt-button{display:flex;align-items:center;justify-content:center}
 
@@ -388,8 +396,8 @@ window.SX_TRY={
  upgrade:'<b>Q / E</b>로 분류, <b>↑ ↓</b>로 항목, <b>Enter를 1.25초</b> 누르고 있으면 강화됩니다. 재료가 부족하면 빨갛게 보입니다.',
  dialogue:'<b>Enter</b>(또는 E)로 대사를 넘기고, 선택지에서 <b>↑ ↓ · Enter</b>. 상점으로 이어집니다.',
  shop:'<b>↑ ↓</b>로 상품, <b>Enter</b>로 교환 확인. 아래 "상태 바꾸기"로 품절·부족 상태를 볼 수 있습니다.',
- death:'부활할 수 있을 때만 이 선택 화면이 뜹니다. <b>Enter</b>로 부활, <b>Backspace</b>로 사망하기.',
- deathFinal:'부활 기회가 없으면 선택 없이 바로 이 화면입니다. <b>Enter</b>로 마지막 휴식 지점에서 다시 시작.',
+ death:'HUD가 남은 채 표식이 뜨고, 기다릴수록 <b>붉게 물들며 어두워집니다</b>. 선택지가 나오면 <b>Enter</b> 부활한다 / <b>Backspace</b> 이대로 죽는다.',
+ deathFinal:'사망 확정: HUD가 사라지고 암전된 뒤 <b>자동으로</b> 마지막 휴식 지점에서 다시 시작합니다.',
  loading:'5초 동안 <b>Q / E</b>로 팁을 넘겨 볼 수 있습니다. 끝나면 HUD로 돌아갑니다.',
  boss:'아래 "상태 바꾸기"에서 <b>보스 처치</b>를 눌러 색 소거 배너와 능력 해금 창을 확인합니다.',
  signals:'아래 <b>다음 표시</b> 또는 위 탭으로 갈고리 · 락온 · 인살 · 경고 표시를 하나씩 봅니다.',
@@ -575,9 +583,47 @@ window.SS_NATIVE_FACTORY=function(E){
   return out+T(note,620,853,1150,20,false,muted);
  }
  function loading(){
-  return nativePaper(T('PROJECTSS',100,88,400,20,true,ink,'n-loading-brand')+I('I_Checkpoint',921,392,78)+T('공간을 연결하는 중',660,509,600,26.667,false,'#565656','n-center')+P('<div class="n-loading-track"><i data-loading-progress></i></div>',660,568,600,4)+P(prompt('Q','X','이전 팁',22,16),100,950,135,30)+P(prompt('E','B','다음 팁',22,16),248,950,135,30)+T(`${ui.tip+1} / ${D.tips.length}`,405,952,130,14.667,false,'#858585')+`<div class="n-text" data-loading-tip style="${at(100,991,1350)}font-size:18.667px;color:#696969">${h(D.tips[ui.tip%D.tips.length].Tip)}</div>`+T('불러오는 중',1624,991,150,18.667,false,'#565656'));
+  return nativePaper(T('PROJECTSS',100,88,400,20,true,ink,'n-loading-brand')+I('I_Checkpoint',921,392,78)+P('<div class="n-loading-track"><i data-loading-progress></i></div>',660,568,600,4)+P(prompt('Q','X','이전 팁',22,16),100,950,135,30)+P(prompt('E','B','다음 팁',22,16),248,950,135,30)+T(`${ui.tip+1} / ${D.tips.length}`,405,952,130,14.667,false,'#858585')+`<div class="n-text" data-loading-tip style="${at(100,991,1350)}font-size:18.667px;color:#696969">${h(D.tips[ui.tip%D.tips.length].Tip)}</div>`+T('불러오는 중',1624,991,150,18.667,false,'#565656'));
  }
+/* 세키로식 사망 흐름(게임 StickResurrectionWidget과 같은 시간 값)
+   선택 대기: HUD 유지 → 0.6초 뒤 회색 표식 → 1.6초 뒤 작은 선택지 → 8초에 걸쳐 붉게, 14초에 걸쳐 어둡게
+   사망 확정: HUD 숨김 → 표식이 빛나며 1.5초 암전 → 2.6초부터 표식 사라짐 → 4초에 자동 재시작(로딩) */
  function death(){
+  const final=ui.finalDeath,F='<div class="dx-fill"></div>';
+  const back=shell(I('W_Death_Vignette_1920x1080',0,0,1920,1080,0,'dx-vig')+P(F,0,0,1920,1080,'dx-wash')+P(F,0,0,1920,1080,'dx-edge')+P(F,0,0,1920,1080,'dx-fade'),1920,'dx-death dx-back');
+  const prompts=final?'':`<div class="dx-prompts" style="opacity:0">${C('Backspace','B',' : 이대로 죽는다','final-death',560,1018,380,48,28,20)}${C('Enter','A',' : 부활한다','resurrect',980,1018,380,48,28,20)}</div>`;
+  const front=shell(I('W_Death_Mark_Glow_512',704,248,512,512,0,'dx-glow')+I('I_Downed_Mark_512',704,248,512,512,0,'dx-grey')+I('I_Death_Mark_Red_512',704,248,512,512,0,'dx-ghost')+I('I_Death_Mark_Red_512',704,248,512,512,0,'dx-red')+I('I_Death_Mark_White_512',704,248,512,512,0,'dx-flash')+T('DEATH',710,718,500,25.333,false,'#787a7d','n-death-title n-center dx-cap')+prompts,1920,'n-death dx-death dx-front');
+  return back+(final?'':hud())+front;
+ }
+ function deathTick(){
+  if(ui.route!=='death'){ui._dxPhase=null;ui._dxPrompt=false;ui._dxSkip=false;return;}
+  const now=performance.now()/1000,phase=ui.finalDeath?'final':'choice';
+  if(ui._dxPhase!==phase){ui._dxFrom=ui._dxPhase==='choice';if(phase==='final'&&!ui._dxFrom){ui._dxR=1;ui._dxD=0;ui._dxM=0;}ui._dxPhase=phase;ui._dxT=now;ui._dxDone=false;}
+  const S=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);},L=(a,b,t)=>a+(b-a)*t,el=now-ui._dxT;
+  let M=0,R=0,D=0,G=0,Pr=0,Fl=0,Gh=0,GS=1;
+  if(phase==='choice'){
+   const t=el-.6;M=S(t/.7);R=S(t/8);D=.62*S(t/14);Pr=S((t-1.6)/.35);
+   ui._dxR=R;ui._dxD=D;ui._dxM=M;ui._dxPrompt=t>=1.6;ui._dxSkip=false;
+  }else{
+   const t=el,mi=ui._dxFrom?Math.max(ui._dxM||0,S(t/.3)):S(t/.5);
+   R=L(ui._dxFrom?ui._dxR:1,1,S(t/.35));D=L(ui._dxFrom?ui._dxD:0,1,S(t/1.5));M=mi*(1-S((t-2.6)/.8));
+   /* 확정 점등: 0.07초 동안 옅은 빨강으로 번쩍 → 0.3초에 걸쳐 가라앉고, 커지며 사라지는 잔상과 후광이 남는다 */
+   const ft=Math.max(0,Math.min(1,(t-.07)/.3)),gt=Math.max(0,Math.min(1,t/.75));
+   Fl=Math.max(M,.85)*(1-S(ft));Gh=Math.max(M,.85)*.8*(1-gt);GS=1+.16*(1-(1-gt)*(1-gt));G=M*L(1,.85,S(gt));
+   ui._dxPrompt=false;ui._dxSkip=t>=1.5;
+   if(!ui._dxDone&&t>=4.0){ui._dxDone=true;setTimeout(()=>{if(ui.route==='death'&&ui.finalDeath)act('respawn');},0);}
+  }
+  const set=(s,o)=>document.querySelectorAll(s).forEach(e=>{e.style.opacity=o;});
+  set('.dx-edge',.85*R);set('.dx-wash',.16*R);set('.dx-fade',D);set('.dx-vig',.35*M+.35*R);
+  set('.dx-grey',.82*M*(1-R));set('.dx-red',M*R);set('.dx-glow',Math.max(G,M*R*.12));set('.dx-flash',.72*Fl);set('.dx-ghost',Gh);
+  const sc=(s,v)=>document.querySelectorAll(s).forEach(e=>{e.style.scale=String(v);});
+  sc('.dx-flash',1+.04*Fl);sc('.dx-ghost',GS);sc('.dx-glow',phase==='final'?1.04+.06*Fl:1);set('.dx-prompts',Pr);set('[data-current-vignette]',0);
+  document.querySelectorAll('.dx-prompts button').forEach(b=>{b.disabled=Pr<.5;});
+  const c=document.querySelector('.dx-cap');if(c){c.style.opacity=M;const g=[120,122,125],r=[211,52,46];c.style.color=`rgb(${g.map((v,i)=>Math.round(v+(r[i]-v)*R)).join(',')})`;}
+ }
+ /* 프레임 콜백이 멈춰도(백그라운드 탭·임베드·헤드리스) 사망 연출 시간은 흐르게 한다 */
+ setInterval(()=>{if(ui.route==='death')deathTick();},50);
+ function deathOld(){
   const final=ui.finalDeath,can=model.s.resurrections>0&&!model.s.resurrectionLocked;
   let out=I('W_Death_Vignette_1920x1080',0,0,1920,1080)+I('W_Death_FadeBlack_16x16',0,0,1920,1080,final?.89:0,'n-death-fade')+I('W_Death_Mark_Glow_512',704,248,512,512,final?.18:0)+I(final?'I_Death_Mark_Red_512':'I_Downed_Mark_512',704,248,512)+T(final?'DEAD':'DOWN',710,718,500,25.333,false,final?'#d42f2d':'#b6b8b9','n-death-title n-center');
   if(final)out+=C('Enter','A','체크포인트에서 다시 시작','respawn',760,940,400,56,24,26.667);
@@ -812,11 +858,11 @@ function demo(){
 function editor(){const id=ui.editorTool||'qa',names={qa:'QA 작업대',montage:'몽타주 · 빈 상태','montage-loaded':'몽타주 · 미리보기',replay:'리플레이 뷰어',character:'캐릭터 설정',qa_analysis:'QA 분석',enemy_creator:'적 만들기'};const content=id==='replay'?'<div class="c-replay"><aside><h3>저장된 리플레이 (최신순)</h3><div>이 모음에는 전투 리플레이를 포함하지 않았습니다.</div><button data-action="current:editor-replay">목록 새로고침</button></aside><main><p>QA 리플레이 (F9 · 직전 10초)</p><div class="c-replay-empty"></div><footer><button>▶ / Ⅱ</button><button>처음</button><button>0.25×</button><input type="range" disabled><span>—</span></footer><button disabled>영상 파일 열기 (mp4)</button> <button disabled>폴더 열기</button></main></div>':`<img src="Reference/Editor-${id}.png" alt="${names[id]} 현재 에디터 캡처">`;return shell(`<div class="c-editor"><header>${Object.entries(names).map(([v,n])=>`<button data-action="current:editor-${v}" class="${id===v?'selected':''}">${n}</button>`).join('')}</header>${content}<footer>${id==='replay'?'현재 C++ 화면 구조를 옮긴 빈 상태 미리보기':'Unreal Editor에서 캡처한 원본 화면'} · 이 HTML에서는 프로젝트를 수정하지 않습니다.</footer></div>`);}
 function library(){const mode=ui.libraryMode||'ui',items=(window.SS_CATALOG||[]).filter(x=>mode==='input'?x.type==='input':x.type!=='input');return shell(`<div class="c-library"><h2>${mode==='input'?'키보드 · Xbox · PlayStation · Switch':'현재 UI 이미지 원본'}</h2><div class="c-asset-grid">${items.map(x=>`<a href="${h(x.file)}" target="_blank" data-asset-name="${h(x.name.toLowerCase())}"><img src="${h(x.file)}" alt="${h(x.name)}" loading="lazy"><span>${h(x.name)}</span><small>${x.size?.join(' × ')||''}</small></a>`).join('')}</div></div>`);}
 function update(){
- legacyUpdate();const each=(s,f)=>document.querySelectorAll(s).forEach(f),hp=model.s.hp/model.maxHP;
+ deathTick();legacyUpdate();const each=(s,f)=>document.querySelectorAll(s).forEach(f),hp=model.s.hp/model.maxHP;
  each('[data-current-hp]',e=>e.style.clipPath=`inset(0 ${(1-hp)*100}% 0 0)`);each('[data-current-trail]',e=>e.style.clipPath=`inset(0 ${(1-Math.min(1,ui.trail/model.maxHP))*100}% 0 0)`);
  each('[data-current-boss-hp]',e=>e.style.clipPath=`inset(0 ${(1-ui.bossHP)*100}% 0 0)`);
  each('[data-current-potion]',e=>e.style.clipPath=`inset(${(44-33.88*model.s.healCharges/model.maxHeals)/46*100}% 0 0 0)`);each('.c-potion-count',e=>e.textContent=model.s.healCharges);
- each('[data-current-vignette]',e=>e.style.opacity=Math.max(0,(.4-hp)/.4));
+ each('[data-current-vignette]',e=>e.style.opacity=ui.route==='death'?0:Math.max(0,(.4-hp)/.4));
  each('[data-current-posture]',e=>{const f=e.dataset.currentPosture==='player'?model.s.posture/model.maxPosture:e.dataset.currentPosture==='boss'?ui.bossPosture:.55,a=[198,107,61],b=[229,45,40],color=`rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*f)).join(',')})`;e.querySelector('.c-pointed').style.width=f*100+'%';e.style.setProperty('--posture-color',color);e.classList.toggle('parry',performance.now()<(ui.parryUntil||0));});
 }
 function action(command){
@@ -1247,7 +1293,7 @@ function renderTools(){
   case 'upgrade':html=common+tool('재료 부족','poor')+tool('최대 강화','max')+tool('선택 항목 단계 초기화','level-reset')+tool('세 색상 능력 해금','unlock')+`<label>진행 <select data-tool-select="chapter">${[1,2,3,4].map(n=>`<option ${n===model.s.chapter?'selected':''} value="${n}">CHAPTER ${String(n).padStart(2,'0')}</option>`).join('')}</select></label>`;break;
   case 'dialogue':html=tool('첫 만남','dialogue-first')+tool('재방문','dialogue-return')+tool('2개 선택지','dialogue-choice')+tool('한 번만 보상 받기','dialogue-gift')+tool('상점 연결','shop');break;
   case 'shop':html=tool('수집품 가치 +12','collectibles')+tool('교환가치 부족','collectibles-zero')+tool('현재 상품 품절','sold-out')+tool('재고 초기화','restock')+tool('대화로 돌아가기','dialogue-return');break;
-  case 'death':html=tool('부활 기회 있음','death-choice')+tool('부활 기회 없음 → 바로 DEAD','death-empty')+tool('최종 사망','death-final')+tool('마지막 휴식: 시험의 뜰','checkpoint-gym');break;
+  case 'death':html=tool('부활 기회 있음','death-choice')+tool('부활 기회 없음 → 바로 DEAD','death-empty')+tool('최종 사망','death-final')+tool('대기 +10초','death-skip')+tool('마지막 휴식: 시험의 뜰','checkpoint-gym');break;
   case 'loading':html=tool('5초 로딩 다시 보기','loading')+tool('이전 팁','tip-prev')+tool('다음 팁','tip-next');break;
   case 'boss':html=`<label>보스 <select data-tool-select="boss">${['Blue','Green','Red','Black'].map(c=>`<option ${ui.bossColor===c?'selected':''} value="${c}">${c.toUpperCase()}</option>`).join('')}</select></label>`+tool('보스 처치','defeat')+tool('보상 창 바로 보기','reward')+tool('허브 구체','orb')+tool('세 빛 모두 켜기','unlock')+tool('검정의 돔','white');break;
   case 'debug':html=tool('HUD에서 확인','hud')+tool('적 이동만','debug-enemy')+tool('모두 끄기','debug-off');break;
@@ -1344,6 +1390,7 @@ function tool(action){
   case 'restock':model.s.shopPurchases={};break;
   case 'death-choice':model.s.hp=0;model.s.resurrections=2;model.s.resurrectionLocked=false;ui.finalDeath=false;go('death');break;
   case 'death-empty':model.s.hp=0;model.s.resurrections=0;ui.finalDeath=true;go('death');break;
+  case 'death-skip':if(ui.route==='death'&&!ui.finalDeath&&ui._dxT)ui._dxT-=10;return;
   case 'death-final':model.s.hp=0;ui.finalDeath=true;go('death');break;
   case 'checkpoint-gym':model.rest('Gym');model.s.hp=0;ui.finalDeath=true;go('death');break;
   case 'loading':startLoading('Main01','hud',true);return;
@@ -1462,7 +1509,7 @@ function activateCurrent(){
   case 'shop':act('shop-confirm');break;
   case 'slots':act('slot-commit');break;
   case 'dialogue':nextDialogue();break;
-  case 'death':act(ui.finalDeath?'respawn':'resurrect');break;
+  case 'death':if(ui.finalDeath){if(ui._dxSkip)act('respawn');}else if(ui._dxPrompt)act('resurrect');break;
   case 'boss':act(ui.world==='white'?'black-start':'orb-interact');break;
   case 'enemy':act('enemy-create');break;
  }
@@ -1471,7 +1518,7 @@ function back(){
  if(ui.modal){closeModal();return;}
  if(ui.route==='loading')return;
  if(ui.route==='pause'){if(ui.frontSettings)act('front-back');else if(ui.tab==='home')act('resume');else act('pause-home');return;}
- const actions={upgrade:'upgrade-back',rest:ui.restPage==='travel'?'rest-back':'rest-leave',dialogue:'dialogue-close',shop:'shop-back',slots:'slots-back',debug:'debug-close',death:ui.finalDeath?'':'final-death',enemy:'enemy-back'};
+ const actions={upgrade:'upgrade-back',rest:ui.restPage==='travel'?'rest-back':'rest-leave',dialogue:'dialogue-close',shop:'shop-back',slots:'slots-back',debug:'debug-close',death:ui.finalDeath||!ui._dxPrompt?'':'final-death',enemy:'enemy-back'};
  if(actions[ui.route])act(actions[ui.route]);else if(ui.route==='hud')act('pause-home');else if(ui.route==='main'&&ui.mainPage!=='menu')act('credits-back');
 }
 function navigate(x,y){
@@ -1694,8 +1741,8 @@ function hints(){
   case 'shop':L.push(K(['↑','↓'],['D-pad'],'상품 이동',()=>tap('ArrowDown')),K(['Enter'],['A'],'교환',()=>tap('Enter')),K(['Esc'],['B'],'대화로 돌아가기',()=>tap('Escape')));break;
   case 'slots':L.push(K(['↑','↓'],['D-pad'],'슬롯 이동',()=>tap('ArrowDown')),K(['Enter'],['A'],ui.saving?'저장':'불러오기',()=>tap('Enter')),K(['Esc'],['B'],'뒤로',()=>tap('Escape')));break;
   case 'death':
-   if(ui.finalDeath)L.push(K(['Enter'],['A'],'마지막 휴식 지점에서 다시 시작',()=>tap('Enter')));
-   else L.push(K(['Enter'],['A'],'부활',()=>tap('Enter'),model.s.resurrections<1||model.s.resurrectionLocked),K(['Backspace'],['B'],'사망하기 → DEAD 화면',()=>tap('Backspace')));break;
+   if(ui.finalDeath)L.push(K(['자동'],['자동'],'잠시 뒤 마지막 휴식 지점에서 다시 시작 (Enter로 건너뛰기)',()=>tap('Enter'),!ui._dxSkip));
+   else L.push(K(['Enter'],['A'],'부활한다',()=>tap('Enter'),!ui._dxPrompt),K(['Backspace'],['B'],'이대로 죽는다',()=>tap('Backspace'),!ui._dxPrompt));break;
   case 'loading':L.push(K(['Q','E'],['X','B'],'이전 / 다음 팁',()=>tap('KeyE')));break;
   case 'debug':L.push(K(['클릭'],['클릭'],'항목 켜기 / 끄기',null),K(['F3'],['View'],'닫기',()=>tap('F3')),K(['Esc'],['B'],'닫기',()=>tap('Escape')));break;
   case 'tutorial':L.push(K(['Enter'],['A'],'확인 후 닫기',()=>A.act('current:tutorial-close')));break;
@@ -1718,7 +1765,7 @@ $('#sx-keys').addEventListener('click',e=>{const b=e.target.closest('[data-sx-ch
 /* ── 상태 변화 감시(원본 render를 건드리지 않고 표시만 갱신) ── */
 let sig='',lastGroup=ui.group,lastRoute=ui.route;
 function watch(){
- const s=[ui.group,ui.route,ui.tab,ui.device,ui.modal?ui.modal.kind:'',ui.wheel?1:0,ui.restPage,ui.finalDeath?1:0,ui.dialoguePhase,ui.frontSettings?1:0,ui.mainPage||'',model.state.settings.guide?1:0,ui.saving?1:0,model.s.resurrections,model.s.bonfires.length,ui.currentFire].join('|');
+ const s=[ui.group,ui.route,ui.tab,ui.device,ui._dxPrompt?1:0,ui._dxSkip?1:0,ui.modal?ui.modal.kind:'',ui.wheel?1:0,ui.restPage,ui.finalDeath?1:0,ui.dialoguePhase,ui.frontSettings?1:0,ui.mainPage||'',model.state.settings.guide?1:0,ui.saving?1:0,model.s.resurrections,model.s.bonfires.length,ui.currentFire].join('|');
  if(s!==sig){sig=s;renderHints();
   if(ui.route!==lastRoute||ui.group!==lastGroup){lastRoute=ui.route;lastGroup=ui.group;for(const id of ['screen','world']){const el=document.getElementById(id);el.classList.remove('sx-enter');void el.offsetWidth;el.classList.add('sx-enter');}}
  }
@@ -1765,7 +1812,7 @@ if(EMBED){
 /* ── 자동 확인용: ?t=act:명령,key:코드,down:코드,up:코드,wait:밀리초,dev:pad ── */
 const q=new URLSearchParams(location.search).get('t');
 if(q){const st=document.createElement('style');st.textContent='*,*::before,*::after{transition:none!important;animation:none!important}';document.head.appendChild(st);const steps=q.split('~');(function run(){const s=steps.shift();if(!s)return;const i=s.indexOf(':'),k=s.slice(0,i),v=s.slice(i+1);let wait=60;
- if(k==='act')A.act(v);else if(k==='key')tap(v);else if(k==='down')fire('keydown',v);else if(k==='up')fire('keyup',v);else if(k==='wait')wait=+v;else if(k==='dev')$('#device').click();else if(k==='go')A.chooseGroup(v);else if(k==='help')$('#sx-help').hidden=false;else if(k==='more')$('#sx-more-panel').hidden=false;else if(k==='dbg'){const R=s=>{const e=document.querySelector(s);if(!e)return null;const b=e.getBoundingClientRect();return [Math.round(b.left),Math.round(b.width),Math.round(b.height)]};const wide=[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+2&&!e.closest('#canvas')).slice(0,15).map(e=>(e.id||String(e.className).slice(0,30)||e.tagName)+':'+Math.round(e.getBoundingClientRect().left)+'-'+Math.round(e.getBoundingClientRect().right));const o=document.createElement('pre');o.id='sxdbg';o.textContent=JSON.stringify({inner:innerWidth,docW:document.documentElement.scrollWidth,cls:document.documentElement.className,body:R('body'),top:R('.sx-top'),stage:R('.sx-stage'),frame:R('#frame'),bottom:R('.sx-bottom'),worldOp:getComputedStyle($('#world')).opacity,screenOp:getComputedStyle($('#screen')).opacity,anim:[...document.getAnimations()].map(a=>a.animationName+':'+a.playState+':'+Math.round(a.currentTime||0)).slice(0,8),wide});document.body.appendChild(o);}
+ if(k==='act')A.act(v);else if(k==='key')tap(v);else if(k==='down')fire('keydown',v);else if(k==='up')fire('keyup',v);else if(k==='wait')wait=+v;else if(k==='dev')$('#device').click();else if(k==='go')A.chooseGroup(v);else if(k==='help')$('#sx-help').hidden=false;else if(k==='more')$('#sx-more-panel').hidden=false;else if(k==='dbg'){const R=s=>{const e=document.querySelector(s);if(!e)return null;const b=e.getBoundingClientRect();return [Math.round(b.left),Math.round(b.width),Math.round(b.height)]};const wide=[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+2&&!e.closest('#canvas')).slice(0,15).map(e=>(e.id||String(e.className).slice(0,30)||e.tagName)+':'+Math.round(e.getBoundingClientRect().left)+'-'+Math.round(e.getBoundingClientRect().right));const o=document.createElement('pre');o.id='sxdbg';o.textContent=JSON.stringify({now:performance.now()/1000,route:ui.route,final:ui.finalDeath,dxPhase:ui._dxPhase,dxT:ui._dxT,dxPrompt:ui._dxPrompt,dxSkip:ui._dxSkip,inner:innerWidth,docW:document.documentElement.scrollWidth,cls:document.documentElement.className,body:R('body'),top:R('.sx-top'),stage:R('.sx-stage'),frame:R('#frame'),bottom:R('.sx-bottom'),worldOp:getComputedStyle($('#world')).opacity,screenOp:getComputedStyle($('#screen')).opacity,anim:[...document.getAnimations()].map(a=>a.animationName+':'+a.playState+':'+Math.round(a.currentTime||0)).slice(0,8),wide});document.body.appendChild(o);}
  setTimeout(run,wait);})();}
 })();
 
