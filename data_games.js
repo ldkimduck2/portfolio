@@ -49,7 +49,7 @@ const CURRENTLY_PLAYING = [
     platform: "Console / PC",
     status: "진행 중",
     releaseDate: "2019. 03",
-    playtime: 6.2,
+    playtime: 23.1,
     image: "https://cdn.akamai.steamstatic.com/steam/apps/814380/header.jpg",
     tags: ["!체간", "소울라이크", "닌자"]
   },
